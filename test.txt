@@ -1,3 +1,21 @@
-beginm
-    int a
-endm
+int test1
+int test2()fbegin fend
+int test3()
+    fbegin 
+        int test4 
+    fend
+int test5(int test5,int test6,int aaa)
+    fbegin
+        int test7 ,int test8,int aaab
+    fend
+
+begin
+print(a)
+a=2
+int manevra=b
+while (
+    a=3
+    )
+int cumatru=2
+endwhile
+end

@@ -8,7 +8,6 @@ extern int yylineno;
 extern char* yytext;
 %}
 
-
 %union {
 int intval;
 double floatval;
@@ -20,75 +19,6 @@ struct  IND
 	int val;
 } intnode;
 
-struct  SND
-{
-	char name[100];
-	char val[100];
-} stringnode;
-
-struct  FND
-{
-	char name[100];
-	double val;
-} floatnode;
-
-struct BND
-{
-	char name[100];
-	int val;
-} boolnode;
-
-struct 
-{
-	char name[100];
-	int nr_inodes;
-	int nr_snodes;
-	int nr_fnodes;
-	int nr_bnodes;
-	struct IND intnodes[10];
-	struct SND stringnodes[10];
-	struct BND boolnodes[10];
-	struct FND floatnodes[10];
-} intfuncnode;
-
-struct 
-{
-	char name[100];
-	int nr_inodes;
-	int nr_snodes;
-	int nr_fnodes;
-	int nr_bnodes;
-	struct IND intnodes[10];
-	struct SND stringnodes[10];
-	struct BND boolnodes[10];
-	struct FND floatnodes[10];
-}stringfuncnode;
-
-struct 
-{
-	char name[100];
-	int nr_inodes;
-	int nr_snodes;
-	int nr_fnodes;
-	int nr_bnodes;
-	struct IND intnodes[10];
-	struct SND stringnodes[10];
-	struct BND boolnodes[10];
-	struct FND floatnodes[10];
-}floatfuncnode;
-
-struct 
-{
-	char name[100];
-	int nr_inodes;
-	int nr_snodes;
-	int nr_fnodes;
-	int nr_bnodes;
-	struct IND intnodes[10];
-	struct SND stringnodes[10];
-	struct BND boolnodes[10];
-	struct FND floatnodes[10];
-}boolfuncnode;
 }
 
 %start progr
@@ -105,7 +35,7 @@ struct
 %token <strval> STRVAL 
 %token <intval> INTVAL 
 %token <boolval> BOOLVAL 
-%token control fct_call
+%token fct_call
 
 %type <intnode> ID 
 
@@ -120,22 +50,20 @@ struct
 progr   :   declarations main_body  {printf("\n Program corect\n");}
         |       ;
 
-declarations    :   declaratie
-                |   declarations declaratie
-                |       ;
+declarations    :   declaratie 
+                |   declarations declaratie;
 
-declaratie  :   vars_decl {printf("\n declaratie \n");}
-            |   fct_decl;
+declaratie  :   var_decl 
+            |   fct_decl ;
 
-vars_decl   :   var_decl
-            |   vars_decl ',' var_decl;
-
-var_decl    :   INT ID {printf("decl var \n");}
+var_decl    :   var_decl ',' var_decl 
+			|   INT assign
+			|   INT ID {printf("Variable int declaration %s\n",$2);}
             |   BOOL ID  
-            |   STRING ID
-            |;
+            |   STRING ID;
 
-fct_decl    :   INT ID '(' param_list ')' FBEGIN body FEND              
+fct_decl    :   INT ID {printf("Int function %s declaration! \n",$2);} 
+				'(' param_list ')' FBEGIN body FEND              
             |   BOOL ID '(' param_list ')' FBEGIN body FEND             
             |   STRING ID '(' param_list ')' FBEGIN body FEND;
 
@@ -143,27 +71,31 @@ param_list  :
             |   param
             |   param_list ',' param;
 
-param   :   INT ID 
+param   :   INT ID {printf("Parameter int declaration %s\n",$2);}
         |   BOOL ID  
         |   STRING ID  ;
 
 main_body   : BEGIN_P body END_P
             |   ;
 
-body    :   statement
+body    :
+		|   statement
         |   body statement;
 
 statement   :   assign
-            |   control 
+            |   control
+			|  var_decl 
             |   fct_call 
             |   print_call;
 
-print_call   :   PRINT'(' ID ')';
+control: WHILE {printf("While called\n");} '(' statement ')' body ENDWHILE 
 
-assign  :   ID ASGN INTVAL  
+print_call   :   PRINT'(' ID ')'{printf("PRINT CALLED\n");};
+
+assign  :   ID ASGN INTVAL {printf("Value assignation %s\n",$1);} 
         |   ID ASGN BOOLVAL 
-        |   ID ASGN STRVAL;
-
+        |   ID ASGN STRVAL
+		| 	ID ASGN ID {printf("Value of another declared data assignated\n");};
 
 %%
 int yyerror(char * s)
@@ -175,4 +107,5 @@ int main(int argc,char** argv)
 {
     yyin = fopen(argv[1],"r");
     yyparse();
+	exit(0);
 }
