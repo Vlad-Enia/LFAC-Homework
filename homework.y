@@ -7,11 +7,94 @@ extern FILE* yyin;
 extern int yylineno;
 extern char* yytext;
 %}
-%union{ int intval; char* strval; int boolval;}
 
+
+%union {
+int intval;
+double floatval;
+char* strval;
+int boolval;
+struct  IND
+{
+	char name[100];
+	int val;
+} intnode;
+
+struct  SND
+{
+	char name[100];
+	char val[100];
+} stringnode;
+
+struct  FND
+{
+	char name[100];
+	double val;
+} floatnode;
+
+struct BND
+{
+	char name[100];
+	int val;
+} boolnode;
+
+struct 
+{
+	char name[100];
+	int nr_inodes;
+	int nr_snodes;
+	int nr_fnodes;
+	int nr_bnodes;
+	struct IND intnodes[10];
+	struct SND stringnodes[10];
+	struct BND boolnodes[10];
+	struct FND floatnodes[10];
+} intfuncnode;
+
+struct 
+{
+	char name[100];
+	int nr_inodes;
+	int nr_snodes;
+	int nr_fnodes;
+	int nr_bnodes;
+	struct IND intnodes[10];
+	struct SND stringnodes[10];
+	struct BND boolnodes[10];
+	struct FND floatnodes[10];
+}stringfuncnode;
+
+struct 
+{
+	char name[100];
+	int nr_inodes;
+	int nr_snodes;
+	int nr_fnodes;
+	int nr_bnodes;
+	struct IND intnodes[10];
+	struct SND stringnodes[10];
+	struct BND boolnodes[10];
+	struct FND floatnodes[10];
+}floatfuncnode;
+
+struct 
+{
+	char name[100];
+	int nr_inodes;
+	int nr_snodes;
+	int nr_fnodes;
+	int nr_bnodes;
+	struct IND intnodes[10];
+	struct SND stringnodes[10];
+	struct BND boolnodes[10];
+	struct FND floatnodes[10];
+}boolfuncnode;
+}
+
+%start progr
 %token INT FLOAT CHAR STRING BOOL 
 %token ID
-%token BEGIN END 
+%token BEGIN_P END_P
 %token IF ENDIF ELSE FOR ENDFOR WHILE ENDWHILE
 %token FBEGIN FEND
 %token LWR LEQ GTR GEQ EQ NEQ 
@@ -24,30 +107,33 @@ extern char* yytext;
 %token <boolval> BOOLVAL 
 %token control fct_call
 
+%type <intnode> ID 
+
 %right '='
 %left '+' '-'
 %left '*' '/' '%'
 %left AND 
 %left OR
 
-%start progr
-
 %%
 
-progr   :   declarations main_body  {print("\n Program corect\n");};
+progr   :   declarations main_body  {printf("\n Program corect\n");}
+        |       ;
 
 declarations    :   declaratie
-                |   declarations declaratie;
+                |   declarations declaratie
+                |       ;
 
-declaratie  :   vars_decl
+declaratie  :   vars_decl {printf("\n declaratie \n");}
             |   fct_decl;
 
 vars_decl   :   var_decl
             |   vars_decl ',' var_decl;
 
-var_decl    :   INT ID 
+var_decl    :   INT ID {printf("decl var \n");}
             |   BOOL ID  
-            |   STRING ID  ;
+            |   STRING ID
+            |;
 
 fct_decl    :   INT ID '(' param_list ')' FBEGIN body FEND              
             |   BOOL ID '(' param_list ')' FBEGIN body FEND             
@@ -61,7 +147,8 @@ param   :   INT ID
         |   BOOL ID  
         |   STRING ID  ;
 
-main_body   : BEGIN body END;
+main_body   : BEGIN_P body END_P
+            |   ;
 
 body    :   statement
         |   body statement;

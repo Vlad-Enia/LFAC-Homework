@@ -16,8 +16,9 @@ str [a-zA-Z]+
 "char" {return CHAR;}
 "string" {return STRING;}
 "bool" {return BOOL;}
-"beginm" {return BEGIN;}
-"endm" {return END;}
+id {strcpy(yylval.intnode.name,strdup(yytext)); return ID;}
+"beginm" {return BEGIN_P;}
+"endm" {return END_P;}
 "if" {return IF;}
 "else" {return ELSE;}
 "endif" {return ENDIF;}
@@ -43,7 +44,7 @@ str [a-zA-Z]+
 "||" {return OR;}
 "&&" {return AND;}
 nr {yylval.intval=atoi(yytext); return INTVAL;}
-str {yylval.strval=strdup(yytext); yylval.strval[strlen(yylval.strval)-1]='\0'; return STRINGVAL;}
+str {yylval.strval=strdup(yytext); yylval.strval[strlen(yylval.strval)-1]='\0'; return STRVAL;}
 "true"|"false" {if(strcmp(yytext,"true")==0)yylval.boolval=1; else yylval.boolval=0; return BOOLVAL;}
 [ \t] ;
 \n {yylineno++;}

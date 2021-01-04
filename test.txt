@@ -1,5 +1,3 @@
-int a
-
-begin
-    int b
-end
+beginm
+    int a
+endm
