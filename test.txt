@@ -1,21 +1,32 @@
-int test1
-int test2()fbegin fend
-int test3()
-    fbegin 
-        int test4 
-    fend
-int test5(int test5,int test6,int aaa)
+int a
+
+int test_f_1()
     fbegin
-        int test7 ,int test8,int aaab
     fend
 
+int test_f_2(int a)
+    fbegin
+    fend
+
+int test_f_3(int c,int b)
+    fbegin
+    print(a)
+    fend
+
+int test_f_4(int d,int f)
+    fbegin
+      int e=d+f
+      if(a<10)
+        print(a)
+      endif
+
+    fend
+
+int z
+
 begin
+
+print (d)
 print(a)
-a=2
-int manevra=b
-while (
-    a=3
-    )
-int cumatru=2
-endwhile
+test_f_4(a,36+12)
 end
