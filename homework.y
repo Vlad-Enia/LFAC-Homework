@@ -21,11 +21,11 @@ struct  IND
 
 }
 
-%start progr
+
 %token INT FLOAT CHAR STRING BOOL 
 %token ID
 %token BEGIN_P END_P
-%token IF ENDIF ELSE FOR ENDFOR WHILE ENDWHILE
+%token IF THEN ELSE_IF ENDIF ELSE FOR ENDFOR WHILE ENDWHILE
 %token FBEGIN FEND
 %token LWR LEQ GTR GEQ EQ NEQ 
 %token PLUS MINUS MTP DVD MOD
@@ -37,56 +37,93 @@ struct  IND
 %token <boolval> BOOLVAL 
 
 %type <intnode> ID 
+%type <intnode> fct_call
 
+%left AND OR
 %left EQ NEQ LWR GTR LEQ GEQ
 %left PLUS MINUS
 %left MTP DVD MOD
-%left AND 
-%left OR
 
+%start program
 %%
 
-progr   :   glb_declarations main_body  {printf("\n Program corect\n");}
-        | ;
+program     :   glb_declarations main_body  {printf("\n Program corect \n");}
+            ;
+
 
 glb_declarations    : glb_declarations var_decl 
-                |  glb_declarations fct_decl
-                | ;
+                    |  glb_declarations fct_decl   
+                    |
+                    ;
 
-var_decl    :   INT variable_list
-            | BOOL variable_list
-            | STRING variable_list;
+var_decl    :   INT variable_list ';'
+            |   BOOL variable_list ';'
+            | STRING variable_list ';'
+            ;
 
 variable_list : variable_list ',' ID
               | ID {printf("%s declared\n",$1);}
               | variable_list ',' ID ASGN expression
               | ID ASGN expression 
+              ;
 
-fct_decl    :   INT ID {printf("Function %s declared! \n",$2);} 
-				'(' param_list ')' FBEGIN body FEND              
+fct_decl    :   INT ID  
+				'(' {printf("Function %s declared! \n",$2);} param_list ')' FBEGIN body FEND              
             |   BOOL ID '(' param_list ')' FBEGIN body FEND             
-            |   STRING ID '(' param_list ')' FBEGIN body FEND;
+            |   STRING ID '(' param_list ')' FBEGIN body FEND
+            |   INT ID   '(' {printf("Function %s declared! \n",$2);} ')' FBEGIN body FEND 
+            ;
 
-param_list  :   
+param_list  :   param_list ',' param
             |   param
-            |   param_list ',' param;
+            ;
 
 param   :   INT ID {printf("Parameter int declaration %s\n",$2);}
         |   BOOL ID  
-        |   STRING ID  ;
+        |   STRING ID  
+        ;
 
-main_body   : BEGIN_P body END_P
-            |   ;
+main_body   : BEGIN_P  body END_P 
+            ;
 
-body    :
-		|   statement
-        |   body statement;
+body  	:   body statement
+        |
+        ;
 
-statement   :   expression
-            |   ID ASGN expression
+statement   :   expression ';'
+            |   ID ASGN expression ';'
             |   control
 			|   var_decl 
-            |   print_call;
+            |   print_call  ';'
+            ;
+
+fct_call : ID '(' param_called_list ')' 
+         | ID '(' ')' 
+         ;
+         
+
+param_called_list : param_called_list ',' expression
+                  | expression
+                  ;
+
+
+control : WHILE {printf("While called\n");} '(' binary_expression ')' body ENDWHILE 
+        | if 
+        ;
+
+if      : IF '(' binary_expression ')' THEN body ENDIF 
+        | IF '(' binary_expression ')' THEN body ELSE body ENDIF
+        | IF '(' binary_expression ')' THEN body eif ENDIF
+        ;
+
+eif     : ELSE_IF '(' binary_expression ')' THEN body 
+        | ELSE_IF '(' binary_expression ')' THEN body ELSE body
+        | ELSE_IF '(' binary_expression ')' THEN body eif
+        ;
+
+print_call  :   PRINT'(' expression ')'{printf("PRINT CALLED\n");}
+            ;
+
 
 expression : INTVAL 
            | ID 
@@ -95,9 +132,10 @@ expression : INTVAL
            | expression MTP expression
            | expression DVD expression
            | expression MOD expression
+           | binary_expression
            | '(' expression ')'
-           | binary_expression 
-           | fct_call ;
+           | fct_call 
+           ;
 
 binary_expression : expression LWR expression 
                 | expression GTR expression
@@ -106,20 +144,9 @@ binary_expression : expression LWR expression
                 | expression NEQ expression 
                 | expression EQ expression 
                 | expression AND expression 
-                | expression OR expression ; 
+                | expression OR expression 
+                ; 
 
-fct_call : ID '('{printf("Function called");} param_called_list ')'
-         | ID '(' ')' ;
-
-param_called_list : param_called_list ',' expression
-                  | expression ;
-
-
-
-control : WHILE {printf("While called\n");} '(' binary_expression ')' body ENDWHILE 
-        | IF {printf("If called\n");} '(' binary_expression ')' body ENDIF
-
-print_call   :   PRINT'(' expression ')'{printf("PRINT CALLED\n");};
 
 %%
 int yyerror(char * s)

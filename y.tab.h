@@ -34,8 +34,8 @@
 /* Undocumented macros, especially those whose name start with YY_,
    are private implementation details.  Do not rely on them.  */
 
-#ifndef YY_YY_HOMEWORK_TAB_H_INCLUDED
-# define YY_YY_HOMEWORK_TAB_H_INCLUDED
+#ifndef YY_YY_Y_TAB_H_INCLUDED
+# define YY_YY_Y_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -58,36 +58,70 @@ extern int yydebug;
     BEGIN_P = 264,
     END_P = 265,
     IF = 266,
-    THEN = 267,
-    ELSE_IF = 268,
-    ENDIF = 269,
-    ELSE = 270,
-    FOR = 271,
-    ENDFOR = 272,
-    WHILE = 273,
-    ENDWHILE = 274,
-    FBEGIN = 275,
-    FEND = 276,
-    LWR = 277,
-    LEQ = 278,
-    GTR = 279,
-    GEQ = 280,
-    EQ = 281,
-    NEQ = 282,
-    PLUS = 283,
-    MINUS = 284,
-    MTP = 285,
-    DVD = 286,
-    MOD = 287,
-    AND = 288,
-    OR = 289,
-    PRINT = 290,
-    ASGN = 291,
-    STRVAL = 292,
-    INTVAL = 293,
-    BOOLVAL = 294
+    ENDIF = 267,
+    ELSE = 268,
+    FOR = 269,
+    ENDFOR = 270,
+    WHILE = 271,
+    ENDWHILE = 272,
+    FBEGIN = 273,
+    FEND = 274,
+    LWR = 275,
+    LEQ = 276,
+    GTR = 277,
+    GEQ = 278,
+    EQ = 279,
+    NEQ = 280,
+    PLUS = 281,
+    MINUS = 282,
+    MTP = 283,
+    DVD = 284,
+    MOD = 285,
+    AND = 286,
+    OR = 287,
+    PRINT = 288,
+    ASGN = 289,
+    STRVAL = 290,
+    INTVAL = 291,
+    BOOLVAL = 292
   };
 #endif
+/* Tokens.  */
+#define INT 258
+#define FLOAT 259
+#define CHAR 260
+#define STRING 261
+#define BOOL 262
+#define ID 263
+#define BEGIN_P 264
+#define END_P 265
+#define IF 266
+#define ENDIF 267
+#define ELSE 268
+#define FOR 269
+#define ENDFOR 270
+#define WHILE 271
+#define ENDWHILE 272
+#define FBEGIN 273
+#define FEND 274
+#define LWR 275
+#define LEQ 276
+#define GTR 277
+#define GEQ 278
+#define EQ 279
+#define NEQ 280
+#define PLUS 281
+#define MINUS 282
+#define MTP 283
+#define DVD 284
+#define MOD 285
+#define AND 286
+#define OR 287
+#define PRINT 288
+#define ASGN 289
+#define STRVAL 290
+#define INTVAL 291
+#define BOOLVAL 292
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -106,7 +140,7 @@ struct  IND
 } intnode;
 
 
-#line 110 "homework.tab.h"
+#line 144 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -119,4 +153,4 @@ extern YYSTYPE yylval;
 
 int yyparse (void);
 
-#endif /* !YY_YY_HOMEWORK_TAB_H_INCLUDED  */
+#endif /* !YY_YY_Y_TAB_H_INCLUDED  */

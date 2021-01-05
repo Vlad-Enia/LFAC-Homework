@@ -14,7 +14,9 @@
 "bool" {return BOOL;}
 "begin" {return BEGIN_P;}
 "end" {return END_P;}
+"eif" {return ELSE_IF;}
 "if" {return IF;}
+"then" {return THEN;}
 "else" {return ELSE;}
 "endif" {return ENDIF;}
 "for" {return FOR;}

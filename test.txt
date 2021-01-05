@@ -1,32 +1,34 @@
-int a
+int a;
 
 int test_f_1()
     fbegin
     fend
 
-int test_f_2(int a)
-    fbegin
-    fend
 
-int test_f_3(int c,int b)
+int test_f_3(int c)
     fbegin
-    print(a)
+    print(a);
     fend
 
 int test_f_4(int d,int f)
     fbegin
-      int e=d+f
-      if(a<10)
-        print(a)
+      int e=d+f;
+      if(a<10) then
+        print(a);
+      eif(a>10) then
+        print(b);
+      else
+        print(c);
       endif
 
     fend
 
-int z
+int z;
 
 begin
 
-print (d)
-print(a)
-test_f_4(a,36+12)
+print (d);
+print(a);
+test_f_1(a,2+a,a!=b,2+(3+3));
+int y;
 end
