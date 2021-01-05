@@ -1,9 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.5.1.  */
+/* A Bison parser, made by GNU Bison 3.0.4.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
-   Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -30,9 +29,6 @@
 
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
-
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
 
 #ifndef YY_YY_HOMEWORK_TAB_H_INCLUDED
 # define YY_YY_HOMEWORK_TAB_H_INCLUDED
@@ -83,17 +79,16 @@ extern int yydebug;
     ASGN = 289,
     STRVAL = 290,
     INTVAL = 291,
-    BOOLVAL = 292,
-    control = 293,
-    fct_call = 294
+    BOOLVAL = 292
   };
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
+
 union YYSTYPE
 {
-#line 12 "homework.y"
+#line 11 "homework.y" /* yacc.c:1909  */
 
 int intval;
 double floatval;
@@ -105,79 +100,10 @@ struct  IND
 	int val;
 } intnode;
 
-struct  SND
-{
-	char name[100];
-	char val[100];
-} stringnode;
 
-struct  FND
-{
-	char name[100];
-	double val;
-} floatnode;
-
-struct BND
-{
-	char name[100];
-	int val;
-} boolnode;
-
-struct 
-{
-	char name[100];
-	int nr_inodes;
-	int nr_snodes;
-	int nr_fnodes;
-	int nr_bnodes;
-	struct IND intnodes[10];
-	struct SND stringnodes[10];
-	struct BND boolnodes[10];
-	struct FND floatnodes[10];
-} intfuncnode;
-
-struct 
-{
-	char name[100];
-	int nr_inodes;
-	int nr_snodes;
-	int nr_fnodes;
-	int nr_bnodes;
-	struct IND intnodes[10];
-	struct SND stringnodes[10];
-	struct BND boolnodes[10];
-	struct FND floatnodes[10];
-}stringfuncnode;
-
-struct 
-{
-	char name[100];
-	int nr_inodes;
-	int nr_snodes;
-	int nr_fnodes;
-	int nr_bnodes;
-	struct IND intnodes[10];
-	struct SND stringnodes[10];
-	struct BND boolnodes[10];
-	struct FND floatnodes[10];
-}floatfuncnode;
-
-struct 
-{
-	char name[100];
-	int nr_inodes;
-	int nr_snodes;
-	int nr_fnodes;
-	int nr_bnodes;
-	struct IND intnodes[10];
-	struct SND stringnodes[10];
-	struct BND boolnodes[10];
-	struct FND floatnodes[10];
-}boolfuncnode;
-
-#line 179 "homework.tab.h"
-
+#line 105 "homework.tab.h" /* yacc.c:1909  */
 };
+
 typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

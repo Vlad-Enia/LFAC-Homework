@@ -35,34 +35,34 @@ struct  IND
 %token <strval> STRVAL 
 %token <intval> INTVAL 
 %token <boolval> BOOLVAL 
-%token fct_call
 
 %type <intnode> ID 
 
-%right '='
-%left '+' '-'
-%left '*' '/' '%'
+%left EQ NEQ LWR GTR LEQ GEQ
+%left PLUS MINUS
+%left MTP DVD MOD
 %left AND 
 %left OR
 
 %%
 
-progr   :   declarations main_body  {printf("\n Program corect\n");}
-        |       ;
+progr   :   glb_declarations main_body  {printf("\n Program corect\n");}
+        | ;
 
-declarations    :   declaratie 
-                |   declarations declaratie;
+glb_declarations    : glb_declarations var_decl 
+                |  glb_declarations fct_decl
+                | ;
 
-declaratie  :   var_decl 
-            |   fct_decl ;
+var_decl    :   INT variable_list
+            | BOOL variable_list
+            | STRING variable_list;
 
-var_decl    :   var_decl ',' var_decl 
-			|   INT assign
-			|   INT ID {printf("Variable int declaration %s\n",$2);}
-            |   BOOL ID  
-            |   STRING ID;
+variable_list : variable_list ',' ID
+              | ID {printf("%s declared\n",$1);}
+              | variable_list ',' ID ASGN expression
+              | ID ASGN expression 
 
-fct_decl    :   INT ID {printf("Int function %s declaration! \n",$2);} 
+fct_decl    :   INT ID {printf("Function %s declared! \n",$2);} 
 				'(' param_list ')' FBEGIN body FEND              
             |   BOOL ID '(' param_list ')' FBEGIN body FEND             
             |   STRING ID '(' param_list ')' FBEGIN body FEND;
@@ -82,20 +82,44 @@ body    :
 		|   statement
         |   body statement;
 
-statement   :   assign
+statement   :   expression
+            |   ID ASGN expression
             |   control
-			|  var_decl 
-            |   fct_call 
+			|   var_decl 
             |   print_call;
 
-control: WHILE {printf("While called\n");} '(' statement ')' body ENDWHILE 
+expression : INTVAL 
+           | ID 
+           | expression PLUS expression
+           | expression MINUS expression
+           | expression MTP expression
+           | expression DVD expression
+           | expression MOD expression
+           | '(' expression ')'
+           | binary_expression 
+           | fct_call ;
 
-print_call   :   PRINT'(' ID ')'{printf("PRINT CALLED\n");};
+binary_expression : expression LWR expression 
+                | expression GTR expression
+                | expression LEQ expression 
+                | expression GEQ expression 
+                | expression NEQ expression 
+                | expression EQ expression 
+                | expression AND expression 
+                | expression OR expression ; 
 
-assign  :   ID ASGN INTVAL {printf("Value assignation %s\n",$1);} 
-        |   ID ASGN BOOLVAL 
-        |   ID ASGN STRVAL
-		| 	ID ASGN ID {printf("Value of another declared data assignated\n");};
+fct_call : ID '('{printf("Function called");} param_called_list ')'
+         | ID '(' ')' ;
+
+param_called_list : param_called_list ',' expression
+                  | expression ;
+
+
+
+control : WHILE {printf("While called\n");} '(' binary_expression ')' body ENDWHILE 
+        | IF {printf("If called\n");} '(' binary_expression ')' body ENDIF
+
+print_call   :   PRINT'(' expression ')'{printf("PRINT CALLED\n");};
 
 %%
 int yyerror(char * s)
