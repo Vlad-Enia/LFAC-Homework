@@ -6,6 +6,8 @@
 extern FILE* yyin;
 extern int yylineno;
 extern char* yytext;
+//char* tab = char* malloc(1);
+char tab[100];
 %}
 
 %union {
@@ -47,6 +49,8 @@ struct  IND
 %start program
 %%
 
+
+
 program     :   glb_declarations main_body  {printf("\n Program corect \n");}
             ;
 
@@ -56,49 +60,50 @@ glb_declarations    : glb_declarations var_decl
                     |
                     ;
 
-var_decl    :   INT variable_list ';'
-            |   BOOL variable_list ';'
-            | STRING variable_list ';'
+var_decl    :   vartype variable_list ';'
             ;
 
+
+
 variable_list : variable_list ',' ID
-              | ID {printf("%s declared\n",$1);}
+              | ID ASGN expression {printf("%s %s declared and assigned\n",tab,$1.name);}
+              | ID {printf("%s %s declared\n",tab,$1.name);}
               | variable_list ',' ID ASGN expression
-              | ID ASGN expression 
+              
               ;
 
-fct_decl    :   INT ID  
-				'(' {printf("Function %s declared! \n",$2);} param_list ')' FBEGIN body FEND              
-            |   BOOL ID '(' param_list ')' FBEGIN body FEND             
-            |   STRING ID '(' param_list ')' FBEGIN body FEND
-            |   INT ID   '(' {printf("Function %s declared! \n",$2);} ')' FBEGIN body FEND 
+fct_decl    :   vartype ID '(' {printf("Function %s declared! \n",$2.name); strcat(tab,"\t");} param_list ')' {strcpy(tab,tab+1);}  FBEGIN {strcat(tab,"\t");}  body  FEND {strcpy(tab,tab+1);}
+            |   vartype ID '(' {printf("Function %s declared! \n",$2.name); strcat(tab,"\t");} ')' {strcpy(tab,tab+1);}  FBEGIN {strcat(tab,"\t");} body FEND {strcpy(tab,tab+1);} 
             ;
 
 param_list  :   param_list ',' param
             |   param
             ;
 
-param   :   INT ID {printf("Parameter int declaration %s\n",$2);}
-        |   BOOL ID  
-        |   STRING ID  
+param   :   vartype ID  {printf("%s parameter declaration \n",tab);}
         ;
 
-main_body   : BEGIN_P  body END_P 
+vartype :   INT
+        |   BOOL
+        |   STRING
+        ;
+
+main_body   : BEGIN_P {printf("main\n");strcat(tab,"\t");} body {strcpy(tab,tab+1);} END_P 
             ;
 
-body  	:   body statement
+body  	:   body  statement 
         |
         ;
 
 statement   :   expression ';'
             |   ID ASGN expression ';'
-            |   control
-			|   var_decl 
+            |   control {strcpy(tab,tab+1);}
+	    |   var_decl 
             |   print_call  ';'
             ;
 
-fct_call : ID '(' param_called_list ')' 
-         | ID '(' ')' 
+fct_call : ID '(' {printf("%s Fct call with parameters \n",tab);} param_called_list ')' 
+         | ID '(' {printf("%s Fct call \n",tab);} ')' 
          ;
          
 
@@ -107,21 +112,24 @@ param_called_list : param_called_list ',' expression
                   ;
 
 
-control : WHILE {printf("While called\n");} '(' binary_expression ')' body ENDWHILE 
-        | if 
+control : WHILE {printf("%s While called\n",tab);strcat(tab,"\t");} '(' binary_expression ')' body ENDWHILE 
+        | if2 
+        ;
+
+if2     :   {printf("%s if called \n",tab); strcat(tab,"\t");}    if
         ;
 
 if      : IF '(' binary_expression ')' THEN body ENDIF 
-        | IF '(' binary_expression ')' THEN body ELSE body ENDIF
-        | IF '(' binary_expression ')' THEN body eif ENDIF
+        | IF '(' binary_expression ')' THEN body ELSE {printf("%s else called \n",tab+1);} body ENDIF
+        | IF '(' binary_expression ')' THEN body {printf("%s else if called \n",tab+1);} eif  ENDIF
         ;
 
 eif     : ELSE_IF '(' binary_expression ')' THEN body 
-        | ELSE_IF '(' binary_expression ')' THEN body ELSE body
-        | ELSE_IF '(' binary_expression ')' THEN body eif
+        | ELSE_IF '(' binary_expression ')' THEN body ELSE {printf("%s else called \n",tab+1);} body
+        | ELSE_IF '(' binary_expression ')' THEN body {printf("%s else if called \n",tab+1);} eif
         ;
 
-print_call  :   PRINT'(' expression ')'{printf("PRINT CALLED\n");}
+print_call  :   PRINT'(' expression ')'{printf("%s PRINT CALLED \n",tab);}
             ;
 
 
