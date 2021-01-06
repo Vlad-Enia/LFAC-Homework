@@ -10,25 +10,20 @@ int test_f_3(int c)
     print(a);
     fend
 
-int test_f_4(int d,int f)
-    fbegin
-      int e=d;
-      if(a<10) then
-        print(a);
-      eif(a>10) then
-        print(b);
-      eif(a>20) then
-        int o;
-      else 
-        while(a==10)
-          int t;
-        endwhile
-        print(c);
-      endif
+class clasa
+  private: 
+  int test_f_4(int d,int f)
+      fbegin
+        int e=d;
+      fend
 
-    fend
+  public: int z;
+endclass
 
-int z;
+struct structura
+  int rapan;
+  int rapan2;
+endstruct
 
 begin
 

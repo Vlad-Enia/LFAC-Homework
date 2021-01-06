@@ -57,35 +57,42 @@ extern int yydebug;
     ID = 263,
     BEGIN_P = 264,
     END_P = 265,
-    IF = 266,
-    THEN = 267,
-    ELSE_IF = 268,
-    ENDIF = 269,
-    ELSE = 270,
-    FOR = 271,
-    ENDFOR = 272,
-    WHILE = 273,
-    ENDWHILE = 274,
-    FBEGIN = 275,
-    FEND = 276,
-    LWR = 277,
-    LEQ = 278,
-    GTR = 279,
-    GEQ = 280,
-    EQ = 281,
-    NEQ = 282,
-    PLUS = 283,
-    MINUS = 284,
-    MTP = 285,
-    DVD = 286,
-    MOD = 287,
-    AND = 288,
-    OR = 289,
-    PRINT = 290,
-    ASGN = 291,
-    STRVAL = 292,
-    INTVAL = 293,
-    BOOLVAL = 294
+    STRUC = 266,
+    STRUCEND = 267,
+    CLAS = 268,
+    CLASEND = 269,
+    PUBLIC = 270,
+    PRIVATE = 271,
+    PROTECTED = 272,
+    IF = 273,
+    THEN = 274,
+    ELSE_IF = 275,
+    ENDIF = 276,
+    ELSE = 277,
+    FOR = 278,
+    ENDFOR = 279,
+    WHILE = 280,
+    ENDWHILE = 281,
+    FBEGIN = 282,
+    FEND = 283,
+    LWR = 284,
+    LEQ = 285,
+    GTR = 286,
+    GEQ = 287,
+    EQ = 288,
+    NEQ = 289,
+    PLUS = 290,
+    MINUS = 291,
+    MTP = 292,
+    DVD = 293,
+    MOD = 294,
+    AND = 295,
+    OR = 296,
+    PRINT = 297,
+    ASGN = 298,
+    STRVAL = 299,
+    INTVAL = 300,
+    BOOLVAL = 301
   };
 #endif
 
@@ -93,7 +100,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 11 "homework.y"
+#line 31 "homework.y"
 
 int intval;
 double floatval;
@@ -106,7 +113,7 @@ struct  IND
 } intnode;
 
 
-#line 110 "homework.tab.h"
+#line 117 "homework.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

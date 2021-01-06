@@ -8,6 +8,24 @@ extern int yylineno;
 extern char* yytext;
 //char* tab = char* malloc(1);
 char tab[100];
+
+struct var_data
+{
+        char nume[100];
+        char val[100];
+        char vartype[6];
+        char scope[100];
+
+};
+
+struct fct_data
+{
+        char nume[100];
+        int nr_param;
+        struct var_data parameters;
+};
+
+
 %}
 
 %union {
@@ -27,6 +45,8 @@ struct  IND
 %token INT FLOAT CHAR STRING BOOL 
 %token ID
 %token BEGIN_P END_P
+%token STRUC STRUCEND
+%token CLAS CLASEND PUBLIC PRIVATE PROTECTED
 %token IF THEN ELSE_IF ENDIF ELSE FOR ENDFOR WHILE ENDWHILE
 %token FBEGIN FEND
 %token LWR LEQ GTR GEQ EQ NEQ 
@@ -51,14 +71,38 @@ struct  IND
 
 
 
-program     :   glb_declarations main_body  {printf("\n Program corect \n");}
+program     :   glb_declarations main_body  {printf("\n Program corect \n"); struct fct_data a; strcpy(a.parameters.nume,"  cuc\n"); printf(a.parameters.nume);}
             ;
 
 
-glb_declarations    : glb_declarations var_decl 
-                    |  glb_declarations fct_decl   
+glb_declarations    :   glb_declarations var_decl 
+                    |   glb_declarations fct_decl   
+                    |   glb_declarations class_decl
+                    |   glb_declarations struct_decl
                     |
                     ;
+
+struct_decl     :  STRUC {printf("structura declarata\n");} ID struct_body STRUCEND
+                ;
+
+struct_body     :  struct_body var_decl
+                |       
+                ;
+
+class_decl      :  CLAS {printf("clasa declarata\n");} ID class_body CLASEND
+                ;
+
+class_body      :  class_body acces_modifier var_decl
+                |  class_body acces_modifier fct_decl
+                |  class_body var_decl  
+                |  class_body fct_decl  
+                |
+                ;
+        
+acces_modifier  :  PUBLIC       {printf("public ");}
+                |  PRIVATE      {printf("private ");}
+                |  PROTECTED    {printf("protected ");}
+                ;
 
 var_decl    :   vartype variable_list ';'
             ;

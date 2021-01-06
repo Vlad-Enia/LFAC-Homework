@@ -12,6 +12,13 @@
 "char" {return CHAR;}
 "string" {return STRING;}
 "bool" {return BOOL;}
+"struct" {return STRUC;}
+"endstruct" {return STRUCEND;}
+"class" {return CLAS;}
+"endclass" {return CLASEND;}
+"public:" {return PUBLIC;}
+"private:" {return PRIVATE;}
+"protected:" {return PROTECTED;}
 "begin" {return BEGIN_P;}
 "end" {return END_P;}
 "eif" {return ELSE_IF;}
