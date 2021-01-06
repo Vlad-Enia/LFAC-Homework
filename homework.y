@@ -11,21 +11,29 @@ char tab[100];
 
 struct var_data
 {
-        char nume[100];
-        char val[100];
+        char name[100];
+        char val[100];          //valoare numerica convertita in char;
         char vartype[6];
-        char scope[100];
+        char scope[30];        //global, main, sau numele functiei/clasei in care a fost declarata;
 
 };
 
 struct fct_data
 {
-        char nume[100];
+        char name[100];
         int nr_param;
-        struct var_data parameters;
+        struct var_data parameters[10];   //signature;
+        struct var_data variables[50];    //all the other variables declare within the function;
 };
 
+struct var_data table[100];
+int i=0;
 
+void print_table()
+{
+        for(int j=0;j<i;j++)
+                printf("in tabel: %s %s %s\n",table[j].name,table[j].vartype,table[j].scope);
+}
 %}
 
 %union {
@@ -71,11 +79,20 @@ struct  IND
 
 
 
-program     :   glb_declarations main_body  {printf("\n Program corect \n"); struct fct_data a; strcpy(a.parameters.nume,"  cuc\n"); printf(a.parameters.nume);}
+program     :   glb_declarations main_body  {printf("\n Program corect \n"); print_table();}
             ;
 
-
 glb_declarations    :   glb_declarations var_decl 
+                        {
+                                strcpy(table[i].scope,"global"); 
+                                int j=i-1;
+                                while(j>=0 && strcmp(table[j].scope,"global")!=0)
+                                {
+                                        if(table[j].scope[0]=='\0')
+                                                strcpy(table[j].scope,"global");
+                                        j--;
+                                }
+                        }
                     |   glb_declarations fct_decl   
                     |   glb_declarations class_decl
                     |   glb_declarations struct_decl
@@ -104,30 +121,41 @@ acces_modifier  :  PUBLIC       {printf("public ");}
                 |  PROTECTED    {printf("protected ");}
                 ;
 
-var_decl    :   vartype variable_list ';'
+var_decl    :   var_type variable_list ';'
             ;
 
 
 
 variable_list : variable_list ',' ID
-              | ID ASGN expression {printf("%s %s declared and assigned\n",tab,$1.name);}
-              | ID {printf("%s %s declared\n",tab,$1.name);}
-              | variable_list ',' ID ASGN expression
-              
-              ;
+                {
+                        printf("%s %s declared\n",tab,$3.name);
+                        strcpy(table[i].vartype,table[i-1].vartype);
+                        strcpy(table[i++].name,$3.name); 
+                }
+                | ID ASGN expression {printf("%s %s declared and assigned\n",tab,$1.name);}
+                | ID 
+                {
+                        printf("%s %s declared\n",tab,$1.name);
+                        strcpy(table[i++].name,$1.name);
+                }
+                | variable_list ',' ID ASGN expression
+                ;
 
-fct_decl    :   vartype ID '(' {printf("Function %s declared! \n",$2.name); strcat(tab,"\t");} param_list ')' {strcpy(tab,tab+1);}  FBEGIN {strcat(tab,"\t");}  body  FEND {strcpy(tab,tab+1);}
-            |   vartype ID '(' {printf("Function %s declared! \n",$2.name); strcat(tab,"\t");} ')' {strcpy(tab,tab+1);}  FBEGIN {strcat(tab,"\t");} body FEND {strcpy(tab,tab+1);} 
+fct_decl    :   var_type ID '(' {printf("Function %s declared! \n",$2.name); strcat(tab,"\t");} param_list ')' {strcpy(tab,tab+1);}  FBEGIN {strcat(tab,"\t");}  body  FEND {strcpy(tab,tab+1);}
+            |   var_type ID '(' {printf("Function %s declared! \n",$2.name); strcat(tab,"\t");} ')' {strcpy(tab,tab+1);}  FBEGIN {strcat(tab,"\t");} body FEND {strcpy(tab,tab+1);} 
             ;
 
 param_list  :   param_list ',' param
             |   param
             ;
 
-param   :   vartype ID  {printf("%s parameter declaration \n",tab);}
+param   :   var_type ID  {printf("%s parameter declaration \n",tab);}
         ;
 
-vartype :   INT
+var_type :   INT
+            {
+                    {strcpy(table[i].vartype,"int");}
+            }
         |   BOOL
         |   STRING
         ;

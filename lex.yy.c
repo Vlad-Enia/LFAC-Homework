@@ -968,7 +968,7 @@ YY_RULE_SETUP
 case 33:
 YY_RULE_SETUP
 #line 42 "homework.l"
-{yylval.strval=strdup(yytext); return ASGN;}
+{return ASGN;}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP

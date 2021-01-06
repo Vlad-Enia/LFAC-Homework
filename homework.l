@@ -39,7 +39,7 @@
 ">=" {return GEQ;}
 "==" {return EQ;}
 "!=" {return NEQ;}
-"=" {yylval.strval=strdup(yytext); return ASGN;}
+"=" {return ASGN;}
 "+" {return PLUS;}
 "-" {return MINUS;}
 "*" {return MTP;}

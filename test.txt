@@ -1,46 +1,4 @@
 int a;
-
-int test_f_1()
-    fbegin
-    fend
-
-
-int test_f_3(int c)
-    fbegin
-    print(a);
-    fend
-
-class clasa
-  private: 
-  int test_f_4(int d,int f)
-      fbegin
-        int e=d;
-      fend
-
-  public: int z;
-endclass
-
-struct structura
-  int rapan;
-  int rapan2;
-endstruct
-
+int b,c,e,f,g,h=3;
 begin
-
-print (d);
-print(a);
-test_f_1(a,2+a,a!=b,2+(3+3));
-if(a<10) then
-        print(a);
-      eif(a>10) then
-        print(b);
-      eif(a>20) then
-        int o;
-      else 
-        while(a==10)
-          int t;
-        endwhile
-        print(c);
-      endif
-int y;
 end

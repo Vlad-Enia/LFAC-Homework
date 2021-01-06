@@ -80,23 +80,31 @@ char tab[100];
 
 struct var_data
 {
-        char nume[100];
-        char val[100];
+        char name[100];
+        char val[100];          //valoare numerica convertita in char;
         char vartype[6];
-        char scope[100];
+        char scope[30];        //global, main, sau numele functiei/clasei in care a fost declarata;
 
 };
 
 struct fct_data
 {
-        char nume[100];
+        char name[100];
         int nr_param;
-        struct var_data parameters;
+        struct var_data parameters[10];   //signature;
+        struct var_data variables[50];    //all the other variables declare within the function;
 };
 
+struct var_data table[100];
+int i=0;
 
+void print_table()
+{
+        for(int j=0;j<i;j++)
+                printf("in tabel: %s %s %s\n",table[j].name,table[j].vartype,table[j].scope);
+}
 
-#line 100 "homework.tab.c"
+#line 108 "homework.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -195,7 +203,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 31 "homework.y"
+#line 39 "homework.y"
 
 int intval;
 double floatval;
@@ -208,7 +216,7 @@ struct  IND
 } intnode;
 
 
-#line 212 "homework.tab.c"
+#line 220 "homework.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -588,16 +596,16 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    74,    74,    78,    79,    80,    81,    82,    85,    85,
-      88,    89,    92,    92,    95,    96,    97,    98,    99,   102,
-     103,   104,   107,   112,   113,   114,   115,   119,   119,   119,
-     119,   120,   120,   120,   120,   123,   124,   127,   130,   131,
-     132,   135,   135,   135,   138,   139,   142,   143,   144,   145,
-     146,   149,   149,   150,   150,   154,   155,   159,   159,   160,
-     163,   163,   166,   167,   167,   168,   168,   171,   172,   172,
-     173,   173,   176,   180,   181,   182,   183,   184,   185,   186,
-     187,   188,   189,   192,   193,   194,   195,   196,   197,   198,
-     199
+       0,    82,    82,    85,    96,    97,    98,    99,   102,   102,
+     105,   106,   109,   109,   112,   113,   114,   115,   116,   119,
+     120,   121,   124,   129,   135,   136,   141,   144,   144,   144,
+     144,   145,   145,   145,   145,   148,   149,   152,   155,   159,
+     160,   163,   163,   163,   166,   167,   170,   171,   172,   173,
+     174,   177,   177,   178,   178,   182,   183,   187,   187,   188,
+     191,   191,   194,   195,   195,   196,   196,   199,   200,   200,
+     201,   201,   204,   208,   209,   210,   211,   212,   213,   214,
+     215,   216,   217,   220,   221,   222,   223,   224,   225,   226,
+     227
 };
 #endif
 
@@ -615,7 +623,7 @@ static const char *const yytname[] =
   "','", "'('", "')'", "$accept", "program", "glb_declarations",
   "struct_decl", "$@1", "struct_body", "class_decl", "$@2", "class_body",
   "acces_modifier", "var_decl", "variable_list", "fct_decl", "$@3", "$@4",
-  "$@5", "$@6", "$@7", "$@8", "param_list", "param", "vartype",
+  "$@5", "$@6", "$@7", "$@8", "param_list", "param", "var_type",
   "main_body", "$@9", "$@10", "body", "statement", "fct_call", "$@11",
   "$@12", "param_called_list", "control", "$@13", "if2", "$@14", "if",
   "$@15", "$@16", "eif", "$@17", "$@18", "print_call", "expression",
@@ -1537,181 +1545,217 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 74 "homework.y"
-                                            {printf("\n Program corect \n"); struct fct_data a; strcpy(a.parameters.nume,"  cuc\n"); printf(a.parameters.nume);}
-#line 1543 "homework.tab.c"
+#line 82 "homework.y"
+                                            {printf("\n Program corect \n"); print_table();}
+#line 1551 "homework.tab.c"
+    break;
+
+  case 3:
+#line 86 "homework.y"
+                        {
+                                strcpy(table[i].scope,"global"); 
+                                int j=i-1;
+                                while(j>=0 && strcmp(table[j].scope,"global")!=0)
+                                {
+                                        if(table[j].scope[0]=='\0')
+                                                strcpy(table[j].scope,"global");
+                                        j--;
+                                }
+                        }
+#line 1566 "homework.tab.c"
     break;
 
   case 8:
-#line 85 "homework.y"
+#line 102 "homework.y"
                          {printf("structura declarata\n");}
-#line 1549 "homework.tab.c"
+#line 1572 "homework.tab.c"
     break;
 
   case 12:
-#line 92 "homework.y"
+#line 109 "homework.y"
                         {printf("clasa declarata\n");}
-#line 1555 "homework.tab.c"
+#line 1578 "homework.tab.c"
     break;
 
   case 19:
-#line 102 "homework.y"
+#line 119 "homework.y"
                                 {printf("public ");}
-#line 1561 "homework.tab.c"
+#line 1584 "homework.tab.c"
     break;
 
   case 20:
-#line 103 "homework.y"
+#line 120 "homework.y"
                                 {printf("private ");}
-#line 1567 "homework.tab.c"
+#line 1590 "homework.tab.c"
     break;
 
   case 21:
-#line 104 "homework.y"
+#line 121 "homework.y"
                                 {printf("protected ");}
-#line 1573 "homework.tab.c"
+#line 1596 "homework.tab.c"
+    break;
+
+  case 23:
+#line 130 "homework.y"
+                {
+                        printf("%s %s declared\n",tab,(yyvsp[0].intnode).name);
+                        strcpy(table[i].vartype,table[i-1].vartype);
+                        strcpy(table[i++].name,(yyvsp[0].intnode).name); 
+                }
+#line 1606 "homework.tab.c"
     break;
 
   case 24:
-#line 113 "homework.y"
-                                   {printf("%s %s declared and assigned\n",tab,(yyvsp[-2].intnode).name);}
-#line 1579 "homework.tab.c"
+#line 135 "homework.y"
+                                     {printf("%s %s declared and assigned\n",tab,(yyvsp[-2].intnode).name);}
+#line 1612 "homework.tab.c"
     break;
 
   case 25:
-#line 114 "homework.y"
-                   {printf("%s %s declared\n",tab,(yyvsp[0].intnode).name);}
-#line 1585 "homework.tab.c"
-    break;
-
-  case 27:
-#line 119 "homework.y"
-                               {printf("Function %s declared! \n",(yyvsp[-1].intnode).name); strcat(tab,"\t");}
-#line 1591 "homework.tab.c"
-    break;
-
-  case 28:
-#line 119 "homework.y"
-                                                                                                              {strcpy(tab,tab+1);}
-#line 1597 "homework.tab.c"
-    break;
-
-  case 29:
-#line 119 "homework.y"
-                                                                                                                                           {strcat(tab,"\t");}
-#line 1603 "homework.tab.c"
-    break;
-
-  case 30:
-#line 119 "homework.y"
-                                                                                                                                                                           {strcpy(tab,tab+1);}
-#line 1609 "homework.tab.c"
-    break;
-
-  case 31:
-#line 120 "homework.y"
-                               {printf("Function %s declared! \n",(yyvsp[-1].intnode).name); strcat(tab,"\t");}
-#line 1615 "homework.tab.c"
-    break;
-
-  case 32:
-#line 120 "homework.y"
-                                                                                                   {strcpy(tab,tab+1);}
+#line 137 "homework.y"
+                {
+                        printf("%s %s declared\n",tab,(yyvsp[0].intnode).name);
+                        strcpy(table[i++].name,(yyvsp[0].intnode).name);
+                }
 #line 1621 "homework.tab.c"
     break;
 
-  case 33:
-#line 120 "homework.y"
-                                                                                                                                {strcat(tab,"\t");}
+  case 27:
+#line 144 "homework.y"
+                                {printf("Function %s declared! \n",(yyvsp[-1].intnode).name); strcat(tab,"\t");}
 #line 1627 "homework.tab.c"
     break;
 
-  case 34:
-#line 120 "homework.y"
-                                                                                                                                                              {strcpy(tab,tab+1);}
+  case 28:
+#line 144 "homework.y"
+                                                                                                               {strcpy(tab,tab+1);}
 #line 1633 "homework.tab.c"
     break;
 
-  case 37:
-#line 127 "homework.y"
-                        {printf("%s parameter declaration \n",tab);}
+  case 29:
+#line 144 "homework.y"
+                                                                                                                                            {strcat(tab,"\t");}
 #line 1639 "homework.tab.c"
     break;
 
-  case 41:
-#line 135 "homework.y"
-                      {printf("main\n");strcat(tab,"\t");}
+  case 30:
+#line 144 "homework.y"
+                                                                                                                                                                            {strcpy(tab,tab+1);}
 #line 1645 "homework.tab.c"
     break;
 
-  case 42:
-#line 135 "homework.y"
-                                                                {strcpy(tab,tab+1);}
+  case 31:
+#line 145 "homework.y"
+                                {printf("Function %s declared! \n",(yyvsp[-1].intnode).name); strcat(tab,"\t");}
 #line 1651 "homework.tab.c"
     break;
 
-  case 48:
-#line 144 "homework.y"
-                        {strcpy(tab,tab+1);}
+  case 32:
+#line 145 "homework.y"
+                                                                                                    {strcpy(tab,tab+1);}
 #line 1657 "homework.tab.c"
     break;
 
-  case 51:
-#line 149 "homework.y"
-                  {printf("%s Fct call with parameters \n",tab);}
+  case 33:
+#line 145 "homework.y"
+                                                                                                                                 {strcat(tab,"\t");}
 #line 1663 "homework.tab.c"
     break;
 
-  case 53:
-#line 150 "homework.y"
-                  {printf("%s Fct call \n",tab);}
+  case 34:
+#line 145 "homework.y"
+                                                                                                                                                               {strcpy(tab,tab+1);}
 #line 1669 "homework.tab.c"
     break;
 
-  case 57:
-#line 159 "homework.y"
-                {printf("%s While called\n",tab);strcat(tab,"\t");}
+  case 37:
+#line 152 "homework.y"
+                         {printf("%s parameter declaration \n",tab);}
 #line 1675 "homework.tab.c"
     break;
 
-  case 60:
+  case 38:
+#line 156 "homework.y"
+            {
+                    {strcpy(table[i].vartype,"int");}
+            }
+#line 1683 "homework.tab.c"
+    break;
+
+  case 41:
 #line 163 "homework.y"
+                      {printf("main\n");strcat(tab,"\t");}
+#line 1689 "homework.tab.c"
+    break;
+
+  case 42:
+#line 163 "homework.y"
+                                                                {strcpy(tab,tab+1);}
+#line 1695 "homework.tab.c"
+    break;
+
+  case 48:
+#line 172 "homework.y"
+                        {strcpy(tab,tab+1);}
+#line 1701 "homework.tab.c"
+    break;
+
+  case 51:
+#line 177 "homework.y"
+                  {printf("%s Fct call with parameters \n",tab);}
+#line 1707 "homework.tab.c"
+    break;
+
+  case 53:
+#line 178 "homework.y"
+                  {printf("%s Fct call \n",tab);}
+#line 1713 "homework.tab.c"
+    break;
+
+  case 57:
+#line 187 "homework.y"
+                {printf("%s While called\n",tab);strcat(tab,"\t");}
+#line 1719 "homework.tab.c"
+    break;
+
+  case 60:
+#line 191 "homework.y"
             {printf("%s if called \n",tab); strcat(tab,"\t");}
-#line 1681 "homework.tab.c"
+#line 1725 "homework.tab.c"
     break;
 
   case 63:
-#line 167 "homework.y"
+#line 195 "homework.y"
                                                       {printf("%s else called \n",tab+1);}
-#line 1687 "homework.tab.c"
+#line 1731 "homework.tab.c"
     break;
 
   case 65:
-#line 168 "homework.y"
+#line 196 "homework.y"
                                                  {printf("%s else if called \n",tab+1);}
-#line 1693 "homework.tab.c"
+#line 1737 "homework.tab.c"
     break;
 
   case 68:
-#line 172 "homework.y"
+#line 200 "homework.y"
                                                            {printf("%s else called \n",tab+1);}
-#line 1699 "homework.tab.c"
+#line 1743 "homework.tab.c"
     break;
 
   case 70:
-#line 173 "homework.y"
+#line 201 "homework.y"
                                                       {printf("%s else if called \n",tab+1);}
-#line 1705 "homework.tab.c"
+#line 1749 "homework.tab.c"
     break;
 
   case 72:
-#line 176 "homework.y"
+#line 204 "homework.y"
                                        {printf("%s PRINT CALLED \n",tab);}
-#line 1711 "homework.tab.c"
+#line 1755 "homework.tab.c"
     break;
 
 
-#line 1715 "homework.tab.c"
+#line 1759 "homework.tab.c"
 
       default: break;
     }
@@ -1943,7 +1987,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 203 "homework.y"
+#line 231 "homework.y"
 
 int yyerror(char * s)
 {
