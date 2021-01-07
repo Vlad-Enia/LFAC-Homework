@@ -12,6 +12,7 @@
 "char" {return CHAR;}
 "string" {return STRING;}
 "bool" {return BOOL;}
+"eval" {return EVAL_FCT;}
 "struct" {return STRUC;}
 "endstruct" {return STRUCEND;}
 "class" {return CLAS;}

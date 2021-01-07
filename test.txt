@@ -5,8 +5,11 @@ fbegin
 fend
 
 begin
-int c;
+int c=6;
 int a=c;
 int d=2+5;
+eval(1);
+eval(2);
+eval(3);
 
 end

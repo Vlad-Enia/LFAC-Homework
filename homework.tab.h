@@ -85,10 +85,11 @@ extern int yydebug;
     AND = 295,
     OR = 296,
     PRINT = 297,
-    ASGN = 298,
-    STRVAL = 299,
-    INTVAL = 300,
-    BOOLVAL = 301
+    EVAL_FCT = 298,
+    ASGN = 299,
+    STRVAL = 300,
+    INTVAL = 301,
+    BOOLVAL = 302
   };
 #endif
 
@@ -97,7 +98,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 25 "homework.y" /* yacc.c:1909  */
+#line 27 "homework.y" /* yacc.c:1909  */
 
         int intval;
         double floatval;
@@ -112,7 +113,7 @@ union YYSTYPE
         } var;
 
 
-#line 116 "homework.tab.h" /* yacc.c:1909  */
+#line 117 "homework.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

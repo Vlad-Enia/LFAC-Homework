@@ -18,8 +18,10 @@ void addVarName(int i, char * newName); //adauga pe pozitia i numele newName
 void addVarType(int i, char * newType); //adauga pe pozitia i tipul newType
 int findVar(char *newName);             //returneaza pozitia variabilei cu numele NewName
 int undeclared(char *newName,char *scope);
-int findScope(char* newName,char* scope);                                     //ar trebui eventual si o functie addScope care adauga scope-ul pe pozitia i
+int findScope(char* newName,char* scope); 
+void PRINT_EVAL();                                    //ar trebui eventual si o functie addScope care adauga scope-ul pe pozitia i
 char current_scope[100]="global";
+int Eval_calls[100],nr_calls=0;
 %}
 
 %union {
@@ -49,6 +51,7 @@ char current_scope[100]="global";
 %token PLUS MINUS MTP DVD MOD
 %token AND OR
 %token PRINT
+%token EVAL_FCT
 %token ASGN
 %token <strval> STRVAL 
 %token <intval> INTVAL 
@@ -67,7 +70,7 @@ char current_scope[100]="global";
 
 
 
-program     :   glb_declarations main_body  {printf("\nend main\n\n"); printTable();}
+program     :   glb_declarations main_body  {printf("\nend main\n\n"); printTable(); printf("PROGRAM CORECT SINTACTIC\n"); PRINT_EVAL();}
             ;
 
 glb_declarations    :   glb_declarations var_decl 
@@ -217,6 +220,7 @@ statement   :   expression ';'
                          }
                                  
             |   print_call  ';'
+            | EVAL_FCT '(' expression ')' ';' {Eval_calls[nr_calls++]=$3;}
             ;
 
 fct_call : ID '(' {printf("%sFct call with parameters \n",tab);} param_called_list ')' 
@@ -345,6 +349,14 @@ int undeclared(char *newName,char *scope)
                         return -1;
         }
         return 0;
+}
+
+void PRINT_EVAL()
+{
+        for(int i=0;i<nr_calls;++i)
+        {
+                printf("Value of eval function for call %d:=%d\n",i+1,Eval_calls[i]);
+        }
 }
 
 int main(int argc,char** argv)
