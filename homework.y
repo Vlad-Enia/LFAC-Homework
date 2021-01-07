@@ -17,11 +17,20 @@ void updateTable(int i, int newVal);    //actualizeaza variabila de pe pozitia i
 void addVarName(int i, char * newName); //adauga pe pozitia i numele newName
 void addVarType(int i, char * newType); //adauga pe pozitia i tipul newType
 int findVar(char *newName);             //returneaza pozitia variabilei cu numele NewName
-int undeclared(char *newName,char *scope);
-int findScope(char* newName,char* scope); 
+int undeclared(char *newName,char *scope);      //cauta in tablelul de variabile un nume si un scope 
+int findScope(char* newName,char* scope);       //cam la fel da nu prea
 void PRINT_EVAL();                                    //ar trebui eventual si o functie addScope care adauga scope-ul pe pozitia i
 char current_scope[100]="global";
 int Eval_calls[100],nr_calls=0;
+
+struct fct_data fct_table[100];
+int nrFct=0;
+void printFctTable();
+void addFctName(int i, char * newName);
+void addFctType(int i, char * newType);
+int findFct(char *newName);
+int findScope(char *newName, char* scope);
+
 %}
 
 %union {
@@ -37,6 +46,16 @@ int Eval_calls[100],nr_calls=0;
                 char scope[30];
         } var;
 
+        struct FCT
+        {
+                char name[100];
+                char val[100];
+                char fcttype[6];
+                char scope[30];
+                int nr_param;
+                char parametersType[30][6];   //lista tipurilor la parametri => signatura;
+                char parameters[30][30];      //numele parametrilor;
+        } fct;
 }
 
 
@@ -59,7 +78,8 @@ int Eval_calls[100],nr_calls=0;
 %type <var> fct_call                    //trebuie revizuit, am pus asa doar sa nu fie erori
 %type <intval> expression binary_expression               //DEOCAMDATA expresiile sunt de tip intval ca sa satisfac doar prima ramura de la expressions, adica atunci cand o expresie ia forma unei valori integer;
                                         //din acest motiv acum exista warning-uri clash type pentru restul ramurilor din expressions;
-
+%type <var> var_type
+%type <fct> fct_decl
 %left AND OR
 %left EQ NEQ LWR GTR LEQ GEQ
 %left PLUS MINUS
@@ -70,7 +90,7 @@ int Eval_calls[100],nr_calls=0;
 
 
 
-program     :   glb_declarations main_body  {printf("\nend main\n\n"); printTable(); printf("PROGRAM CORECT SINTACTIC\n"); PRINT_EVAL();}
+program     :   glb_declarations main_body  {printf("\nend main\n\n"); printTable(); printf("\n"); printFctTable(); printf("\n"); printf("PROGRAM CORECT SINTACTIC\n"); PRINT_EVAL();}
             ;
 
 glb_declarations    :   glb_declarations var_decl 
@@ -158,8 +178,53 @@ variable_list : variable_list ',' ID
                 }
                 ;
 
-fct_decl    :   var_type ID '(' {printf("Function %s declared! \n",$2.name); strcat(tab,"\t");strcpy(current_scope,$2.name);} param_list ')' {strcpy(tab,tab+1);}  FBEGIN {strcat(tab,"\t");}  body  FEND {strcpy(tab,tab+1);strcpy(current_scope,"global");}
-            |   var_type ID '(' {printf("Function %s declared! \n",$2.name); strcat(tab,"\t");strcpy(current_scope,$2.name);} ')' {strcpy(tab,tab+1);}  FBEGIN {strcat(tab,"\t");} body FEND {strcpy(tab,tab+1);strcpy(current_scope,"global");} 
+fct_decl    :   var_type ID '(' {strcat(tab,"\t");strcpy(current_scope,$2.name);}
+                param_list ')' 
+                {
+                        strcpy(tab,tab+1);
+                        strcpy($<fct>$.name, $2.name);
+                        strcpy($<fct>$.fcttype,$1.vartype);
+                        addFctName(nrFct,$2.name);
+                        addFctType(nrFct,$1.vartype);
+                        strcpy(fct_table[nrFct].scope,current_scope);
+
+                        int j = findFct($2.name);
+                        if(j!=nrFct)
+                        {
+                                if(fct_table[j].nr_param == fct_table[nrFct].nr_param)
+                                {
+                                        int ok=0;
+                                        for(int i=0;i<fct_table[j].nr_param;i++)
+                                        {
+                                                if(strcmp(fct_table[j].parametersType[i],fct_table[nrFct].parametersType[i])!=0)
+                                                {
+                                                        ok=1;//gasit
+                                                        break;
+                                                }
+                                        }
+                                        if(ok==0)
+                                        {
+                                                printf("[Error][Line: %d] Function with the same signature alerady declared;\n",yylineno);\
+                                                exit(-1);
+                                        }
+                                }
+                        }
+                        printf("Function %s declared! \n",$2.name);                        
+                        nrFct++;
+                }  FBEGIN {strcat(tab,"\t");}  body  FEND {strcpy(tab,tab+1);strcpy(current_scope,"global");}
+            |   var_type ID '(' 
+                {
+                        printf("Function %s declared! \n",$2.name); 
+                        strcpy($<fct>$.name, $2.name);
+                        strcpy($<fct>$.fcttype,$1.vartype);
+                        strcat(tab,"\t");
+                        
+                        addFctName(nrFct,$2.name);
+                        addFctType(nrFct,$1.vartype);
+                        strcpy(fct_table[nrFct].scope,current_scope);
+                        strcat(tab,"\t");strcpy(current_scope,$2.name);
+                }
+                ')' {strcpy(tab,tab+1);nrFct++;}  FBEGIN {strcat(tab,"\t");} body FEND {strcpy(tab,tab+1);strcpy(current_scope,"global");} 
             ;
 
 param_list  :   param_list ',' param
@@ -168,24 +233,40 @@ param_list  :   param_list ',' param
 
 param   :   var_type ID  
         {
-        if(undeclared($2.name,current_scope)==-1)
-        {
-                printf("[Error][Line %d]: Variable already declared\n",yylineno);
-                exit(-1);
-        }   
-        printf("%s parameter %s declared\n",tab,$2.name); 
-        strcpy(table[nrVars].scope,current_scope);           
-        addVarName(nrVars,$2.name);
-        nrVars++; 
+                if(undeclared($2.name,current_scope)==-1)
+                {
+                        printf("[Error][Line %d]: Variable already declared\n",yylineno);
+                        exit(-1);
+                }   
+                printf("%s parameter %s declared\n",tab,$2.name); 
+                strcpy(table[nrVars].scope,current_scope);           
+                addVarName(nrVars,$2.name);
+                nrVars++; 
+
+                strcpy(fct_table[nrFct].parameters[fct_table[nrFct].nr_param],$2.name);
+                strcpy(fct_table[nrFct].parametersType[fct_table[nrFct].nr_param],$1.vartype);
+                fct_table[nrFct].nr_param++;
+                
         }
         ;
 
 var_type :   INT
             {
                 addVarType(nrVars,"int");
+                strcpy($$.vartype, "int");
             }
         |   BOOL
+            {
+                strcpy($$.vartype, "bool");
+            }
         |   STRING
+            {
+                strcpy($$.vartype, "string");
+            }
+        |   FLOAT
+            {
+                strcpy($$.vartype, "float");
+            }
         ;
 
 main_body   : BEGIN_P {printf("\nmain\n");strcat(tab,"\t");strcpy(current_scope,"main");} body {strcpy(tab,tab+1);} END_P 
@@ -301,8 +382,9 @@ int yyerror(char * s) /// Fa eroare ;
 
 void printTable()
 {
+        printf("Tabel variabile: \n");
         for(int j=0;j<nrVars;j++)
-                printf("in tabel:%i %s = %s %s %s\n",j,table[j].name,table[j].val,table[j].vartype,table[j].scope); //MERGE BAAAAAAA!!!!!
+                printf("%i. %s = %s %s %s\n",j,table[j].name,table[j].val,table[j].vartype,table[j].scope); //MERGE BAAAAAAA!!!!!
 }
 
 void updateTable(int i, int newVal)
@@ -357,6 +439,45 @@ void PRINT_EVAL()
         {
                 printf("Value of eval function for call %d:=%d\n",i+1,Eval_calls[i]);
         }
+}
+
+void printFctTable()
+{
+        printf("Tabel functii: \n");
+        for(int i=0;i<nrFct;i++)
+        {
+                printf("%s %s %s (",fct_table[i].name,fct_table[i].fcttype,fct_table[i].scope);
+                for(int j=0;j<fct_table[i].nr_param-1;j++)
+                        printf("%s %s, ",fct_table[i].parametersType[j],fct_table[i].parameters[j]);
+                printf("%s %s",fct_table[i].parametersType[fct_table[i].nr_param-1],fct_table[i].parameters[fct_table[i].nr_param-1]);
+                printf(")\n");
+        }
+}
+
+void addFctName(int i, char * newName)
+{
+        strcpy(fct_table[i].name,newName);
+}
+
+void addFctType(int i, char * newType)
+{
+        strcpy(fct_table[i].fcttype,newType);
+}
+
+int findFct(char *newName)
+{
+        for(int i=0;i<nrFct;i++)
+                if(strcmp(fct_table[i].name,newName)==0)
+                        return i;
+        return -1;
+}
+
+int findfctScope(char *newName, char* scope)
+{
+        for(int i=0;i<nrFct;i++)
+                if(strcmp(fct_table[i].name,newName)==0 && strcmp(fct_table[i].scope,scope)==0)
+                        return i;
+        return -1;
 }
 
 int main(int argc,char** argv)

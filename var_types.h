@@ -11,9 +11,9 @@ struct fct_data
 {
         char name[100];
         char val[100];
-        char vartype[6];
+        char fcttype[6];
         char scope[30];
         int nr_param;
-       // struct var_data parameters[10];   //signature;
-       // struct var_data variables[50];    //all the other variables declare within the function;
+        char parametersType[30][6];   //tipul parametrilor => signature;
+        char parameters[30][30];        //numele parametrilor
 };

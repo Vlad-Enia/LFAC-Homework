@@ -1,6 +1,18 @@
 int c;
 
-int test1(int a,int b)
+int f1(int a, int b)
+fbegin
+fend
+
+int f1(int e, int d, int x)
+fbegin
+fend
+
+int f3(int c, int d)
+fbegin
+fend
+
+int f5()
 fbegin
 fend
 
