@@ -1018,7 +1018,7 @@ YY_RULE_SETUP
 case 43:
 YY_RULE_SETUP
 #line 53 "homework.l"
-{strcpy(yylval.intnode.name,strdup(yytext)); return ID;}
+{strcpy(yylval.var.name,strdup(yytext)); return ID;}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
