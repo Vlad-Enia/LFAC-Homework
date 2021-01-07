@@ -1,4 +1,12 @@
-int a;
-int b,c,e,f,g,h=3;
+int c;
+
+int test1(int a,int b)
+fbegin
+fend
+
 begin
+int c;
+int a=c;
+int d=2+5;
+
 end
