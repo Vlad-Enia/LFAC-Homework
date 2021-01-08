@@ -17,11 +17,14 @@ fbegin
 fend
 
 begin
+string cuc='penis';
 int c=6;
 int a=c;
 int d=2+5;
+d = call f1(2,3);
 eval(1);
 eval(2);
 eval(3);
-
+call f1(3,5+3);
+call f5();
 end

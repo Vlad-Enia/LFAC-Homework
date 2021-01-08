@@ -82,7 +82,7 @@ char tab[100];
 struct var_data table[100];             //tabelul variabilelor
 int nrVars=0;                           //nr variabilelor din tabel
 void printTable();                      //afiseaza toate elementele din tablou;
-void updateTable(int i, int newVal);    //actualizeaza variabila de pe pozitia i cu valoarea newVal
+void updateTable(int i, char* newVal);    //actualizeaza variabila de pe pozitia i cu valoarea newVal
 void addVarName(int i, char * newName); //adauga pe pozitia i numele newName
 void addVarType(int i, char * newType); //adauga pe pozitia i tipul newType
 int findVar(char *newName);             //returneaza pozitia variabilei cu numele NewName
@@ -99,9 +99,11 @@ void addFctName(int i, char * newName);
 void addFctType(int i, char * newType);
 int findFct(char *newName);
 int findScope(char *newName, char* scope);
+char current_fct_scope[100];
+char current_var_type[6];
 
 
-#line 105 "homework.tab.c"
+#line 107 "homework.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -190,10 +192,11 @@ extern int yydebug;
     OR = 296,
     PRINT = 297,
     EVAL_FCT = 298,
-    ASGN = 299,
-    STRVAL = 300,
-    INTVAL = 301,
-    BOOLVAL = 302
+    CALL = 299,
+    ASGN = 300,
+    STRVAL = 301,
+    INTVAL = 302,
+    BOOLVAL = 303
   };
 #endif
 
@@ -201,7 +204,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 36 "homework.y"
+#line 38 "homework.y"
 
         int intval;
         double floatval;
@@ -211,7 +214,7 @@ union YYSTYPE
         {
                 char name[100];
                 char val[100];          //valoare numerica convertita in char; AR FI MAI EFICIENT sa stocam totusi in camp de tip int;
-                char vartype[6];
+                char vartype[10];
                 char scope[30];
         } var;
 
@@ -219,14 +222,14 @@ union YYSTYPE
         {
                 char name[100];
                 char val[100];
-                char fcttype[6];
+                char fcttype[10];
                 char scope[30];
                 int nr_param;
                 char parametersType[30][6];   //lista tipurilor la parametri => signatura;
                 char parameters[30][30];      //numele parametrilor;
         } fct;
 
-#line 230 "homework.tab.c"
+#line 233 "homework.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -545,19 +548,19 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  3
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   393
+#define YYLAST   389
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  52
+#define YYNTOKENS  53
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  44
 /* YYNRULES -- Number of rules.  */
 #define YYNRULES  92
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  168
+#define YYNSTATES  172
 
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   302
+#define YYMAXUTOK   303
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -573,8 +576,8 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-      50,    51,     2,     2,    49,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,    48,
+      51,    52,     2,     2,    50,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,    49,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -599,23 +602,23 @@ static const yytype_int8 yytranslate[] =
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
       35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
-      45,    46,    47
+      45,    46,    47,    48
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    93,    93,    96,   107,   108,   109,   110,   113,   113,
-     116,   117,   120,   120,   123,   124,   125,   126,   127,   130,
-     131,   132,   135,   140,   149,   157,   170,   181,   183,   214,
-     181,   216,   227,   227,   215,   230,   231,   234,   253,   258,
-     262,   266,   272,   272,   272,   275,   276,   279,   280,   297,
-     298,   303,   304,   307,   307,   308,   308,   312,   313,   317,
-     317,   318,   321,   321,   324,   325,   325,   326,   326,   329,
-     330,   330,   331,   331,   334,   338,   339,   353,   354,   355,
-     356,   357,   358,   359,   360,   363,   364,   365,   366,   367,
-     368,   369,   370
+       0,    96,    96,    99,   110,   111,   112,   113,   116,   116,
+     119,   120,   123,   123,   126,   127,   128,   129,   130,   133,
+     134,   135,   138,   143,   152,   166,   179,   197,   199,   230,
+     197,   232,   243,   243,   231,   246,   247,   250,   269,   276,
+     282,   289,   296,   296,   296,   299,   300,   303,   304,   323,
+     324,   329,   330,   334,   333,   345,   358,   359,   363,   363,
+     364,   367,   367,   370,   371,   371,   372,   372,   375,   376,
+     376,   377,   377,   380,   384,   393,   400,   417,   451,   482,
+     504,   531,   559,   560,   561,   565,   592,   619,   646,   673,
+     700,   728,   727
 };
 #endif
 
@@ -629,15 +632,15 @@ static const char *const yytname[] =
   "PUBLIC", "PRIVATE", "PROTECTED", "IF", "THEN", "ELSE_IF", "ENDIF",
   "ELSE", "FOR", "ENDFOR", "WHILE", "ENDWHILE", "FBEGIN", "FEND", "LWR",
   "LEQ", "GTR", "GEQ", "EQ", "NEQ", "PLUS", "MINUS", "MTP", "DVD", "MOD",
-  "AND", "OR", "PRINT", "EVAL_FCT", "ASGN", "STRVAL", "INTVAL", "BOOLVAL",
-  "';'", "','", "'('", "')'", "$accept", "program", "glb_declarations",
-  "struct_decl", "$@1", "struct_body", "class_decl", "$@2", "class_body",
-  "acces_modifier", "var_decl", "variable_list", "fct_decl", "$@3", "@4",
-  "$@5", "@6", "$@7", "$@8", "param_list", "param", "var_type",
-  "main_body", "$@9", "$@10", "body", "statement", "fct_call", "$@11",
-  "$@12", "param_called_list", "control", "$@13", "if2", "$@14", "if",
-  "$@15", "$@16", "eif", "$@17", "$@18", "print_call", "expression",
-  "binary_expression", YY_NULLPTR
+  "AND", "OR", "PRINT", "EVAL_FCT", "CALL", "ASGN", "STRVAL", "INTVAL",
+  "BOOLVAL", "';'", "','", "'('", "')'", "$accept", "program",
+  "glb_declarations", "struct_decl", "$@1", "struct_body", "class_decl",
+  "$@2", "class_body", "acces_modifier", "var_decl", "variable_list",
+  "fct_decl", "$@3", "@4", "$@5", "@6", "$@7", "$@8", "param_list",
+  "param", "var_type", "main_body", "$@9", "$@10", "body", "statement",
+  "fct_call", "$@11", "param_called_list", "control", "$@12", "if2",
+  "$@13", "if", "$@14", "$@15", "eif", "$@16", "$@17", "print_call",
+  "expression", "binary_expression", "@18", YY_NULLPTR
 };
 #endif
 
@@ -650,17 +653,17 @@ static const yytype_int16 yytoknum[] =
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
      275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
      285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
-     295,   296,   297,   298,   299,   300,   301,   302,    59,    44,
-      40,    41
+     295,   296,   297,   298,   299,   300,   301,   302,   303,    59,
+      44,    40,    41
 };
 # endif
 
-#define YYPACT_NINF (-129)
+#define YYPACT_NINF (-90)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
 
-#define YYTABLE_NINF (-73)
+#define YYTABLE_NINF (-72)
 
 #define yytable_value_is_error(Yyn) \
   0
@@ -669,23 +672,24 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int16 yypact[] =
 {
-    -129,    11,   213,  -129,  -129,  -129,  -129,  -129,  -129,  -129,
-    -129,  -129,  -129,  -129,  -129,     7,  -129,  -129,    17,    19,
-     -42,   -45,   129,  -129,  -129,     8,   -32,  -129,    22,   -15,
-    -129,   -28,   -16,  -129,     8,  -129,    45,    49,  -129,  -129,
-    -129,  -129,    43,    23,   293,  -129,    14,   352,    27,   341,
-      69,    29,    40,     8,    34,    36,     8,     8,   224,    54,
-    -129,    51,  -129,  -129,     8,     8,     8,     8,     8,     8,
-       8,     8,     8,     8,     8,     8,     8,  -129,  -129,  -129,
-    -129,  -129,  -129,  -129,    69,  -129,  -129,   -13,  -129,    85,
-    -129,     8,   313,     8,    48,     8,   247,   270,  -129,     8,
-      76,    76,    76,    76,    76,    76,    26,    26,  -129,  -129,
-    -129,   354,   354,  -129,  -129,    69,  -129,  -129,    81,   341,
-    -129,    18,   341,  -129,   341,    52,  -129,    62,    65,  -129,
-      92,  -129,     8,  -129,  -129,  -129,    83,  -129,  -129,   341,
-     135,  -129,  -129,   145,  -129,    75,   161,  -129,  -129,  -129,
-     102,  -129,  -129,    73,   103,   193,     8,  -129,  -129,    77,
-     110,  -129,    84,  -129,   102,  -129,  -129,   202
+     -90,     3,   308,   -90,   -90,   -90,   -90,   -90,   -90,   -90,
+     -90,   -90,   -90,   -90,   -90,     4,   -90,   -90,    12,    25,
+     -43,    14,   106,   -90,   -90,    26,   -37,   -90,    31,    20,
+     -90,     9,    17,    67,   -90,   -90,    26,   -90,    68,    81,
+     -90,   -90,   -90,    80,    50,   294,   -90,   181,    10,   -90,
+     349,   123,    53,    66,    26,    65,    26,    26,    72,   -90,
+      49,    83,   -90,    94,   -90,   -90,    26,    26,    26,    26,
+      26,    26,    26,    26,    26,    26,    26,    26,   -90,   -90,
+     -90,   -90,   -90,   -90,   -90,   123,   -90,   -90,   -46,   -90,
+     109,   -90,    26,   315,    26,   246,   270,   108,   -90,    26,
+      58,    58,    58,    58,    58,    58,   102,   102,   -90,   -90,
+     -90,   349,   -90,   -90,   123,   -90,   -90,   127,   349,   -90,
+     349,   114,   -90,   121,   -90,    26,   119,    26,   -90,   148,
+     -90,   -90,   -90,   -22,   349,   113,   336,   -90,   -90,   130,
+      26,   -90,   -90,    26,   -90,   155,   -90,   349,    15,   258,
+     161,   -90,   -90,   -90,   158,   -90,   -90,   128,   169,   188,
+      26,   -90,   -90,   159,   163,   -90,   100,   -90,   158,   -90,
+     -90,   212
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -696,40 +700,41 @@ static const yytype_int8 yydefact[] =
        7,     0,     0,     1,    38,    41,    40,    39,    42,     8,
       12,     6,     5,     3,     4,     0,     2,    46,     0,     0,
       25,     0,    43,    11,    18,     0,    27,    22,     0,    76,
-      59,     0,     0,    75,     0,    50,     0,     0,    45,    84,
-      49,    61,     0,     0,     0,    82,     0,     0,    76,    24,
-       0,     0,    23,     0,    53,     0,     0,     0,     0,    25,
-      44,     0,    63,    51,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,    47,     9,    10,
-      13,    19,    20,    21,     0,    16,    17,     0,    36,     0,
-      32,     0,     0,     0,     0,     0,     0,     0,    83,     0,
+      58,     0,     0,     0,    75,    74,     0,    50,     0,     0,
+      45,    49,    60,     0,     0,     0,    82,     0,     0,    76,
+      24,     0,     0,    23,     0,     0,     0,     0,     0,    84,
+       0,    25,    44,     0,    62,    51,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,    47,     9,
+      10,    13,    19,    20,    21,     0,    16,    17,     0,    36,
+       0,    32,     0,     0,     0,     0,     0,    53,    83,     0,
       85,    87,    86,    88,    90,    89,    77,    78,    79,    80,
-      81,    91,    92,    14,    15,     0,    28,    37,     0,    26,
-      48,     0,    58,    56,     0,    82,    74,     0,    82,    35,
-       0,    33,     0,    54,    46,    52,     0,    29,    46,    57,
-      62,    46,    46,    62,    60,    62,    62,    34,    64,    65,
-       0,    30,    46,     0,     0,    62,     0,    68,    66,    82,
-       0,    46,    62,    70,     0,    46,    73,    62
+      81,    91,    14,    15,     0,    28,    37,     0,    26,    48,
+       0,    82,    73,     0,    55,     0,    82,     0,    35,     0,
+      33,    46,    52,     0,    57,     0,     0,    29,    46,    61,
+       0,    54,    46,     0,    46,    61,    59,    56,    61,    92,
+      61,    34,    63,    64,     0,    30,    46,     0,     0,    61,
+       0,    67,    65,    82,     0,    46,    61,    69,     0,    46,
+      72,    61
 };
 
   /* YYPGOTO[NTERM-NUM].  */
-static const yytype_int16 yypgoto[] =
+static const yytype_int8 yypgoto[] =
 {
-    -129,  -129,  -129,  -129,  -129,  -129,  -129,  -129,  -129,  -129,
-      10,  -129,   -24,  -129,  -129,  -129,  -129,  -129,  -129,  -129,
-      25,     5,  -129,  -129,  -129,  -128,  -129,  -129,  -129,  -129,
-    -129,  -129,  -129,  -129,  -129,  -129,  -129,  -129,   -20,  -129,
-    -129,  -129,   -25,   -94
+     -90,   -90,   -90,   -90,   -90,   -90,   -90,   -90,   -90,   -90,
+       7,   -90,   -47,   -90,   -90,   -90,   -90,   -90,   -90,   -90,
+      86,     5,   -90,   -90,   -90,   105,   -90,   -90,   -90,   -90,
+     -90,   -90,   -90,   -90,   -90,   -90,   -90,    42,   -90,   -90,
+     -90,   -25,   -89,   -90
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int16 yydefgoto[] =
 {
-      -1,     1,     2,    11,    18,    46,    12,    19,    47,    84,
-      35,    21,    14,    50,   130,   142,    51,   118,   138,    87,
-      88,    36,    16,    17,    37,    22,    38,    39,    93,    94,
-     121,    40,    55,    41,    42,    62,   152,   150,   154,   165,
-     164,    43,    44,    45
+      -1,     1,     2,    11,    18,    47,    12,    19,    48,    85,
+      37,    21,    14,    51,   129,   144,    52,   117,   138,    88,
+      89,    38,    16,    17,    39,    22,    40,    59,   125,   133,
+      41,    55,    42,    43,    64,   156,   154,   158,   169,   168,
+      44,    45,    46,   127
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -737,128 +742,127 @@ static const yytype_int16 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int16 yytable[] =
 {
-      49,   125,    25,    27,    28,   128,   140,    15,    26,    58,
-     143,     3,    13,   145,   146,    20,    48,     4,     5,   -31,
-       6,     7,    56,    86,   155,    23,    78,    24,    92,    53,
-      52,    96,    97,   162,    57,    54,   115,   167,   116,   100,
-     101,   102,   103,   104,   105,   106,   107,   108,   109,   110,
-     111,   112,    15,    59,    33,    89,    79,    85,    34,    60,
-     114,    61,   159,    72,    73,    74,   119,   132,   122,   133,
-     124,    63,     4,     5,   124,     6,     7,    54,     4,     5,
-      90,     6,     7,    29,    91,   -55,    95,     4,     5,    15,
-       6,     7,    29,   117,   113,   -67,   148,   149,    25,   123,
-      30,    99,   141,   134,   -72,   -69,   163,   139,   131,    30,
-     135,    70,    71,    72,    73,    74,   136,    31,    32,   137,
-      89,    33,   153,   156,   157,    34,    31,    32,   160,   161,
-      33,   124,     4,     5,    34,     6,     7,    29,     4,     5,
-     129,     6,     7,    29,   166,     0,     0,   -62,     4,     5,
-       0,     6,     7,    29,    30,     0,     0,     0,     0,     0,
-      30,   144,     0,     0,     4,     5,     0,     6,     7,    29,
-      30,    31,    32,   147,     0,    33,     0,    31,    32,    34,
-       0,    33,     0,     0,     0,    34,    30,    31,    32,   151,
-       0,    33,     0,     0,     0,    34,     4,     5,     0,     6,
-       7,    29,     0,    31,    32,     4,     5,    33,     6,     7,
-      29,    34,     0,     0,   158,     0,     4,     5,    30,     6,
-       7,     0,     8,   -71,     9,     0,    10,    30,     0,     0,
-       0,     0,     0,     0,     0,    31,    32,     0,     0,    33,
-       0,     0,     0,    34,    31,    32,     0,     0,    33,     0,
-       0,     0,    34,    64,    65,    66,    67,    68,    69,    70,
-      71,    72,    73,    74,    75,    76,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,    98,    64,    65,    66,    67,
-      68,    69,    70,    71,    72,    73,    74,    75,    76,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,   126,    64,
-      65,    66,    67,    68,    69,    70,    71,    72,    73,    74,
-      75,    76,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,   127,    64,    65,    66,    67,    68,    69,    70,    71,
-      72,    73,    74,    75,    76,     0,     0,     0,     0,     0,
-       0,    77,    64,    65,    66,    67,    68,    69,    70,    71,
-      72,    73,    74,    75,    76,     4,     5,     0,     6,     7,
-       0,   120,     0,     0,     0,     0,    80,    81,    82,    83,
-      64,    65,    66,    67,    68,    69,    70,    71,    72,    73,
-      74,    75,    76,    64,    65,    66,    67,    68,    69,    70,
-      71,    72,    73,    74
+      50,    87,    25,     3,   114,   121,   115,    15,    26,    13,
+     126,    60,    20,     4,     5,   -31,     6,     7,     4,     5,
+      23,     6,     7,    29,    81,    82,    83,    84,   140,    93,
+     141,    95,    96,    24,    49,   -66,   152,   153,   113,    53,
+      30,   100,   101,   102,   103,   104,   105,   106,   107,   108,
+     109,   110,   111,    15,    80,    86,    90,    31,    32,    33,
+      56,    34,    35,    27,    28,    54,    36,   118,    57,   120,
+      33,   163,    34,    35,   120,    58,    61,    36,    66,    67,
+      68,    69,    70,    71,    72,    73,    74,    75,    76,    77,
+      15,    62,   112,    72,    73,    74,    75,    76,    63,    65,
+     134,    98,   136,     4,     5,    91,     6,     7,    29,     4,
+       5,    92,     6,     7,    29,   147,    94,   116,   149,    90,
+     -71,   -68,   167,    97,   -61,    30,     4,     5,    25,     6,
+       7,    30,   142,     4,     5,   120,     6,     7,    29,    74,
+      75,    76,    31,    32,    33,    99,    34,    35,    31,    32,
+      33,    36,    34,    35,   130,    30,   146,    36,     4,     5,
+     124,     6,     7,    29,     4,     5,   131,     6,     7,    29,
+     132,   135,    31,    32,    33,   137,    34,    35,   157,   160,
+      30,    36,   165,   151,     4,     5,    30,     6,     7,   155,
+     161,     4,     5,    79,     6,     7,    29,    31,    32,    33,
+     128,    34,    35,    31,    32,    33,    36,    34,    35,   162,
+     170,   164,    36,    30,     0,     4,     5,     0,     6,     7,
+      29,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+      31,    32,    33,   -70,    34,    35,   139,    30,     0,    36,
+       0,     0,     0,   145,     0,     0,     0,   148,     0,   150,
+       0,     0,     0,     0,    31,    32,    33,     0,    34,    35,
+       0,   159,     0,    36,     0,     0,     0,     0,     0,     0,
+     166,     0,     0,     0,   171,    66,    67,    68,    69,    70,
+      71,    72,    73,    74,    75,    76,    77,    66,    67,    68,
+      69,    70,    71,    72,    73,    74,    75,    76,   122,    66,
+      67,    68,    69,    70,    71,    72,    73,    74,    75,    76,
+      77,     4,     5,     0,     6,     7,     0,     8,     0,     9,
+       0,    10,   123,    66,    67,    68,    69,    70,    71,    72,
+      73,    74,    75,    76,    77,     0,     0,     0,     0,     0,
+       0,     0,     0,    78,    66,    67,    68,    69,    70,    71,
+      72,    73,    74,    75,    76,    77,     0,     0,     0,     0,
+       0,     0,     0,     0,   119,    66,    67,    68,    69,    70,
+      71,    72,    73,    74,    75,    76,    77,   143,    66,    67,
+      68,    69,    70,    71,    72,    73,    74,    75,    76,    77
 };
 
 static const yytype_int16 yycheck[] =
 {
-      25,    95,    44,    48,    49,    99,   134,     2,    50,    34,
-     138,     0,     2,   141,   142,     8,     8,     3,     4,    51,
-       6,     7,    50,    47,   152,     8,    12,     8,    53,    44,
-       8,    56,    57,   161,    50,    50,    49,   165,    51,    64,
-      65,    66,    67,    68,    69,    70,    71,    72,    73,    74,
-      75,    76,    47,     8,    46,    50,    46,    47,    50,    10,
-      84,    18,   156,    37,    38,    39,    91,    49,    93,    51,
-      95,    48,     3,     4,    99,     6,     7,    50,     3,     4,
-      51,     6,     7,     8,    44,    51,    50,     3,     4,    84,
-       6,     7,     8,     8,    84,    20,    21,    22,    44,    51,
-      25,    50,    19,    51,    20,    21,    22,   132,    27,    25,
-      48,    35,    36,    37,    38,    39,    51,    42,    43,    27,
-     115,    46,    20,    50,    21,    50,    42,    43,    51,    19,
-      46,   156,     3,     4,    50,     6,     7,     8,     3,     4,
-     115,     6,     7,     8,   164,    -1,    -1,    18,     3,     4,
-      -1,     6,     7,     8,    25,    -1,    -1,    -1,    -1,    -1,
-      25,    26,    -1,    -1,     3,     4,    -1,     6,     7,     8,
-      25,    42,    43,    28,    -1,    46,    -1,    42,    43,    50,
-      -1,    46,    -1,    -1,    -1,    50,    25,    42,    43,    28,
-      -1,    46,    -1,    -1,    -1,    50,     3,     4,    -1,     6,
-       7,     8,    -1,    42,    43,     3,     4,    46,     6,     7,
-       8,    50,    -1,    -1,    21,    -1,     3,     4,    25,     6,
-       7,    -1,     9,    21,    11,    -1,    13,    25,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    42,    43,    -1,    -1,    46,
-      -1,    -1,    -1,    50,    42,    43,    -1,    -1,    46,    -1,
-      -1,    -1,    50,    29,    30,    31,    32,    33,    34,    35,
-      36,    37,    38,    39,    40,    41,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    51,    29,    30,    31,    32,
-      33,    34,    35,    36,    37,    38,    39,    40,    41,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    51,    29,
+      25,    48,    45,     0,    50,    94,    52,     2,    51,     2,
+      99,    36,     8,     3,     4,    52,     6,     7,     3,     4,
+       8,     6,     7,     8,    14,    15,    16,    17,    50,    54,
+      52,    56,    57,     8,     8,    20,    21,    22,    85,     8,
+      25,    66,    67,    68,    69,    70,    71,    72,    73,    74,
+      75,    76,    77,    48,    47,    48,    51,    42,    43,    44,
+      51,    46,    47,    49,    50,    45,    51,    92,    51,    94,
+      44,   160,    46,    47,    99,     8,     8,    51,    29,    30,
+      31,    32,    33,    34,    35,    36,    37,    38,    39,    40,
+      85,    10,    85,    35,    36,    37,    38,    39,    18,    49,
+     125,    52,   127,     3,     4,    52,     6,     7,     8,     3,
+       4,    45,     6,     7,     8,   140,    51,     8,   143,   114,
+      20,    21,    22,    51,    18,    25,     3,     4,    45,     6,
+       7,    25,    19,     3,     4,   160,     6,     7,     8,    37,
+      38,    39,    42,    43,    44,    51,    46,    47,    42,    43,
+      44,    51,    46,    47,    27,    25,    26,    51,     3,     4,
+      52,     6,     7,     8,     3,     4,    52,     6,     7,     8,
+      49,    52,    42,    43,    44,    27,    46,    47,    20,    51,
+      25,    51,    19,    28,     3,     4,    25,     6,     7,    28,
+      21,     3,     4,    12,     6,     7,     8,    42,    43,    44,
+     114,    46,    47,    42,    43,    44,    51,    46,    47,    21,
+     168,    52,    51,    25,    -1,     3,     4,    -1,     6,     7,
+       8,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      42,    43,    44,    21,    46,    47,   131,    25,    -1,    51,
+      -1,    -1,    -1,   138,    -1,    -1,    -1,   142,    -1,   144,
+      -1,    -1,    -1,    -1,    42,    43,    44,    -1,    46,    47,
+      -1,   156,    -1,    51,    -1,    -1,    -1,    -1,    -1,    -1,
+     165,    -1,    -1,    -1,   169,    29,    30,    31,    32,    33,
+      34,    35,    36,    37,    38,    39,    40,    29,    30,    31,
+      32,    33,    34,    35,    36,    37,    38,    39,    52,    29,
       30,    31,    32,    33,    34,    35,    36,    37,    38,    39,
-      40,    41,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    51,    29,    30,    31,    32,    33,    34,    35,    36,
-      37,    38,    39,    40,    41,    -1,    -1,    -1,    -1,    -1,
-      -1,    48,    29,    30,    31,    32,    33,    34,    35,    36,
-      37,    38,    39,    40,    41,     3,     4,    -1,     6,     7,
-      -1,    48,    -1,    -1,    -1,    -1,    14,    15,    16,    17,
-      29,    30,    31,    32,    33,    34,    35,    36,    37,    38,
-      39,    40,    41,    29,    30,    31,    32,    33,    34,    35,
-      36,    37,    38,    39
+      40,     3,     4,    -1,     6,     7,    -1,     9,    -1,    11,
+      -1,    13,    52,    29,    30,    31,    32,    33,    34,    35,
+      36,    37,    38,    39,    40,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    49,    29,    30,    31,    32,    33,    34,
+      35,    36,    37,    38,    39,    40,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    49,    29,    30,    31,    32,    33,
+      34,    35,    36,    37,    38,    39,    40,    41,    29,    30,
+      31,    32,    33,    34,    35,    36,    37,    38,    39,    40
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,    53,    54,     0,     3,     4,     6,     7,     9,    11,
-      13,    55,    58,    62,    64,    73,    74,    75,    56,    59,
-       8,    63,    77,     8,     8,    44,    50,    48,    49,     8,
-      25,    42,    43,    46,    50,    62,    73,    76,    78,    79,
-      83,    85,    86,    93,    94,    95,    57,    60,     8,    94,
-      65,    68,     8,    44,    50,    84,    50,    50,    94,     8,
-      10,    18,    87,    48,    29,    30,    31,    32,    33,    34,
-      35,    36,    37,    38,    39,    40,    41,    48,    12,    62,
-      14,    15,    16,    17,    61,    62,    64,    71,    72,    73,
-      51,    44,    94,    80,    81,    50,    94,    94,    51,    50,
+       0,    54,    55,     0,     3,     4,     6,     7,     9,    11,
+      13,    56,    59,    63,    65,    74,    75,    76,    57,    60,
+       8,    64,    78,     8,     8,    45,    51,    49,    50,     8,
+      25,    42,    43,    44,    46,    47,    51,    63,    74,    77,
+      79,    83,    85,    86,    93,    94,    95,    58,    61,     8,
+      94,    66,    69,     8,    45,    84,    51,    51,     8,    80,
+      94,     8,    10,    18,    87,    49,    29,    30,    31,    32,
+      33,    34,    35,    36,    37,    38,    39,    40,    49,    12,
+      63,    14,    15,    16,    17,    62,    63,    65,    72,    73,
+      74,    52,    45,    94,    51,    94,    94,    51,    52,    51,
       94,    94,    94,    94,    94,    94,    94,    94,    94,    94,
-      94,    94,    94,    62,    64,    49,    51,     8,    69,    94,
-      48,    82,    94,    51,    94,    95,    51,    51,    95,    72,
-      66,    27,    49,    51,    51,    48,    51,    27,    70,    94,
-      77,    19,    67,    77,    26,    77,    77,    28,    21,    22,
-      89,    28,    88,    20,    90,    77,    50,    21,    21,    95,
-      51,    19,    77,    22,    92,    91,    90,    77
+      94,    94,    63,    65,    50,    52,     8,    70,    94,    49,
+      94,    95,    52,    52,    52,    81,    95,    96,    73,    67,
+      27,    52,    49,    82,    94,    52,    94,    27,    71,    78,
+      50,    52,    19,    41,    68,    78,    26,    94,    78,    94,
+      78,    28,    21,    22,    89,    28,    88,    20,    90,    78,
+      51,    21,    21,    95,    52,    19,    78,    22,    92,    91,
+      90,    78
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    52,    53,    54,    54,    54,    54,    54,    56,    55,
-      57,    57,    59,    58,    60,    60,    60,    60,    60,    61,
-      61,    61,    62,    63,    63,    63,    63,    65,    66,    67,
-      64,    68,    69,    70,    64,    71,    71,    72,    73,    73,
-      73,    73,    75,    76,    74,    77,    77,    78,    78,    78,
-      78,    78,    78,    80,    79,    81,    79,    82,    82,    84,
-      83,    83,    86,    85,    87,    88,    87,    89,    87,    90,
-      91,    90,    92,    90,    93,    94,    94,    94,    94,    94,
+       0,    53,    54,    55,    55,    55,    55,    55,    57,    56,
+      58,    58,    60,    59,    61,    61,    61,    61,    61,    62,
+      62,    62,    63,    64,    64,    64,    64,    66,    67,    68,
+      65,    69,    70,    71,    65,    72,    72,    73,    74,    74,
+      74,    74,    76,    77,    75,    78,    78,    79,    79,    79,
+      79,    79,    79,    81,    80,    80,    82,    82,    84,    83,
+      83,    86,    85,    87,    88,    87,    89,    87,    90,    91,
+      90,    92,    90,    93,    94,    94,    94,    94,    94,    94,
       94,    94,    94,    94,    94,    95,    95,    95,    95,    95,
-      95,    95,    95
+      95,    96,    95
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
@@ -869,11 +873,11 @@ static const yytype_int8 yyr2[] =
        1,     1,     3,     3,     3,     1,     5,     0,     0,     0,
       11,     0,     0,     0,    10,     3,     1,     2,     1,     1,
        1,     1,     0,     0,     5,     2,     0,     2,     4,     1,
-       1,     2,     5,     0,     5,     0,     4,     3,     1,     0,
-       7,     1,     0,     2,     7,     0,    10,     0,     9,     6,
-       0,     9,     0,     8,     4,     1,     1,     3,     3,     3,
-       3,     3,     1,     3,     1,     3,     3,     3,     3,     3,
-       3,     3,     3
+       1,     2,     5,     0,     5,     3,     3,     1,     0,     7,
+       1,     0,     2,     7,     0,    10,     0,     9,     6,     0,
+       9,     0,     8,     4,     1,     1,     1,     3,     3,     3,
+       3,     3,     1,     3,     2,     3,     3,     3,     3,     3,
+       3,     0,     7
 };
 
 
@@ -1569,13 +1573,13 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 93 "homework.y"
+#line 96 "homework.y"
                                             {printf("\nend main\n\n"); printTable(); printf("\n"); printFctTable(); printf("\n"); printf("PROGRAM CORECT SINTACTIC\n"); PRINT_EVAL();}
-#line 1575 "homework.tab.c"
+#line 1579 "homework.tab.c"
     break;
 
   case 3:
-#line 97 "homework.y"
+#line 100 "homework.y"
                         {
                                 strcpy(table[nrVars].scope,"global"); 
                                 int j=nrVars-1;
@@ -1586,41 +1590,41 @@ yyreduce:
                                         j--;
                                 }
                         }
-#line 1590 "homework.tab.c"
+#line 1594 "homework.tab.c"
     break;
 
   case 8:
-#line 113 "homework.y"
+#line 116 "homework.y"
                          {printf("structura declarata\n");}
-#line 1596 "homework.tab.c"
+#line 1600 "homework.tab.c"
     break;
 
   case 12:
-#line 120 "homework.y"
+#line 123 "homework.y"
                         {printf("clasa declarata\n");}
-#line 1602 "homework.tab.c"
+#line 1606 "homework.tab.c"
     break;
 
   case 19:
-#line 130 "homework.y"
+#line 133 "homework.y"
                                 {printf("public ");}
-#line 1608 "homework.tab.c"
+#line 1612 "homework.tab.c"
     break;
 
   case 20:
-#line 131 "homework.y"
+#line 134 "homework.y"
                                 {printf("private ");}
-#line 1614 "homework.tab.c"
+#line 1618 "homework.tab.c"
     break;
 
   case 21:
-#line 132 "homework.y"
+#line 135 "homework.y"
                                 {printf("protected ");}
-#line 1620 "homework.tab.c"
+#line 1624 "homework.tab.c"
     break;
 
   case 23:
-#line 141 "homework.y"
+#line 144 "homework.y"
                 {
                         printf("%s%s declared\n",tab,(yyvsp[0].var).name);
                         addVarType(nrVars,table[nrVars-1].vartype);
@@ -1629,23 +1633,29 @@ yyreduce:
                         //strcpy(table[nrVars].vartype,table[nrVars-1].vartype);
                         //strcpy(table[nrVars++].name,$3.name); 
                 }
-#line 1633 "homework.tab.c"
+#line 1637 "homework.tab.c"
     break;
 
   case 24:
-#line 150 "homework.y"
+#line 153 "homework.y"
                 {
-                        printf("%s%s declared and assigned with %d\n",tab,(yyvsp[-2].var).name,(yyvsp[0].intval));
+                        strcpy((yyvsp[-2].var).vartype,current_var_type);
+                        if(strcmp((yyvsp[-2].var).vartype,(yyvsp[0].var).vartype)!=0)
+                        {
+                                printf("[Error][Line %d]: Assignment between two different types: %s != %s",yylineno,(yyvsp[-2].var).vartype,(yyvsp[0].var).vartype);
+                                exit(-1);
+                        }
+                        printf("%s%s declared and assigned with %s\n",tab,(yyvsp[-2].var).name,(yyvsp[0].var).val);
                         addVarName(nrVars,(yyvsp[-2].var).name);
-                        updateTable(nrVars,(yyvsp[0].intval));
+                        updateTable(nrVars,(yyvsp[0].var).val);
                         nrVars++;
 
                 }
-#line 1645 "homework.tab.c"
+#line 1655 "homework.tab.c"
     break;
 
   case 25:
-#line 158 "homework.y"
+#line 167 "homework.y"
                 {
                         if(undeclared((yyvsp[0].var).name,current_scope)==-1)
                         {
@@ -1658,37 +1668,44 @@ yyreduce:
                         nrVars++;
                         //strcpy(table[nrVars++].name,$1.name);
                 }
-#line 1662 "homework.tab.c"
+#line 1672 "homework.tab.c"
     break;
 
   case 26:
-#line 171 "homework.y"
+#line 180 "homework.y"
                 {
-                        printf("%s%s declared and assigned with %d\n",tab,(yyvsp[-2].var).name,(yyvsp[0].intval));
+                        strcpy((yyvsp[-2].var).vartype,current_var_type);
+                        
+                        if(strcmp((yyvsp[-2].var).vartype,(yyvsp[0].var).vartype)!=0)
+                        {
+                                printf("[Error][Line %d]: Assignment between two different types: %s != %s",yylineno,(yyvsp[-2].var).vartype,(yyvsp[0].var).vartype);
+                                exit(-1);
+                        }
+                        printf("%s%s declared and assigned with %d\n",tab,(yyvsp[-2].var).name,(yyvsp[0].var));
                         addVarName(nrVars,(yyvsp[-2].var).name);
                         addVarType(nrVars,table[nrVars-1].vartype);
                         strcpy(table[nrVars].scope,table[nrVars-1].scope);      
-                        updateTable(nrVars,(yyvsp[0].intval));
+                        updateTable(nrVars,(yyvsp[0].var).val);
                         nrVars++;
                 }
-#line 1675 "homework.tab.c"
+#line 1692 "homework.tab.c"
     break;
 
   case 27:
-#line 181 "homework.y"
-                                {strcat(tab,"\t");strcpy(current_scope,(yyvsp[-1].var).name);}
-#line 1681 "homework.tab.c"
+#line 197 "homework.y"
+                                {strcat(tab,"\t"); strcpy(current_fct_scope,current_scope);strcpy(current_scope,(yyvsp[-1].var).name);}
+#line 1698 "homework.tab.c"
     break;
 
   case 28:
-#line 183 "homework.y"
+#line 199 "homework.y"
                 {
                         strcpy(tab,tab+1);
                         strcpy((yyval.fct).name, (yyvsp[-4].var).name);
                         strcpy((yyval.fct).fcttype,(yyvsp[-5].var).vartype);
                         addFctName(nrFct,(yyvsp[-4].var).name);
                         addFctType(nrFct,(yyvsp[-5].var).vartype);
-                        strcpy(fct_table[nrFct].scope,current_scope);
+                        strcpy(fct_table[nrFct].scope,current_fct_scope);
 
                         int j = findFct((yyvsp[-4].var).name);
                         if(j!=nrFct)
@@ -1714,23 +1731,23 @@ yyreduce:
                         printf("Function %s declared! \n",(yyvsp[-4].var).name);                        
                         nrFct++;
                 }
-#line 1718 "homework.tab.c"
+#line 1735 "homework.tab.c"
     break;
 
   case 29:
-#line 214 "homework.y"
+#line 230 "homework.y"
                           {strcat(tab,"\t");}
-#line 1724 "homework.tab.c"
+#line 1741 "homework.tab.c"
     break;
 
   case 30:
-#line 214 "homework.y"
+#line 230 "homework.y"
                                                           {strcpy(tab,tab+1);strcpy(current_scope,"global");}
-#line 1730 "homework.tab.c"
+#line 1747 "homework.tab.c"
     break;
 
   case 31:
-#line 216 "homework.y"
+#line 232 "homework.y"
                 {
                         printf("Function %s declared! \n",(yyvsp[-1].var).name); 
                         strcpy((yyval.fct).name, (yyvsp[-1].var).name);
@@ -1742,29 +1759,29 @@ yyreduce:
                         strcpy(fct_table[nrFct].scope,current_scope);
                         strcat(tab,"\t");strcpy(current_scope,(yyvsp[-1].var).name);
                 }
-#line 1746 "homework.tab.c"
+#line 1763 "homework.tab.c"
     break;
 
   case 32:
-#line 227 "homework.y"
+#line 243 "homework.y"
                     {strcpy(tab,tab+1);nrFct++;}
-#line 1752 "homework.tab.c"
+#line 1769 "homework.tab.c"
     break;
 
   case 33:
-#line 227 "homework.y"
+#line 243 "homework.y"
                                                          {strcat(tab,"\t");}
-#line 1758 "homework.tab.c"
+#line 1775 "homework.tab.c"
     break;
 
   case 34:
-#line 227 "homework.y"
+#line 243 "homework.y"
                                                                                        {strcpy(tab,tab+1);strcpy(current_scope,"global");}
-#line 1764 "homework.tab.c"
+#line 1781 "homework.tab.c"
     break;
 
   case 37:
-#line 235 "homework.y"
+#line 251 "homework.y"
         {
                 if(undeclared((yyvsp[0].var).name,current_scope)==-1)
                 {
@@ -1781,273 +1798,625 @@ yyreduce:
                 fct_table[nrFct].nr_param++;
                 
         }
-#line 1785 "homework.tab.c"
-    break;
-
-  case 38:
-#line 254 "homework.y"
-            {
-                addVarType(nrVars,"int");
-                strcpy((yyval.var).vartype, "int");
-            }
-#line 1794 "homework.tab.c"
-    break;
-
-  case 39:
-#line 259 "homework.y"
-            {
-                strcpy((yyval.var).vartype, "bool");
-            }
 #line 1802 "homework.tab.c"
     break;
 
+  case 38:
+#line 270 "homework.y"
+            {
+                addVarType(nrVars,"int");
+                strcpy((yyval.var).vartype, "int");
+                strcpy(current_var_type, "int");
+            }
+#line 1812 "homework.tab.c"
+    break;
+
+  case 39:
+#line 277 "homework.y"
+            {
+                strcpy((yyval.var).vartype, "bool");
+                strcpy(current_var_type, "bool");
+            }
+#line 1821 "homework.tab.c"
+    break;
+
   case 40:
-#line 263 "homework.y"
+#line 283 "homework.y"
             {
                 strcpy((yyval.var).vartype, "string");
+                strcpy(current_var_type, "string");
+
             }
-#line 1810 "homework.tab.c"
+#line 1831 "homework.tab.c"
     break;
 
   case 41:
-#line 267 "homework.y"
+#line 290 "homework.y"
             {
                 strcpy((yyval.var).vartype, "float");
+                strcpy(current_var_type, "float");
             }
-#line 1818 "homework.tab.c"
+#line 1840 "homework.tab.c"
     break;
 
   case 42:
-#line 272 "homework.y"
+#line 296 "homework.y"
                       {printf("\nmain\n");strcat(tab,"\t");strcpy(current_scope,"main");}
-#line 1824 "homework.tab.c"
+#line 1846 "homework.tab.c"
     break;
 
   case 43:
-#line 272 "homework.y"
+#line 296 "homework.y"
                                                                                                {strcpy(tab,tab+1);}
-#line 1830 "homework.tab.c"
+#line 1852 "homework.tab.c"
     break;
 
   case 48:
-#line 281 "homework.y"
+#line 305 "homework.y"
                 {  
+                        if(strcmp((yyvsp[-3].var).vartype,(yyvsp[-1].var).vartype)!=0)
                         {
-                                printf("%s%s assigned with %d\n",tab,(yyvsp[-3].var).name,(yyvsp[-1].intval));
-                                int j = findVar((yyvsp[-3].var).name);
-                                if(j==-1)
-                                        {
-                                               printf("[Error][Line: %d]: variable with the name \"%s\" was not declared!\n",yylineno,(yyvsp[-3].var).name);
-                                               exit(-1);
-                                        } 
-                                else
+                                printf("[Error][Line %d]: Assignment between two different types: %s != %s",yylineno,(yyvsp[-3].var).vartype,(yyvsp[-1].var).vartype);
+                                exit(-1);
+                        }
+                        printf("%s%s assigned with %d\n",tab,(yyvsp[-3].var).name,(yyvsp[-1].var));
+                        int j = findVar((yyvsp[-3].var).name);
+                        if(j==-1)
                                 {
-                                        updateTable(j,(yyvsp[-1].intval));
-                                }
-
+                                        printf("[Error][Line: %d]: variable with the name \"%s\" was not declared!\n",yylineno,(yyvsp[-3].var).name);
+                                        exit(-1);
+                                } 
+                        else
+                        {
+                                updateTable(j,(yyvsp[-1].var).val);
                         }
                 }
-#line 1851 "homework.tab.c"
+#line 1875 "homework.tab.c"
     break;
 
   case 49:
-#line 297 "homework.y"
+#line 323 "homework.y"
                         {strcpy(tab,tab+1);}
-#line 1857 "homework.tab.c"
+#line 1881 "homework.tab.c"
     break;
 
   case 50:
-#line 298 "homework.y"
+#line 324 "homework.y"
                          {
                             int j=nrVars-1;      
                             strcpy(table[j].scope,current_scope); 
                          }
-#line 1866 "homework.tab.c"
-    break;
-
-  case 52:
-#line 304 "homework.y"
-                                              {Eval_calls[nr_calls++]=(yyvsp[-2].intval);}
-#line 1872 "homework.tab.c"
-    break;
-
-  case 53:
-#line 307 "homework.y"
-                  {printf("%sFct call with parameters \n",tab);}
-#line 1878 "homework.tab.c"
-    break;
-
-  case 55:
-#line 308 "homework.y"
-                  {printf("%sFct call \n",tab);}
-#line 1884 "homework.tab.c"
-    break;
-
-  case 59:
-#line 317 "homework.y"
-                {printf("%sWhile called\n",tab);strcat(tab,"\t");}
 #line 1890 "homework.tab.c"
     break;
 
-  case 62:
-#line 321 "homework.y"
-            {printf("%sif called \n",tab); strcat(tab,"\t");}
+  case 52:
+#line 330 "homework.y"
+                                              {Eval_calls[nr_calls++]=atoi((yyvsp[-2].var).val);}
 #line 1896 "homework.tab.c"
     break;
 
-  case 65:
-#line 325 "homework.y"
+  case 53:
+#line 334 "homework.y"
+         {
+                int j = findFct((yyvsp[-1].var).name);
+                if(j==-1)
+                {
+                        printf("[Error][Line: %d]: Function with name \"%s\" is not neclared!\n",yylineno,(yyvsp[-1].var).name);
+                        exit(-1);
+                }
+
+                printf("%sFct call with parameters \n",tab);
+         }
+#line 1911 "homework.tab.c"
+    break;
+
+  case 55:
+#line 346 "homework.y"
+         {
+                int j = findFct((yyvsp[-2].var).name);
+                if(j==-1)
+                {
+                        printf("[Error][Line: %d]: Function with name \"%s\" is not neclared!\n",yylineno,(yyvsp[-2].var).name);
+                        exit(-1);
+                }
+                 printf("%sFct call \n",tab);
+         }
+#line 1925 "homework.tab.c"
+    break;
+
+  case 58:
+#line 363 "homework.y"
+                {printf("%sWhile called\n",tab);strcat(tab,"\t");}
+#line 1931 "homework.tab.c"
+    break;
+
+  case 61:
+#line 367 "homework.y"
+            {printf("%sif called \n",tab); strcat(tab,"\t");}
+#line 1937 "homework.tab.c"
+    break;
+
+  case 64:
+#line 371 "homework.y"
                                                       {printf("%selse called \n",tab+1);}
-#line 1902 "homework.tab.c"
+#line 1943 "homework.tab.c"
     break;
 
-  case 67:
-#line 326 "homework.y"
+  case 66:
+#line 372 "homework.y"
                                                  {printf("%selse if called \n",tab+1);}
-#line 1908 "homework.tab.c"
+#line 1949 "homework.tab.c"
     break;
 
-  case 70:
-#line 330 "homework.y"
+  case 69:
+#line 376 "homework.y"
                                                            {printf("%s else called \n",tab+1);}
-#line 1914 "homework.tab.c"
+#line 1955 "homework.tab.c"
     break;
 
-  case 72:
-#line 331 "homework.y"
+  case 71:
+#line 377 "homework.y"
                                                       {printf("%s else if called \n",tab+1);}
-#line 1920 "homework.tab.c"
+#line 1961 "homework.tab.c"
+    break;
+
+  case 73:
+#line 380 "homework.y"
+                                       {printf("%sprint() called \n",tab);}
+#line 1967 "homework.tab.c"
     break;
 
   case 74:
-#line 334 "homework.y"
-                                       {printf("%sprint() called \n",tab);}
-#line 1926 "homework.tab.c"
+#line 385 "homework.y"
+           {
+                char buffer[20];
+                sprintf(buffer,"%d",(yyvsp[0].intval));
+                strcpy((yyval.var).val,buffer);
+                //$$ = $1;
+                strcpy((yyval.var).vartype,"int");
+           }
+#line 1979 "homework.tab.c"
     break;
 
   case 75:
-#line 338 "homework.y"
-                    {(yyval.intval) = (yyvsp[0].intval);}
-#line 1932 "homework.tab.c"
+#line 394 "homework.y"
+           {
+                strcpy((yyval.var).val,(yyvsp[0].strval));
+                strcpy((yyval.var).vartype,"string");
+
+           }
+#line 1989 "homework.tab.c"
     break;
 
   case 76:
-#line 339 "homework.y"
-                { 
-                   int j=findScope((yyvsp[0].var).name,current_scope);
-                   if(j==-1) 
-                        {
-                              printf("[Error][Line: %d]: variable with the name \"%s\" was not declared!\n",yylineno,(yyvsp[0].var).name);
-                              exit(-1);
-                        }
-                   if(strcmp(table[j].val,"NULL")==0)
-                        {
-                                printf("[Error][Line: %d]: variable with the name \"%s\" was not initialised!\n",yylineno,(yyvsp[0].var).name);
-                                exit(-1);        
-                        }
-                   (yyval.intval)=atoi(table[j].val);
-                   }
-#line 1951 "homework.tab.c"
+#line 401 "homework.y"
+           { 
+                int j=findScope((yyvsp[0].var).name,current_scope);
+                if(j==-1) 
+                {
+                        printf("[Error][Line: %d]: variable with the name \"%s\" was not declared!\n",yylineno,(yyvsp[0].var).name);
+                        exit(-1);
+                }
+                        if(strcmp(table[j].val,"NULL")==0)
+                {
+                        printf("[Error][Line: %d]: variable with the name \"%s\" was not initialised!\n",yylineno,(yyvsp[0].var).name);
+                        exit(-1);        
+                }
+                //$$=atoi(table[j].val);
+                strcpy((yyval.var).val,table[j].val);
+                strcpy((yyval.var).vartype,table[j].vartype);
+           }
+#line 2010 "homework.tab.c"
     break;
 
   case 77:
-#line 353 "homework.y"
-                                        {(yyval.intval)=(yyvsp[-2].intval)+(yyvsp[0].intval);}
-#line 1957 "homework.tab.c"
+#line 418 "homework.y"
+           {
+                if(strcmp((yyvsp[-2].var).vartype,(yyvsp[0].var).vartype)!=0)
+                {
+                        printf("[Error][Line %d]: %s + %s is not possible!\n",yylineno,(yyvsp[-2].var).vartype,(yyvsp[0].var).vartype);      
+                        exit(-1);
+                }
+                strcpy((yyval.var).vartype,(yyvsp[-2].var).vartype);
+                if(strcmp((yyval.var).vartype,"int")==0 || strcmp((yyval.var).vartype,"float")==0 )
+                {
+                        int op1=atoi((yyvsp[-2].var).val);
+                        int op2=atoi((yyvsp[0].var).val);
+                        char buffer[20];
+                        sprintf(buffer,"%d",op1+op2);
+                        strcpy((yyval.var).val,buffer);
+                        //$$=$1+$3;
+                }
+                else if(strcmp((yyval.var).vartype,"bool")==0)
+                {
+                        int op1=atoi((yyvsp[-2].var).val);
+                        int op2=atoi((yyvsp[0].var).val);
+                        char buffer[20];
+                        sprintf(buffer,"%d",(op1+op2)%2);
+                        strcpy((yyval.var).val,buffer);
+                }
+                else if(strcmp((yyval.var).vartype,"string")==0)
+                {
+                        char buffer[200];
+                        strcpy(buffer,(yyvsp[-2].var).val);
+                        strcat(buffer,(yyvsp[0].var).val);
+                        strcpy((yyval.var).val,buffer);
+                }
+
+           }
+#line 2048 "homework.tab.c"
     break;
 
   case 78:
-#line 354 "homework.y"
-                                         {(yyval.intval)=(yyvsp[-2].intval)-(yyvsp[0].intval);}
-#line 1963 "homework.tab.c"
+#line 452 "homework.y"
+           {
+                if(strcmp((yyvsp[-2].var).vartype,(yyvsp[0].var).vartype)!=0)
+                {
+                        printf("[Error][Line %d]: %s - %s is not possible!\n",yylineno,(yyvsp[-2].var).vartype,(yyvsp[0].var).vartype);      
+                        exit(-1);
+                }
+                strcpy((yyval.var).vartype,(yyvsp[-2].var).vartype);
+                if(strcmp((yyval.var).vartype,"int")==0 || strcmp((yyval.var).vartype,"float")==0)      
+                {
+                        int op1=atoi((yyvsp[-2].var).val);
+                        int op2=atoi((yyvsp[0].var).val);
+                        char buffer[20];
+                        sprintf(buffer,"%d",op1-op2);
+                        strcpy((yyval.var).val,buffer);
+                }
+                if(strcmp((yyval.var).vartype,"bool")==0)      
+                {
+                        int op1=atoi((yyvsp[-2].var).val);
+                        int op2=atoi((yyvsp[0].var).val);
+                        char buffer[20];
+                        sprintf(buffer,"%d",(op1-op2)%2);
+                        strcpy((yyval.var).val,buffer);
+                }
+                else
+                {
+                        printf("Error][Line %d]: string - string is not possible!\n",yylineno);
+                        exit(-1);
+                }
+                //$$=$1-$3;
+           }
+#line 2083 "homework.tab.c"
     break;
 
   case 79:
-#line 355 "homework.y"
-                                       {(yyval.intval)=(yyvsp[-2].intval)*(yyvsp[0].intval);}
-#line 1969 "homework.tab.c"
+#line 483 "homework.y"
+           {
+                if(strcmp((yyvsp[-2].var).vartype,(yyvsp[0].var).vartype)!=0)
+                {
+                        printf("[Error][Line %d]: %s * %s is not possible!\n",yylineno,(yyvsp[-2].var).vartype,(yyvsp[0].var).vartype);      
+                        exit(-1);
+                }
+                strcpy((yyval.var).vartype,(yyvsp[-2].var).vartype);
+                if(strcmp((yyval.var).vartype,"string")!=0)      //daca nu e string e float, int sau bool;
+                {
+                        int op1=atoi((yyvsp[-2].var).val);
+                        int op2=atoi((yyvsp[0].var).val);
+                        char buffer[20];
+                        sprintf(buffer,"%d",op1*op2);
+                        strcpy((yyval.var).val,buffer);
+                }
+                else            //putem implementa * ca + in c (str+3 de la pozitia 3)
+                {
+                        printf("Error][Line %d]: string * string is not possible!\n",yylineno);
+                        exit(-1);
+                }
+           }
+#line 2109 "homework.tab.c"
     break;
 
   case 80:
-#line 356 "homework.y"
-                                       {(yyval.intval)=(yyvsp[-2].intval)/(yyvsp[0].intval);}
-#line 1975 "homework.tab.c"
+#line 505 "homework.y"
+           {
+                if(strcmp((yyvsp[-2].var).vartype,(yyvsp[0].var).vartype)!=0)
+                {
+                        printf("[Error][Line %d]: %s / %s is not possible!\n",yylineno,(yyvsp[-2].var).vartype,(yyvsp[0].var).vartype);      
+                        exit(-1);
+                }
+                strcpy((yyval.var).vartype,(yyvsp[-2].var).vartype);
+                if(strcmp((yyval.var).vartype,"int")==0 || strcmp((yyval.var).vartype,"float")==0 )      //daca nu e string e float, int sau bool;
+                {
+                        int op1=atoi((yyvsp[-2].var).val);
+                        int op2=atoi((yyvsp[0].var).val);
+                        if(op2==0)
+                        {
+                                printf("[Error][Line %d]: division by 0 is not possible!\n",yylineno);
+                                exit(-1);
+                        }
+                        char buffer[20];
+                        sprintf(buffer,"%d",op1/op2);
+                        strcpy((yyval.var).val,buffer);
+                }
+                else           
+                {
+                        printf("[Error][Line %d]: %s / %s is not possible!\n",yylineno,(yyvsp[-2].var).vartype,(yyvsp[0].var).vartype);
+                        exit(-1);
+                }
+           }
+#line 2140 "homework.tab.c"
     break;
 
   case 81:
-#line 357 "homework.y"
-                                       {(yyval.intval)=(yyvsp[-2].intval)%(yyvsp[0].intval);}
-#line 1981 "homework.tab.c"
+#line 532 "homework.y"
+           {
+                
+                if(strcmp((yyvsp[-2].var).vartype,(yyvsp[0].var).vartype)!=0)
+                {
+                        printf("[Error][Line %d]: %s % %s is not possible!\n",yylineno,(yyvsp[-2].var).vartype,(yyvsp[0].var).vartype);      
+                        exit(-1);
+                }
+                strcpy((yyval.var).vartype,(yyvsp[-2].var).vartype);
+                if(strcmp((yyval.var).vartype,"int")==0)      
+                {
+                        int op1=atoi((yyvsp[-2].var).val);
+                        int op2=atoi((yyvsp[0].var).val);
+                        if(op2==0)
+                        {
+                                printf("[Error][Line %d]: modulus by 0 is not possible!\n",yylineno);
+                                exit(-1);
+                        }
+                        char buffer[20];
+                        sprintf(buffer,"%d",op1%op2);
+                        strcpy((yyval.var).val,buffer);
+                }
+                else            
+                {
+                        printf("[Error][Line %d]: %s % %s is not possible!\n",yylineno,(yyvsp[-2].var).vartype,(yyvsp[0].var).vartype);
+                        exit(-1);
+                }
+           }
+#line 2172 "homework.tab.c"
     break;
 
   case 82:
-#line 358 "homework.y"
-                               {(yyval.intval)=(yyvsp[0].intval);}
-#line 1987 "homework.tab.c"
+#line 559 "homework.y"
+                               {strcpy((yyval.var).val,(yyvsp[0].var).val);strcpy((yyval.var).vartype,"int");}
+#line 2178 "homework.tab.c"
     break;
 
   case 83:
-#line 359 "homework.y"
-                                {(yyval.intval)=(yyvsp[-1].intval);}
-#line 1993 "homework.tab.c"
+#line 560 "homework.y"
+                                {(yyval.var)=(yyvsp[-1].var);}
+#line 2184 "homework.tab.c"
     break;
 
   case 84:
-#line 360 "homework.y"
-                      {(yyval.intval)=atoi((yyvsp[0].var).val);}
-#line 1999 "homework.tab.c"
+#line 561 "homework.y"
+                           {strcpy((yyval.var).val,(yyvsp[0].var).val);strcpy((yyval.var).vartype,(yyvsp[0].var).vartype);}
+#line 2190 "homework.tab.c"
     break;
 
   case 85:
-#line 363 "homework.y"
-                                              {(yyval.intval)=(yyvsp[-2].intval)<(yyvsp[0].intval);}
-#line 2005 "homework.tab.c"
+#line 566 "homework.y"
+                {
+                        if(strcmp((yyvsp[-2].var).vartype,(yyvsp[0].var).vartype)!=0)
+                        {
+                                printf("[Error][Line %d]: %s % %s is not possible!\n",yylineno,(yyvsp[-2].var).vartype,(yyvsp[0].var).vartype);      
+                                exit(-1);
+                        }
+                        if(strcmp((yyval.var).vartype,"string")!=0)      //inf float bool
+                        {
+                                int op1=atoi((yyvsp[-2].var).val);
+                                int op2=atoi((yyvsp[0].var).val);
+                                char buffer[2];
+                                sprintf(buffer,"%d",op1<op2);
+                                strcpy((yyval.var).val,buffer);
+                        }
+                        else
+                        {
+                                char buffer[2];
+                                int rez;
+                                if(strcmp((yyvsp[-2].var).val,(yyvsp[0].var).val)<0)
+                                        rez=1;
+                                else    rez=0;
+                                sprintf(buffer,"%d",rez);
+                                strcpy((yyval.var).val,buffer);
+                        }
+                        //$$=$1<$3;
+                }
+#line 2221 "homework.tab.c"
     break;
 
   case 86:
-#line 364 "homework.y"
-                                            {(yyval.intval)=(yyvsp[-2].intval)>(yyvsp[0].intval);}
-#line 2011 "homework.tab.c"
+#line 593 "homework.y"
+                {
+                        if(strcmp((yyvsp[-2].var).vartype,(yyvsp[0].var).vartype)!=0)
+                        {
+                                printf("[Error][Line %d]: %s % %s is not possible!\n",yylineno,(yyvsp[-2].var).vartype,(yyvsp[0].var).vartype);      
+                                exit(-1);
+                        }
+                        if(strcmp((yyval.var).vartype,"string")!=0)      //inf float bool
+                        {
+                                int op1=atoi((yyvsp[-2].var).val);
+                                int op2=atoi((yyvsp[0].var).val);
+                                char buffer[2];
+                                sprintf(buffer,"%d",op1>op2);
+                                strcpy((yyval.var).val,buffer);
+                        }
+                        else
+                        {
+                                char buffer[2];
+                                int rez;
+                                if(strcmp((yyvsp[-2].var).val,(yyvsp[0].var).val)>0)
+                                        rez=1;
+                                else    rez=0;
+                                sprintf(buffer,"%d",rez);
+                                strcpy((yyval.var).val,buffer);
+                        }
+                        //$$=$1>$3;
+                }
+#line 2252 "homework.tab.c"
     break;
 
   case 87:
-#line 365 "homework.y"
-                                            {(yyval.intval)=(yyvsp[-2].intval)<=(yyvsp[0].intval);}
-#line 2017 "homework.tab.c"
+#line 620 "homework.y"
+                {
+                        if(strcmp((yyvsp[-2].var).vartype,(yyvsp[0].var).vartype)!=0)
+                        {
+                                printf("[Error][Line %d]: %s % %s is not possible!\n",yylineno,(yyvsp[-2].var).vartype,(yyvsp[0].var).vartype);      
+                                exit(-1);
+                        }
+                        if(strcmp((yyval.var).vartype,"string")!=0)      //inf float bool
+                        {
+                                int op1=atoi((yyvsp[-2].var).val);
+                                int op2=atoi((yyvsp[0].var).val);
+                                char buffer[2];
+                                sprintf(buffer,"%d",op1<=op2);
+                                strcpy((yyval.var).val,buffer);
+                        }
+                        else
+                        {
+                                char buffer[2];
+                                int rez;
+                                if(strcmp((yyvsp[-2].var).val,(yyvsp[0].var).val)<=0)
+                                        rez=1;
+                                else    rez=0;
+                                sprintf(buffer,"%d",rez);
+                                strcpy((yyval.var).val,buffer);
+                        }
+                        //$$=$1<=$3;
+                }
+#line 2283 "homework.tab.c"
     break;
 
   case 88:
-#line 366 "homework.y"
-                                            {(yyval.intval)=(yyvsp[-2].intval)>=(yyvsp[0].intval);}
-#line 2023 "homework.tab.c"
+#line 647 "homework.y"
+                {
+                        if(strcmp((yyvsp[-2].var).vartype,(yyvsp[0].var).vartype)!=0)
+                        {
+                                printf("[Error][Line %d]: %s % %s is not possible!\n",yylineno,(yyvsp[-2].var).vartype,(yyvsp[0].var).vartype);      
+                                exit(-1);
+                        }
+                        if(strcmp((yyval.var).vartype,"string")!=0)      //inf float bool
+                        {
+                                int op1=atoi((yyvsp[-2].var).val);
+                                int op2=atoi((yyvsp[0].var).val);
+                                char buffer[2];
+                                sprintf(buffer,"%d",op1>=op2);
+                                strcpy((yyval.var).val,buffer);
+                        }
+                        else
+                        {
+                                char buffer[2];
+                                int rez;
+                                if(strcmp((yyvsp[-2].var).val,(yyvsp[0].var).val)>=0)
+                                        rez=1;
+                                else    rez=0;
+                                sprintf(buffer,"%d",rez);
+                                strcpy((yyval.var).val,buffer);
+                        }
+                        //$$=$1>=$3;
+                }
+#line 2314 "homework.tab.c"
     break;
 
   case 89:
-#line 367 "homework.y"
-                                            {(yyval.intval)=(yyvsp[-2].intval)!=(yyvsp[0].intval);}
-#line 2029 "homework.tab.c"
+#line 674 "homework.y"
+                {
+                        if(strcmp((yyvsp[-2].var).vartype,(yyvsp[0].var).vartype)!=0)
+                        {
+                                printf("[Error][Line %d]: %s % %s is not possible!\n",yylineno,(yyvsp[-2].var).vartype,(yyvsp[0].var).vartype);      
+                                exit(-1);
+                        }
+                        if(strcmp((yyval.var).vartype,"string")!=0)      //inf float bool
+                        {
+                                int op1=atoi((yyvsp[-2].var).val);
+                                int op2=atoi((yyvsp[0].var).val);
+                                char buffer[2];
+                                sprintf(buffer,"%d",op1!=op2);
+                                strcpy((yyval.var).val,buffer);
+                        }
+                        else
+                        {
+                                char buffer[2];
+                                int rez;
+                                if(strcmp((yyvsp[-2].var).val,(yyvsp[0].var).val)!=0)
+                                        rez=1;
+                                else    rez=0;
+                                sprintf(buffer,"%d",rez);
+                                strcpy((yyval.var).val,buffer);
+                        }
+                        //$$=$1!=$3;
+                }
+#line 2345 "homework.tab.c"
     break;
 
   case 90:
-#line 368 "homework.y"
-                                           {(yyval.intval)=((yyvsp[-2].intval)==(yyvsp[0].intval));}
-#line 2035 "homework.tab.c"
+#line 701 "homework.y"
+                {
+                        if(strcmp((yyvsp[-2].var).vartype,(yyvsp[0].var).vartype)!=0)
+                        {
+                                printf("[Error][Line %d]: %s % %s is not possible!\n",yylineno,(yyvsp[-2].var).vartype,(yyvsp[0].var).vartype);      
+                                exit(-1);
+                        }
+                        if(strcmp((yyval.var).vartype,"string")!=0)      //inf float bool
+                        {
+                                int op1=atoi((yyvsp[-2].var).val);
+                                int op2=atoi((yyvsp[0].var).val);
+                                char buffer[2];
+                                sprintf(buffer,"%d",op1=op2);
+                                strcpy((yyval.var).val,buffer);
+                        }
+                        else
+                        {
+                                char buffer[2];
+                                int rez;
+                                if(strcmp((yyvsp[-2].var).val,(yyvsp[0].var).val)==0)
+                                        rez=1;
+                                else    rez=0;
+                                sprintf(buffer,"%d",rez);
+                                strcpy((yyval.var).val,buffer);
+                        }
+                        //$$=($1==$3);
+                }
+#line 2376 "homework.tab.c"
     break;
 
   case 91:
-#line 369 "homework.y"
-                                            {(yyval.intval)=(yyvsp[-2].intval)&&(yyvsp[0].intval);}
-#line 2041 "homework.tab.c"
+#line 728 "homework.y"
+                {
+                        int op1=atoi((yyvsp[-2].var).val);
+                        if(op1==0)
+                                strcpy((yyval.var).val,"0");
+                        else 
+                        {
+                                int op2=atoi((yyvsp[0].var).val);
+                                if(op2==0)
+                                        strcpy((yyval.var).val,"0");
+                                else
+                                        strcpy((yyval.var).val,"1");
+
+                        }
+                        //$$=$1&&$3;
+                }
+#line 2396 "homework.tab.c"
     break;
 
   case 92:
-#line 370 "homework.y"
-                                           {(yyval.intval)=(yyvsp[-2].intval)||(yyvsp[0].intval);  }
-#line 2047 "homework.tab.c"
+#line 744 "homework.y"
+                {
+                        int op1=atoi((yyvsp[-6].var).val);
+                        if(op1==1)
+                                strcpy((yyval.var).val,"1");
+                        else
+                        {
+                                int op2=atoi((yyvsp[-4].var).val);
+                                if(op2==0)
+                                        strcpy((yyval.var).val,"0");
+                                else
+                                        strcpy((yyval.var).val,"1");
+                                strcpy((yyval.var).val,(yyvsp[-4].var).val);
+                        }
+                        //$$=$1||$3;  
+                }
+#line 2416 "homework.tab.c"
     break;
 
 
-#line 2051 "homework.tab.c"
+#line 2420 "homework.tab.c"
 
       default: break;
     }
@@ -2279,7 +2648,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 373 "homework.y"
+#line 761 "homework.y"
 
 
 
@@ -2297,9 +2666,10 @@ void printTable()
                 printf("%i. %s = %s %s %s\n",j,table[j].name,table[j].val,table[j].vartype,table[j].scope); //MERGE BAAAAAAA!!!!!
 }
 
-void updateTable(int i, int newVal)
+void updateTable(int i, char* newVal)
 {
-        sprintf(table[i].val,"%d",newVal);
+
+        strcpy(table[i].val,newVal);
 }
 
 void addVarName(int i, char * newName)

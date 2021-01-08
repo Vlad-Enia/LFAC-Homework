@@ -34,6 +34,7 @@
 "fbegin" {return FBEGIN;}
 "fend" {return FEND;}
 "print" {return PRINT;}
+"call" {return CALL;}
 "<" {return LWR;}
 "<=" {return LEQ;}
 ">" {return GTR;}
@@ -52,6 +53,7 @@
 
 "true"|"false" {if(strcmp(yytext,"true")==0)yylval.boolval=1; else yylval.boolval=0; return BOOLVAL;}
 [_a-zA-Z][_a-zA-Z0-9]* {strcpy(yylval.var.name,strdup(yytext)); return ID;}
+'[_a-zA-Z][_a-zA-Z0-9]*' {strcpy(yylval.strval,strdup(yytext)); return STRVAL;}
 [ \t] ;
 \n {yylineno++;}
 . {return yytext[0];}

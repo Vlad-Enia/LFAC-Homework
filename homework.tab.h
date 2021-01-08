@@ -90,10 +90,11 @@ extern int yydebug;
     OR = 296,
     PRINT = 297,
     EVAL_FCT = 298,
-    ASGN = 299,
-    STRVAL = 300,
-    INTVAL = 301,
-    BOOLVAL = 302
+    CALL = 299,
+    ASGN = 300,
+    STRVAL = 301,
+    INTVAL = 302,
+    BOOLVAL = 303
   };
 #endif
 
@@ -101,7 +102,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 36 "homework.y"
+#line 38 "homework.y"
 
         int intval;
         double floatval;
@@ -111,7 +112,7 @@ union YYSTYPE
         {
                 char name[100];
                 char val[100];          //valoare numerica convertita in char; AR FI MAI EFICIENT sa stocam totusi in camp de tip int;
-                char vartype[6];
+                char vartype[10];
                 char scope[30];
         } var;
 
@@ -119,14 +120,14 @@ union YYSTYPE
         {
                 char name[100];
                 char val[100];
-                char fcttype[6];
+                char fcttype[10];
                 char scope[30];
                 int nr_param;
                 char parametersType[30][6];   //lista tipurilor la parametri => signatura;
                 char parameters[30][30];      //numele parametrilor;
         } fct;
 
-#line 130 "homework.tab.h"
+#line 131 "homework.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

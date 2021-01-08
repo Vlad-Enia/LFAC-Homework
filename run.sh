@@ -1,4 +1,4 @@
 flex homework.l
-bison -d homework.y
+bison -d -v homework.y
 gcc lex.yy.c homework.tab.c  
 ./a.out test.txt

@@ -13,7 +13,7 @@ char tab[100];
 struct var_data table[100];             //tabelul variabilelor
 int nrVars=0;                           //nr variabilelor din tabel
 void printTable();                      //afiseaza toate elementele din tablou;
-void updateTable(int i, int newVal);    //actualizeaza variabila de pe pozitia i cu valoarea newVal
+void updateTable(int i, char* newVal);    //actualizeaza variabila de pe pozitia i cu valoarea newVal
 void addVarName(int i, char * newName); //adauga pe pozitia i numele newName
 void addVarType(int i, char * newType); //adauga pe pozitia i tipul newType
 int findVar(char *newName);             //returneaza pozitia variabilei cu numele NewName
@@ -30,6 +30,8 @@ void addFctName(int i, char * newName);
 void addFctType(int i, char * newType);
 int findFct(char *newName);
 int findScope(char *newName, char* scope);
+char current_fct_scope[100];
+char current_var_type[6];
 
 %}
 
@@ -42,7 +44,7 @@ int findScope(char *newName, char* scope);
         {
                 char name[100];
                 char val[100];          //valoare numerica convertita in char; AR FI MAI EFICIENT sa stocam totusi in camp de tip int;
-                char vartype[6];
+                char vartype[10];
                 char scope[30];
         } var;
 
@@ -50,7 +52,7 @@ int findScope(char *newName, char* scope);
         {
                 char name[100];
                 char val[100];
-                char fcttype[6];
+                char fcttype[10];
                 char scope[30];
                 int nr_param;
                 char parametersType[30][6];   //lista tipurilor la parametri => signatura;
@@ -71,12 +73,13 @@ int findScope(char *newName, char* scope);
 %token AND OR
 %token PRINT
 %token EVAL_FCT
+%token CALL
 %token ASGN
 %token <strval> STRVAL 
 %token <intval> INTVAL 
 %token <boolval> BOOLVAL 
 %type <var> fct_call                    //trebuie revizuit, am pus asa doar sa nu fie erori
-%type <intval> expression binary_expression               //DEOCAMDATA expresiile sunt de tip intval ca sa satisfac doar prima ramura de la expressions, adica atunci cand o expresie ia forma unei valori integer;
+%type <var> expression binary_expression               //DEOCAMDATA expresiile sunt de tip intval ca sa satisfac doar prima ramura de la expressions, adica atunci cand o expresie ia forma unei valori integer;
                                         //din acest motiv acum exista warning-uri clash type pentru restul ramurilor din expressions;
 %type <var> var_type
 %type <fct> fct_decl
@@ -132,7 +135,7 @@ acces_modifier  :  PUBLIC       {printf("public ");}
                 |  PROTECTED    {printf("protected ");}
                 ;
 
-var_decl    :   var_type variable_list ';'
+var_decl    :   var_type  variable_list ';'
             ;
 
 
@@ -146,11 +149,17 @@ variable_list : variable_list ',' ID
                         //strcpy(table[nrVars].vartype,table[nrVars-1].vartype);
                         //strcpy(table[nrVars++].name,$3.name); 
                 }
-                | ID ASGN expression 
+                | ID ASGN  expression 
                 {
-                        printf("%s%s declared and assigned with %d\n",tab,$1.name,$3);
+                        strcpy($1.vartype,current_var_type);
+                        if(strcmp($1.vartype,$3.vartype)!=0)
+                        {
+                                printf("[Error][Line %d]: Assignment between two different types: %s != %s",yylineno,$1.vartype,$3.vartype);
+                                exit(-1);
+                        }
+                        printf("%s%s declared and assigned with %s\n",tab,$1.name,$3.val);
                         addVarName(nrVars,$1.name);
-                        updateTable(nrVars,$3);
+                        updateTable(nrVars,$3.val);
                         nrVars++;
 
                 }
@@ -169,16 +178,23 @@ variable_list : variable_list ',' ID
                 }
                 | variable_list ',' ID ASGN expression
                 {
+                        strcpy($3.vartype,current_var_type);
+                        
+                        if(strcmp($3.vartype,$5.vartype)!=0)
+                        {
+                                printf("[Error][Line %d]: Assignment between two different types: %s != %s",yylineno,$3.vartype,$5.vartype);
+                                exit(-1);
+                        }
                         printf("%s%s declared and assigned with %d\n",tab,$3.name,$5);
                         addVarName(nrVars,$3.name);
                         addVarType(nrVars,table[nrVars-1].vartype);
                         strcpy(table[nrVars].scope,table[nrVars-1].scope);      
-                        updateTable(nrVars,$5);
+                        updateTable(nrVars,$5.val);
                         nrVars++;
                 }
                 ;
 
-fct_decl    :   var_type ID '(' {strcat(tab,"\t");strcpy(current_scope,$2.name);}
+fct_decl    :   var_type ID '(' {strcat(tab,"\t"); strcpy(current_fct_scope,current_scope);strcpy(current_scope,$2.name);}
                 param_list ')' 
                 {
                         strcpy(tab,tab+1);
@@ -186,7 +202,7 @@ fct_decl    :   var_type ID '(' {strcat(tab,"\t");strcpy(current_scope,$2.name);
                         strcpy($<fct>$.fcttype,$1.vartype);
                         addFctName(nrFct,$2.name);
                         addFctType(nrFct,$1.vartype);
-                        strcpy(fct_table[nrFct].scope,current_scope);
+                        strcpy(fct_table[nrFct].scope,current_fct_scope);
 
                         int j = findFct($2.name);
                         if(j!=nrFct)
@@ -254,18 +270,26 @@ var_type :   INT
             {
                 addVarType(nrVars,"int");
                 strcpy($$.vartype, "int");
+                strcpy(current_var_type, "int");
             }
+
         |   BOOL
             {
                 strcpy($$.vartype, "bool");
+                strcpy(current_var_type, "bool");
             }
+
         |   STRING
             {
                 strcpy($$.vartype, "string");
+                strcpy(current_var_type, "string");
+
             }
+
         |   FLOAT
             {
                 strcpy($$.vartype, "float");
+                strcpy(current_var_type, "float");
             }
         ;
 
@@ -279,19 +303,21 @@ body  	:   body  statement
 statement   :   expression ';'
             |   ID ASGN expression ';'
                 {  
+                        if(strcmp($1.vartype,$3.vartype)!=0)
                         {
-                                printf("%s%s assigned with %d\n",tab,$1.name,$3);
-                                int j = findVar($1.name);
-                                if(j==-1)
-                                        {
-                                               printf("[Error][Line: %d]: variable with the name \"%s\" was not declared!\n",yylineno,$1.name);
-                                               exit(-1);
-                                        } 
-                                else
+                                printf("[Error][Line %d]: Assignment between two different types: %s != %s",yylineno,$1.vartype,$3.vartype);
+                                exit(-1);
+                        }
+                        printf("%s%s assigned with %d\n",tab,$1.name,$3);
+                        int j = findVar($1.name);
+                        if(j==-1)
                                 {
-                                        updateTable(j,$3);
-                                }
-
+                                        printf("[Error][Line: %d]: variable with the name \"%s\" was not declared!\n",yylineno,$1.name);
+                                        exit(-1);
+                                } 
+                        else
+                        {
+                                updateTable(j,$3.val);
                         }
                 }
             |   control {strcpy(tab,tab+1);}
@@ -301,11 +327,31 @@ statement   :   expression ';'
                          }
                                  
             |   print_call  ';'
-            | EVAL_FCT '(' expression ')' ';' {Eval_calls[nr_calls++]=$3;}
+            | EVAL_FCT '(' expression ')' ';' {Eval_calls[nr_calls++]=atoi($3.val);}
             ;
 
-fct_call : ID '(' {printf("%sFct call with parameters \n",tab);} param_called_list ')' 
-         | ID '(' {printf("%sFct call \n",tab);} ')' 
+fct_call : ID '(' 
+         {
+                int j = findFct($1.name);
+                if(j==-1)
+                {
+                        printf("[Error][Line: %d]: Function with name \"%s\" is not neclared!\n",yylineno,$1.name);
+                        exit(-1);
+                }
+
+                printf("%sFct call with parameters \n",tab);
+         } param_called_list ')' 
+
+         | ID '(' ')' 
+         {
+                int j = findFct($1.name);
+                if(j==-1)
+                {
+                        printf("[Error][Line: %d]: Function with name \"%s\" is not neclared!\n",yylineno,$1.name);
+                        exit(-1);
+                }
+                 printf("%sFct call \n",tab);
+         }
          ;
          
 
@@ -335,39 +381,381 @@ print_call  :   PRINT'(' expression ')'{printf("%sprint() called \n",tab);}
             ;
 
 
-expression : INTVAL {$$ = $1;}
-           | ID { 
-                   int j=findScope($1.name,current_scope);
-                   if(j==-1) 
+expression : INTVAL 
+           {
+                char buffer[20];
+                sprintf(buffer,"%d",$1);
+                strcpy($$.val,buffer);
+                //$$ = $1;
+                strcpy($$.vartype,"int");
+           }
+
+           | STRVAL
+           {
+                strcpy($$.val,$1);
+                strcpy($$.vartype,"string");
+
+           }
+
+           | ID 
+           { 
+                int j=findScope($1.name,current_scope);
+                if(j==-1) 
+                {
+                        printf("[Error][Line: %d]: variable with the name \"%s\" was not declared!\n",yylineno,$1.name);
+                        exit(-1);
+                }
+                        if(strcmp(table[j].val,"NULL")==0)
+                {
+                        printf("[Error][Line: %d]: variable with the name \"%s\" was not initialised!\n",yylineno,$1.name);
+                        exit(-1);        
+                }
+                //$$=atoi(table[j].val);
+                strcpy($$.val,table[j].val);
+                strcpy($$.vartype,table[j].vartype);
+           }
+           | expression PLUS expression 
+           {
+                if(strcmp($1.vartype,$3.vartype)!=0)
+                {
+                        printf("[Error][Line %d]: %s + %s is not possible!\n",yylineno,$1.vartype,$3.vartype);      
+                        exit(-1);
+                }
+                strcpy($$.vartype,$1.vartype);
+                if(strcmp($$.vartype,"int")==0 || strcmp($$.vartype,"float")==0 )
+                {
+                        int op1=atoi($1.val);
+                        int op2=atoi($3.val);
+                        char buffer[20];
+                        sprintf(buffer,"%d",op1+op2);
+                        strcpy($$.val,buffer);
+                        //$$=$1+$3;
+                }
+                else if(strcmp($$.vartype,"bool")==0)
+                {
+                        int op1=atoi($1.val);
+                        int op2=atoi($3.val);
+                        char buffer[20];
+                        sprintf(buffer,"%d",(op1+op2)%2);
+                        strcpy($$.val,buffer);
+                }
+                else if(strcmp($$.vartype,"string")==0)
+                {
+                        char buffer[200];
+                        strcpy(buffer,$1.val);
+                        strcat(buffer,$3.val);
+                        strcpy($$.val,buffer);
+                }
+
+           }
+           | expression MINUS expression 
+           {
+                if(strcmp($1.vartype,$3.vartype)!=0)
+                {
+                        printf("[Error][Line %d]: %s - %s is not possible!\n",yylineno,$1.vartype,$3.vartype);      
+                        exit(-1);
+                }
+                strcpy($$.vartype,$1.vartype);
+                if(strcmp($$.vartype,"int")==0 || strcmp($$.vartype,"float")==0)      
+                {
+                        int op1=atoi($1.val);
+                        int op2=atoi($3.val);
+                        char buffer[20];
+                        sprintf(buffer,"%d",op1-op2);
+                        strcpy($$.val,buffer);
+                }
+                if(strcmp($$.vartype,"bool")==0)      
+                {
+                        int op1=atoi($1.val);
+                        int op2=atoi($3.val);
+                        char buffer[20];
+                        sprintf(buffer,"%d",(op1-op2)%2);
+                        strcpy($$.val,buffer);
+                }
+                else
+                {
+                        printf("Error][Line %d]: string - string is not possible!\n",yylineno);
+                        exit(-1);
+                }
+                //$$=$1-$3;
+           }
+           | expression MTP expression 
+           {
+                if(strcmp($1.vartype,$3.vartype)!=0)
+                {
+                        printf("[Error][Line %d]: %s * %s is not possible!\n",yylineno,$1.vartype,$3.vartype);      
+                        exit(-1);
+                }
+                strcpy($$.vartype,$1.vartype);
+                if(strcmp($$.vartype,"string")!=0)      //daca nu e string e float, int sau bool;
+                {
+                        int op1=atoi($1.val);
+                        int op2=atoi($3.val);
+                        char buffer[20];
+                        sprintf(buffer,"%d",op1*op2);
+                        strcpy($$.val,buffer);
+                }
+                else            //putem implementa * ca + in c (str+3 de la pozitia 3)
+                {
+                        printf("Error][Line %d]: string * string is not possible!\n",yylineno);
+                        exit(-1);
+                }
+           }
+           | expression DVD expression 
+           {
+                if(strcmp($1.vartype,$3.vartype)!=0)
+                {
+                        printf("[Error][Line %d]: %s / %s is not possible!\n",yylineno,$1.vartype,$3.vartype);      
+                        exit(-1);
+                }
+                strcpy($$.vartype,$1.vartype);
+                if(strcmp($$.vartype,"int")==0 || strcmp($$.vartype,"float")==0 )      //daca nu e string e float, int sau bool;
+                {
+                        int op1=atoi($1.val);
+                        int op2=atoi($3.val);
+                        if(op2==0)
                         {
-                              printf("[Error][Line: %d]: variable with the name \"%s\" was not declared!\n",yylineno,$1.name);
-                              exit(-1);
+                                printf("[Error][Line %d]: division by 0 is not possible!\n",yylineno);
+                                exit(-1);
                         }
-                   if(strcmp(table[j].val,"NULL")==0)
+                        char buffer[20];
+                        sprintf(buffer,"%d",op1/op2);
+                        strcpy($$.val,buffer);
+                }
+                else           
+                {
+                        printf("[Error][Line %d]: %s / %s is not possible!\n",yylineno,$1.vartype,$3.vartype);
+                        exit(-1);
+                }
+           }
+           | expression MOD expression 
+           {
+                
+                if(strcmp($1.vartype,$3.vartype)!=0)
+                {
+                        printf("[Error][Line %d]: %s % %s is not possible!\n",yylineno,$1.vartype,$3.vartype);      
+                        exit(-1);
+                }
+                strcpy($$.vartype,$1.vartype);
+                if(strcmp($$.vartype,"int")==0)      
+                {
+                        int op1=atoi($1.val);
+                        int op2=atoi($3.val);
+                        if(op2==0)
                         {
-                                printf("[Error][Line: %d]: variable with the name \"%s\" was not initialised!\n",yylineno,$1.name);
-                                exit(-1);        
+                                printf("[Error][Line %d]: modulus by 0 is not possible!\n",yylineno);
+                                exit(-1);
                         }
-                   $$=atoi(table[j].val);
-                   }
-           | expression PLUS expression {$$=$1+$3;}
-           | expression MINUS expression {$$=$1-$3;}
-           | expression MTP expression {$$=$1*$3;}
-           | expression DVD expression {$$=$1/$3;}
-           | expression MOD expression {$$=$1%$3;}
-           | binary_expression {$$=$1;}
+                        char buffer[20];
+                        sprintf(buffer,"%d",op1%op2);
+                        strcpy($$.val,buffer);
+                }
+                else            
+                {
+                        printf("[Error][Line %d]: %s % %s is not possible!\n",yylineno,$1.vartype,$3.vartype);
+                        exit(-1);
+                }
+           }
+           | binary_expression {strcpy($$.val,$1.val);strcpy($$.vartype,"int");}
            | '(' expression ')' {$$=$2;}
-           | fct_call {$$=atoi($1.val);}
+           | CALL fct_call {strcpy($$.val,$2.val);strcpy($$.vartype,$2.vartype);}//tip
            ;
 
-binary_expression : expression LWR expression {$$=$1<$3;}
-                | expression GTR expression {$$=$1>$3;}
-                | expression LEQ expression {$$=$1<=$3;}
-                | expression GEQ expression {$$=$1>=$3;}
-                | expression NEQ expression {$$=$1!=$3;}
-                | expression EQ expression {$$=($1==$3);}
-                | expression AND expression {$$=$1&&$3;}
-                | expression OR expression {$$=$1||$3;  }
+binary_expression 
+                : expression LWR expression 
+                {
+                        if(strcmp($1.vartype,$3.vartype)!=0)
+                        {
+                                printf("[Error][Line %d]: %s % %s is not possible!\n",yylineno,$1.vartype,$3.vartype);      
+                                exit(-1);
+                        }
+                        if(strcmp($$.vartype,"string")!=0)      //inf float bool
+                        {
+                                int op1=atoi($1.val);
+                                int op2=atoi($3.val);
+                                char buffer[2];
+                                sprintf(buffer,"%d",op1<op2);
+                                strcpy($$.val,buffer);
+                        }
+                        else
+                        {
+                                char buffer[2];
+                                int rez;
+                                if(strcmp($1.val,$3.val)<0)
+                                        rez=1;
+                                else    rez=0;
+                                sprintf(buffer,"%d",rez);
+                                strcpy($$.val,buffer);
+                        }
+                        //$$=$1<$3;
+                }
+                | expression GTR expression 
+                {
+                        if(strcmp($1.vartype,$3.vartype)!=0)
+                        {
+                                printf("[Error][Line %d]: %s % %s is not possible!\n",yylineno,$1.vartype,$3.vartype);      
+                                exit(-1);
+                        }
+                        if(strcmp($$.vartype,"string")!=0)      //inf float bool
+                        {
+                                int op1=atoi($1.val);
+                                int op2=atoi($3.val);
+                                char buffer[2];
+                                sprintf(buffer,"%d",op1>op2);
+                                strcpy($$.val,buffer);
+                        }
+                        else
+                        {
+                                char buffer[2];
+                                int rez;
+                                if(strcmp($1.val,$3.val)>0)
+                                        rez=1;
+                                else    rez=0;
+                                sprintf(buffer,"%d",rez);
+                                strcpy($$.val,buffer);
+                        }
+                        //$$=$1>$3;
+                }
+                | expression LEQ expression 
+                {
+                        if(strcmp($1.vartype,$3.vartype)!=0)
+                        {
+                                printf("[Error][Line %d]: %s % %s is not possible!\n",yylineno,$1.vartype,$3.vartype);      
+                                exit(-1);
+                        }
+                        if(strcmp($$.vartype,"string")!=0)      //inf float bool
+                        {
+                                int op1=atoi($1.val);
+                                int op2=atoi($3.val);
+                                char buffer[2];
+                                sprintf(buffer,"%d",op1<=op2);
+                                strcpy($$.val,buffer);
+                        }
+                        else
+                        {
+                                char buffer[2];
+                                int rez;
+                                if(strcmp($1.val,$3.val)<=0)
+                                        rez=1;
+                                else    rez=0;
+                                sprintf(buffer,"%d",rez);
+                                strcpy($$.val,buffer);
+                        }
+                        //$$=$1<=$3;
+                }
+                | expression GEQ expression 
+                {
+                        if(strcmp($1.vartype,$3.vartype)!=0)
+                        {
+                                printf("[Error][Line %d]: %s % %s is not possible!\n",yylineno,$1.vartype,$3.vartype);      
+                                exit(-1);
+                        }
+                        if(strcmp($$.vartype,"string")!=0)      //inf float bool
+                        {
+                                int op1=atoi($1.val);
+                                int op2=atoi($3.val);
+                                char buffer[2];
+                                sprintf(buffer,"%d",op1>=op2);
+                                strcpy($$.val,buffer);
+                        }
+                        else
+                        {
+                                char buffer[2];
+                                int rez;
+                                if(strcmp($1.val,$3.val)>=0)
+                                        rez=1;
+                                else    rez=0;
+                                sprintf(buffer,"%d",rez);
+                                strcpy($$.val,buffer);
+                        }
+                        //$$=$1>=$3;
+                }
+                | expression NEQ expression 
+                {
+                        if(strcmp($1.vartype,$3.vartype)!=0)
+                        {
+                                printf("[Error][Line %d]: %s % %s is not possible!\n",yylineno,$1.vartype,$3.vartype);      
+                                exit(-1);
+                        }
+                        if(strcmp($$.vartype,"string")!=0)      //inf float bool
+                        {
+                                int op1=atoi($1.val);
+                                int op2=atoi($3.val);
+                                char buffer[2];
+                                sprintf(buffer,"%d",op1!=op2);
+                                strcpy($$.val,buffer);
+                        }
+                        else
+                        {
+                                char buffer[2];
+                                int rez;
+                                if(strcmp($1.val,$3.val)!=0)
+                                        rez=1;
+                                else    rez=0;
+                                sprintf(buffer,"%d",rez);
+                                strcpy($$.val,buffer);
+                        }
+                        //$$=$1!=$3;
+                }
+                | expression EQ expression 
+                {
+                        if(strcmp($1.vartype,$3.vartype)!=0)
+                        {
+                                printf("[Error][Line %d]: %s % %s is not possible!\n",yylineno,$1.vartype,$3.vartype);      
+                                exit(-1);
+                        }
+                        if(strcmp($$.vartype,"string")!=0)      //inf float bool
+                        {
+                                int op1=atoi($1.val);
+                                int op2=atoi($3.val);
+                                char buffer[2];
+                                sprintf(buffer,"%d",op1=op2);
+                                strcpy($$.val,buffer);
+                        }
+                        else
+                        {
+                                char buffer[2];
+                                int rez;
+                                if(strcmp($1.val,$3.val)==0)
+                                        rez=1;
+                                else    rez=0;
+                                sprintf(buffer,"%d",rez);
+                                strcpy($$.val,buffer);
+                        }
+                        //$$=($1==$3);
+                }
+                | expression AND expression 
+                {
+                        int op1=atoi($1.val);
+                        if(op1==0)
+                                strcpy($<var>$.val,"0");
+                        else 
+                        {
+                                int op2=atoi($3.val);
+                                if(op2==0)
+                                        strcpy($<var>$.val,"0");
+                                else
+                                        strcpy($<var>$.val,"1");
+
+                        }
+                        //$$=$1&&$3;
+                }
+                expression OR expression 
+                {
+                        int op1=atoi($1.val);
+                        if(op1==1)
+                                strcpy($<var>$.val,"1");
+                        else
+                        {
+                                int op2=atoi($3.val);
+                                if(op2==0)
+                                        strcpy($<var>$.val,"0");
+                                else
+                                        strcpy($<var>$.val,"1");
+                                strcpy($<var>$.val,$3.val);
+                        }
+                        //$$=$1||$3;  
+                }
                 ; 
 
 %%
@@ -387,9 +775,10 @@ void printTable()
                 printf("%i. %s = %s %s %s\n",j,table[j].name,table[j].val,table[j].vartype,table[j].scope); //MERGE BAAAAAAA!!!!!
 }
 
-void updateTable(int i, int newVal)
+void updateTable(int i, char* newVal)
 {
-        sprintf(table[i].val,"%d",newVal);
+
+        strcpy(table[i].val,newVal);
 }
 
 void addVarName(int i, char * newName)
