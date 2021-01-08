@@ -38,7 +38,7 @@ char current_var_type[6];
 %union {
         int intval;
         double floatval;
-        char* strval;
+        char strval[256];
         int boolval;
         struct VAR                      //structura VAR reprezinta practic o variabila ce urmeaza a fi adaugata in tabel, si are aceleasi campuri ca var_data, care descrie tabelul
         {
@@ -78,6 +78,7 @@ char current_var_type[6];
 %token <strval> STRVAL 
 %token <intval> INTVAL 
 %token <boolval> BOOLVAL 
+%token <floatval> FLOATVAL
 %type <var> fct_call                    //trebuie revizuit, am pus asa doar sa nu fie erori
 %type <var> expression binary_expression               //DEOCAMDATA expresiile sunt de tip intval ca sa satisfac doar prima ramura de la expressions, adica atunci cand o expresie ia forma unei valori integer;
                                         //din acest motiv acum exista warning-uri clash type pentru restul ramurilor din expressions;
@@ -151,10 +152,11 @@ variable_list : variable_list ',' ID
                 }
                 | ID ASGN  expression 
                 {
+                        addVarType(nrVars,current_var_type);
                         strcpy($1.vartype,current_var_type);
                         if(strcmp($1.vartype,$3.vartype)!=0)
                         {
-                                printf("[Error][Line %d]: Assignment between two different types: %s != %s",yylineno,$1.vartype,$3.vartype);
+                                printf("[Error][Line %d]: Assignment between two different types: %s != %s\n",yylineno,$1.vartype,$3.vartype);
                                 exit(-1);
                         }
                         printf("%s%s declared and assigned with %s\n",tab,$1.name,$3.val);
@@ -165,6 +167,8 @@ variable_list : variable_list ',' ID
                 }
                 | ID 
                 {
+                         addVarType(nrVars,current_var_type);
+                        strcpy($1.vartype,current_var_type);
                         if(undeclared($1.name,current_scope)==-1)
                         {
                                 printf("[Error][Line %d]: Variable already declared\n",yylineno);
@@ -182,10 +186,10 @@ variable_list : variable_list ',' ID
                         
                         if(strcmp($3.vartype,$5.vartype)!=0)
                         {
-                                printf("[Error][Line %d]: Assignment between two different types: %s != %s",yylineno,$3.vartype,$5.vartype);
+                                printf("[Error][Line %d]: Assignment between two different types: %s != %s\n",yylineno,$3.vartype,$5.vartype);
                                 exit(-1);
                         }
-                        printf("%s%s declared and assigned with %d\n",tab,$3.name,$5);
+                        printf("%s%s declared and assigned with %s\n",tab,$3.name,$5.val);
                         addVarName(nrVars,$3.name);
                         addVarType(nrVars,table[nrVars-1].vartype);
                         strcpy(table[nrVars].scope,table[nrVars-1].scope);      
@@ -268,6 +272,7 @@ param   :   var_type ID
 
 var_type :   INT
             {
+               
                 addVarType(nrVars,"int");
                 strcpy($$.vartype, "int");
                 strcpy(current_var_type, "int");
@@ -303,27 +308,30 @@ body  	:   body  statement
 statement   :   expression ';'
             |   ID ASGN expression ';'
                 {  
-                        if(strcmp($1.vartype,$3.vartype)!=0)
-                        {
-                                printf("[Error][Line %d]: Assignment between two different types: %s != %s",yylineno,$1.vartype,$3.vartype);
-                                exit(-1);
-                        }
-                        printf("%s%s assigned with %d\n",tab,$1.name,$3);
-                        int j = findVar($1.name);
+                        int j = findScope($1.name,current_scope);
                         if(j==-1)
-                                {
-                                        printf("[Error][Line: %d]: variable with the name \"%s\" was not declared!\n",yylineno,$1.name);
-                                        exit(-1);
-                                } 
+                        {
+                                printf("[Error][Line: %d]: variable with the name \"%s\" was not declared!\n",yylineno,$1.name);
+                                exit(-1);
+                        } 
                         else
                         {
                                 updateTable(j,$3.val);
                         }
+                        if(strcmp(table[j].vartype,$3.vartype)!=0)
+                        {
+                                printf("[Error][Line %d]: Assignment between two different types: %s != %s\n",yylineno,table[j].vartype,$3.vartype);
+                                exit(-1);
+                        }
+                        printf("%s%s assigned with %s\n",tab,$1.name,$3.val);
+
                 }
             |   control {strcpy(tab,tab+1);}
 	    |   var_decl {
+                     
                             int j=nrVars-1;      
                             strcpy(table[j].scope,current_scope); 
+                            
                          }
                                  
             |   print_call  ';'
@@ -340,6 +348,7 @@ fct_call : ID '('
                 }
 
                 printf("%sFct call with parameters \n",tab);
+                strcpy($<var>$.vartype,fct_table[j].fcttype);
          } param_called_list ')' 
 
          | ID '(' ')' 
@@ -383,6 +392,7 @@ print_call  :   PRINT'(' expression ')'{printf("%sprint() called \n",tab);}
 
 expression : INTVAL 
            {
+                   
                 char buffer[20];
                 sprintf(buffer,"%d",$1);
                 strcpy($$.val,buffer);
@@ -391,14 +401,29 @@ expression : INTVAL
            }
 
            | STRVAL
-           {
+           {  
                 strcpy($$.val,$1);
                 strcpy($$.vartype,"string");
-
            }
-
+           | BOOLVAL 
+           {
+               char buffer[20];
+                sprintf(buffer,"%d",$1);
+                strcpy($$.val,buffer);
+                //$$ = $1;
+                strcpy($$.vartype,"bool");    
+           }
+           |FLOATVAL
+           {
+                   char buffer[20];
+                   sprintf(buffer,"%f",$1);
+                    strcpy($$.val,buffer);
+                //$$ = $1;
+                strcpy($$.vartype,"float"); 
+           }
            | ID 
            { 
+                   
                 int j=findScope($1.name,current_scope);
                 if(j==-1) 
                 {
@@ -422,12 +447,21 @@ expression : INTVAL
                         exit(-1);
                 }
                 strcpy($$.vartype,$1.vartype);
-                if(strcmp($$.vartype,"int")==0 || strcmp($$.vartype,"float")==0 )
+                if(strcmp($$.vartype,"int")==0 )
                 {
                         int op1=atoi($1.val);
                         int op2=atoi($3.val);
                         char buffer[20];
                         sprintf(buffer,"%d",op1+op2);
+                        strcpy($$.val,buffer);
+                        //$$=$1+$3;
+                }
+                else if(strcmp($$.vartype,"float")==0)
+                {
+                        float op1=atof($1.val);
+                        float op2=atof($3.val);
+                        char buffer[20];
+                        sprintf(buffer,"%f",op1+op2);
                         strcpy($$.val,buffer);
                         //$$=$1+$3;
                 }
@@ -456,7 +490,7 @@ expression : INTVAL
                         exit(-1);
                 }
                 strcpy($$.vartype,$1.vartype);
-                if(strcmp($$.vartype,"int")==0 || strcmp($$.vartype,"float")==0)      
+                if(strcmp($$.vartype,"int")==0 )      
                 {
                         int op1=atoi($1.val);
                         int op2=atoi($3.val);
@@ -464,7 +498,16 @@ expression : INTVAL
                         sprintf(buffer,"%d",op1-op2);
                         strcpy($$.val,buffer);
                 }
-                if(strcmp($$.vartype,"bool")==0)      
+                else if(strcmp($$.vartype,"float")==0)
+                {
+                        float op1=atof($1.val);
+                        float op2=atof($3.val);
+                        char buffer[20];
+                        sprintf(buffer,"%f",op1-op2);
+                        strcpy($$.val,buffer);
+                        //$$=$1+$3;
+                }
+                else if(strcmp($$.vartype,"bool")==0)      
                 {
                         int op1=atoi($1.val);
                         int op2=atoi($3.val);
@@ -487,13 +530,23 @@ expression : INTVAL
                         exit(-1);
                 }
                 strcpy($$.vartype,$1.vartype);
-                if(strcmp($$.vartype,"string")!=0)      //daca nu e string e float, int sau bool;
+                if(strcmp($$.vartype,"string")!=0&&strcmp($$.vartype,"float")!=0)      //daca nu e string e float, int sau bool;
                 {
+                                printf("CUC\n");
                         int op1=atoi($1.val);
                         int op2=atoi($3.val);
                         char buffer[20];
-                        sprintf(buffer,"%d",op1*op2);
+                        sprintf(buffer,"%f",op1*op2);
                         strcpy($$.val,buffer);
+                }
+                else if(strcmp($$.vartype,"float")==0)
+                {
+                        float op1=atof($1.val);
+                        float op2=atof($3.val);
+                        char buffer[20];
+                        sprintf(buffer,"%f",op1*op2);
+                        strcpy($$.val,buffer);
+                        //$$=$1+$3;
                 }
                 else            //putem implementa * ca + in c (str+3 de la pozitia 3)
                 {
@@ -511,7 +564,8 @@ expression : INTVAL
                 strcpy($$.vartype,$1.vartype);
                 if(strcmp($$.vartype,"int")==0 || strcmp($$.vartype,"float")==0 )      //daca nu e string e float, int sau bool;
                 {
-                        int op1=atoi($1.val);
+                        if(strcmp($$.vartype,"int")==0)
+                       { int op1=atoi($1.val);
                         int op2=atoi($3.val);
                         if(op2==0)
                         {
@@ -521,6 +575,19 @@ expression : INTVAL
                         char buffer[20];
                         sprintf(buffer,"%d",op1/op2);
                         strcpy($$.val,buffer);
+                       }
+                        if(strcmp($$.vartype,"float")==0)
+                       { float op1=atof($1.val);
+                         float op2=atof($3.val);
+                        if(op2==0)
+                        {
+                                printf("[Error][Line %d]: division by 0 is not possible!\n",yylineno);
+                                exit(-1);
+                        }
+                        char buffer[20];
+                        sprintf(buffer,"%f",(float)op1/op2);
+                        strcpy($$.val,buffer);
+                       }
                 }
                 else           
                 {
@@ -558,7 +625,12 @@ expression : INTVAL
            }
            | binary_expression {strcpy($$.val,$1.val);strcpy($$.vartype,"int");}
            | '(' expression ')' {$$=$2;}
-           | CALL fct_call {strcpy($$.val,$2.val);strcpy($$.vartype,$2.vartype);}//tip
+           | CALL  fct_call 
+           {
+                   int j = findFct($2.name);
+                   strcpy($$.val,$2.val);
+                   strcpy($$.vartype,fct_table[j].fcttype);
+          }//tip
            ;
 
 binary_expression 
@@ -807,6 +879,11 @@ int findScope(char* newName,char* scope)
        for(int i=0;i<nrVars;i++)
         {
                 if(strcmp(table[i].name,newName)==0&&strcmp(table[i].scope,scope)==0)
+                        return i;
+        }
+        for(int i=0;i<nrVars;i++)
+        {
+                if(strcmp(table[i].name,newName)==0&&strcmp(table[i].scope,"global")==0)
                         return i;
         }
         return -1;

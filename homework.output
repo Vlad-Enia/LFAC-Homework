@@ -1,9 +1,8 @@
 Terminals unused in grammar
 
-    CHAR
-    FOR
-    ENDFOR
-    BOOLVAL
+   CHAR
+   FOR
+   ENDFOR
 
 
 Grammar
@@ -88,9 +87,9 @@ Grammar
    50          | print_call ';'
    51          | EVAL_FCT '(' expression ')' ';'
 
-   52 $@11: %empty
+   52 @11: %empty
 
-   53 fct_call: ID '(' $@11 param_called_list ')'
+   53 fct_call: ID '(' @11 param_called_list ')'
    54         | ID '(' ')'
 
    55 param_called_list: param_called_list ',' expression
@@ -129,217 +128,178 @@ Grammar
 
    73 expression: INTVAL
    74           | STRVAL
-   75           | ID
-   76           | expression PLUS expression
-   77           | expression MINUS expression
-   78           | expression MTP expression
-   79           | expression DVD expression
-   80           | expression MOD expression
-   81           | binary_expression
-   82           | '(' expression ')'
-   83           | CALL fct_call
+   75           | BOOLVAL
+   76           | FLOATVAL
+   77           | ID
+   78           | expression PLUS expression
+   79           | expression MINUS expression
+   80           | expression MTP expression
+   81           | expression DVD expression
+   82           | expression MOD expression
+   83           | binary_expression
+   84           | '(' expression ')'
+   85           | CALL fct_call
 
-   84 binary_expression: expression LWR expression
-   85                  | expression GTR expression
-   86                  | expression LEQ expression
-   87                  | expression GEQ expression
-   88                  | expression NEQ expression
-   89                  | expression EQ expression
+   86 binary_expression: expression LWR expression
+   87                  | expression GTR expression
+   88                  | expression LEQ expression
+   89                  | expression GEQ expression
+   90                  | expression NEQ expression
+   91                  | expression EQ expression
 
-   90 @18: %empty
+   92 @18: %empty
 
-   91 binary_expression: expression AND expression @18 expression OR expression
+   93 binary_expression: expression AND expression @18 expression OR expression
 
 
 Terminals, with rules where they appear
 
-    $end (0) 0
-    '(' (40) 29 33 51 53 54 58 62 64 66 67 69 71 72 82
-    ')' (41) 29 33 51 53 54 58 62 64 66 67 69 71 72 82
-    ',' (44) 22 25 34 55
-    ';' (59) 21 46 47 50 51
-    error (256)
-    INT (258) 37
-    FLOAT (259) 40
-    CHAR (260)
-    STRING (261) 39
-    BOOL (262) 38
-    ID <var> (263) 8 12 22 23 24 25 29 33 36 47 53 54 75
-    BEGIN_P (264) 43
-    END_P (265) 43
-    STRUC (266) 8
-    STRUCEND (267) 8
-    CLAS (268) 12
-    CLASEND (269) 12
-    PUBLIC (270) 18
-    PRIVATE (271) 19
-    PROTECTED (272) 20
-    IF (273) 62 64 66
-    THEN (274) 62 64 66 67 69 71
-    ELSE_IF (275) 67 69 71
-    ENDIF (276) 62 64 66
-    ELSE (277) 64 69
-    FOR (278)
-    ENDFOR (279)
-    WHILE (280) 58
-    ENDWHILE (281) 58
-    FBEGIN (282) 29 33
-    FEND (283) 29 33
-    LWR (284) 84
-    LEQ (285) 86
-    GTR (286) 85
-    GEQ (287) 87
-    EQ (288) 89
-    NEQ (289) 88
-    PLUS (290) 76
-    MINUS (291) 77
-    MTP (292) 78
-    DVD (293) 79
-    MOD (294) 80
-    AND (295) 91
-    OR (296) 91
-    PRINT (297) 72
-    EVAL_FCT (298) 51
-    CALL (299) 83
-    ASGN (300) 23 25 47
-    STRVAL <strval> (301) 74
-    INTVAL <intval> (302) 73
-    BOOLVAL <boolval> (303)
+$end (0) 0
+'(' (40) 29 33 51 53 54 58 62 64 66 67 69 71 72 84
+')' (41) 29 33 51 53 54 58 62 64 66 67 69 71 72 84
+',' (44) 22 25 34 55
+';' (59) 21 46 47 50 51
+error (256)
+INT (258) 37
+FLOAT (259) 40
+CHAR (260)
+STRING (261) 39
+BOOL (262) 38
+ID (263) 8 12 22 23 24 25 29 33 36 47 53 54 77
+BEGIN_P (264) 43
+END_P (265) 43
+STRUC (266) 8
+STRUCEND (267) 8
+CLAS (268) 12
+CLASEND (269) 12
+PUBLIC (270) 18
+PRIVATE (271) 19
+PROTECTED (272) 20
+IF (273) 62 64 66
+THEN (274) 62 64 66 67 69 71
+ELSE_IF (275) 67 69 71
+ENDIF (276) 62 64 66
+ELSE (277) 64 69
+FOR (278)
+ENDFOR (279)
+WHILE (280) 58
+ENDWHILE (281) 58
+FBEGIN (282) 29 33
+FEND (283) 29 33
+LWR (284) 86
+LEQ (285) 88
+GTR (286) 87
+GEQ (287) 89
+EQ (288) 91
+NEQ (289) 90
+PLUS (290) 78
+MINUS (291) 79
+MTP (292) 80
+DVD (293) 81
+MOD (294) 82
+AND (295) 93
+OR (296) 93
+PRINT (297) 72
+EVAL_FCT (298) 51
+CALL (299) 85
+ASGN (300) 23 25 47
+STRVAL (301) 74
+INTVAL (302) 73
+BOOLVAL (303) 75
+FLOATVAL (304) 76
 
 
 Nonterminals, with rules where they appear
 
-    $accept (53)
-        on left: 0
-    program (54)
-        on left: 1
-        on right: 0
-    glb_declarations (55)
-        on left: 2 3 4 5 6
-        on right: 1 2 3 4 5
-    struct_decl (56)
-        on left: 8
-        on right: 5
-    $@1 (57)
-        on left: 7
-        on right: 8
-    struct_body (58)
-        on left: 9 10
-        on right: 8 9
-    class_decl (59)
-        on left: 12
-        on right: 4
-    $@2 (60)
-        on left: 11
-        on right: 12
-    class_body (61)
-        on left: 13 14 15 16 17
-        on right: 12 13 14 15 16
-    acces_modifier (62)
-        on left: 18 19 20
-        on right: 13 14
-    var_decl (63)
-        on left: 21
-        on right: 2 9 13 15 49
-    variable_list (64)
-        on left: 22 23 24 25
-        on right: 21 22 25
-    fct_decl <fct> (65)
-        on left: 29 33
-        on right: 3 14 16
-    $@3 (66)
-        on left: 26
-        on right: 29
-    @4 (67)
-        on left: 27
-        on right: 29
-    $@5 (68)
-        on left: 28
-        on right: 29
-    @6 (69)
-        on left: 30
-        on right: 33
-    $@7 (70)
-        on left: 31
-        on right: 33
-    $@8 (71)
-        on left: 32
-        on right: 33
-    param_list (72)
-        on left: 34 35
-        on right: 29 34
-    param (73)
-        on left: 36
-        on right: 34 35
-    var_type <var> (74)
-        on left: 37 38 39 40
-        on right: 21 29 33 36
-    main_body (75)
-        on left: 43
-        on right: 1
-    $@9 (76)
-        on left: 41
-        on right: 43
-    $@10 (77)
-        on left: 42
-        on right: 43
-    body (78)
-        on left: 44 45
-        on right: 29 33 43 44 58 62 64 66 67 69 71
-    statement (79)
-        on left: 46 47 48 49 50 51
-        on right: 44
-    fct_call <var> (80)
-        on left: 53 54
-        on right: 83
-    $@11 (81)
-        on left: 52
-        on right: 53
-    param_called_list (82)
-        on left: 55 56
-        on right: 53 55
-    control (83)
-        on left: 58 59
-        on right: 48
-    $@12 (84)
-        on left: 57
-        on right: 58
-    if2 (85)
-        on left: 61
-        on right: 59
-    $@13 (86)
-        on left: 60
-        on right: 61
-    if (87)
-        on left: 62 64 66
-        on right: 61
-    $@14 (88)
-        on left: 63
-        on right: 64
-    $@15 (89)
-        on left: 65
-        on right: 66
-    eif (90)
-        on left: 67 69 71
-        on right: 66 71
-    $@16 (91)
-        on left: 68
-        on right: 69
-    $@17 (92)
-        on left: 70
-        on right: 71
-    print_call (93)
-        on left: 72
-        on right: 50
-    expression <var> (94)
-        on left: 73 74 75 76 77 78 79 80 81 82 83
-        on right: 23 25 46 47 51 55 56 72 76 77 78 79 80 82 84 85 86 87 88 89 91
-    binary_expression <var> (95)
-        on left: 84 85 86 87 88 89 91
-        on right: 58 62 64 66 67 69 71 81
-    @18 (96)
-        on left: 90
-        on right: 91
+$accept (54)
+    on left: 0
+program (55)
+    on left: 1, on right: 0
+glb_declarations (56)
+    on left: 2 3 4 5 6, on right: 1 2 3 4 5
+struct_decl (57)
+    on left: 8, on right: 5
+$@1 (58)
+    on left: 7, on right: 8
+struct_body (59)
+    on left: 9 10, on right: 8 9
+class_decl (60)
+    on left: 12, on right: 4
+$@2 (61)
+    on left: 11, on right: 12
+class_body (62)
+    on left: 13 14 15 16 17, on right: 12 13 14 15 16
+acces_modifier (63)
+    on left: 18 19 20, on right: 13 14
+var_decl (64)
+    on left: 21, on right: 2 9 13 15 49
+variable_list (65)
+    on left: 22 23 24 25, on right: 21 22 25
+fct_decl (66)
+    on left: 29 33, on right: 3 14 16
+$@3 (67)
+    on left: 26, on right: 29
+@4 (68)
+    on left: 27, on right: 29
+$@5 (69)
+    on left: 28, on right: 29
+@6 (70)
+    on left: 30, on right: 33
+$@7 (71)
+    on left: 31, on right: 33
+$@8 (72)
+    on left: 32, on right: 33
+param_list (73)
+    on left: 34 35, on right: 29 34
+param (74)
+    on left: 36, on right: 34 35
+var_type (75)
+    on left: 37 38 39 40, on right: 21 29 33 36
+main_body (76)
+    on left: 43, on right: 1
+$@9 (77)
+    on left: 41, on right: 43
+$@10 (78)
+    on left: 42, on right: 43
+body (79)
+    on left: 44 45, on right: 29 33 43 44 58 62 64 66 67 69 71
+statement (80)
+    on left: 46 47 48 49 50 51, on right: 44
+fct_call (81)
+    on left: 53 54, on right: 85
+@11 (82)
+    on left: 52, on right: 53
+param_called_list (83)
+    on left: 55 56, on right: 53 55
+control (84)
+    on left: 58 59, on right: 48
+$@12 (85)
+    on left: 57, on right: 58
+if2 (86)
+    on left: 61, on right: 59
+$@13 (87)
+    on left: 60, on right: 61
+if (88)
+    on left: 62 64 66, on right: 61
+$@14 (89)
+    on left: 63, on right: 64
+$@15 (90)
+    on left: 65, on right: 66
+eif (91)
+    on left: 67 69 71, on right: 66 71
+$@16 (92)
+    on left: 68, on right: 69
+$@17 (93)
+    on left: 70, on right: 71
+print_call (94)
+    on left: 72, on right: 50
+expression (95)
+    on left: 73 74 75 76 77 78 79 80 81 82 83 84 85, on right: 23 25
+    46 47 51 55 56 72 78 79 80 81 82 84 86 87 88 89 90 91 93
+binary_expression (96)
+    on left: 86 87 88 89 90 91 93, on right: 58 62 64 66 67 69 71 83
+@18 (97)
+    on left: 92, on right: 93
 
 
 State 0
@@ -553,21 +513,23 @@ State 22
     CALL      shift, and go to state 33
     STRVAL    shift, and go to state 34
     INTVAL    shift, and go to state 35
-    '('       shift, and go to state 36
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
 
     IF        reduce using rule 60 ($@13)
     $default  reduce using rule 42 ($@10)
 
-    var_decl           go to state 37
-    var_type           go to state 38
-    $@10               go to state 39
-    statement          go to state 40
-    control            go to state 41
-    if2                go to state 42
-    $@13               go to state 43
-    print_call         go to state 44
-    expression         go to state 45
-    binary_expression  go to state 46
+    var_decl           go to state 39
+    var_type           go to state 40
+    $@10               go to state 41
+    statement          go to state 42
+    control            go to state 43
+    if2                go to state 44
+    $@13               go to state 45
+    print_call         go to state 46
+    expression         go to state 47
+    binary_expression  go to state 48
 
 
 State 23
@@ -576,7 +538,7 @@ State 23
 
     $default  reduce using rule 10 (struct_body)
 
-    struct_body  go to state 47
+    struct_body  go to state 49
 
 
 State 24
@@ -585,21 +547,23 @@ State 24
 
     $default  reduce using rule 17 (class_body)
 
-    class_body  go to state 48
+    class_body  go to state 50
 
 
 State 25
 
    23 variable_list: ID ASGN . expression
 
-    ID      shift, and go to state 49
-    CALL    shift, and go to state 33
-    STRVAL  shift, and go to state 34
-    INTVAL  shift, and go to state 35
-    '('     shift, and go to state 36
+    ID        shift, and go to state 51
+    CALL      shift, and go to state 33
+    STRVAL    shift, and go to state 34
+    INTVAL    shift, and go to state 35
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
 
-    expression         go to state 50
-    binary_expression  go to state 46
+    expression         go to state 52
+    binary_expression  go to state 48
 
 
 State 26
@@ -610,8 +574,8 @@ State 26
     ')'       reduce using rule 30 (@6)
     $default  reduce using rule 26 ($@3)
 
-    $@3  go to state 51
-    @6   go to state 52
+    $@3  go to state 53
+    @6   go to state 54
 
 
 State 27
@@ -626,17 +590,17 @@ State 28
    22 variable_list: variable_list ',' . ID
    25              | variable_list ',' . ID ASGN expression
 
-    ID  shift, and go to state 53
+    ID  shift, and go to state 55
 
 
 State 29
 
    47 statement: ID . ASGN expression ';'
-   75 expression: ID .
+   77 expression: ID .
 
-    ASGN  shift, and go to state 54
+    ASGN  shift, and go to state 56
 
-    $default  reduce using rule 75 (expression)
+    $default  reduce using rule 77 (expression)
 
 
 State 30
@@ -645,30 +609,30 @@ State 30
 
     $default  reduce using rule 57 ($@12)
 
-    $@12  go to state 55
+    $@12  go to state 57
 
 
 State 31
 
    72 print_call: PRINT . '(' expression ')'
 
-    '('  shift, and go to state 56
+    '('  shift, and go to state 58
 
 
 State 32
 
    51 statement: EVAL_FCT . '(' expression ')' ';'
 
-    '('  shift, and go to state 57
+    '('  shift, and go to state 59
 
 
 State 33
 
-   83 expression: CALL . fct_call
+   85 expression: CALL . fct_call
 
-    ID  shift, and go to state 58
+    ID  shift, and go to state 60
 
-    fct_call  go to state 59
+    fct_call  go to state 61
 
 
 State 34
@@ -687,117 +651,133 @@ State 35
 
 State 36
 
-   82 expression: '(' . expression ')'
+   75 expression: BOOLVAL .
 
-    ID      shift, and go to state 49
-    CALL    shift, and go to state 33
-    STRVAL  shift, and go to state 34
-    INTVAL  shift, and go to state 35
-    '('     shift, and go to state 36
-
-    expression         go to state 60
-    binary_expression  go to state 46
+    $default  reduce using rule 75 (expression)
 
 
 State 37
+
+   76 expression: FLOATVAL .
+
+    $default  reduce using rule 76 (expression)
+
+
+State 38
+
+   84 expression: '(' . expression ')'
+
+    ID        shift, and go to state 51
+    CALL      shift, and go to state 33
+    STRVAL    shift, and go to state 34
+    INTVAL    shift, and go to state 35
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
+
+    expression         go to state 62
+    binary_expression  go to state 48
+
+
+State 39
 
    49 statement: var_decl .
 
     $default  reduce using rule 49 (statement)
 
 
-State 38
+State 40
 
    21 var_decl: var_type . variable_list ';'
 
-    ID  shift, and go to state 61
+    ID  shift, and go to state 63
 
     variable_list  go to state 21
 
 
-State 39
+State 41
 
    43 main_body: BEGIN_P $@9 body $@10 . END_P
 
-    END_P  shift, and go to state 62
+    END_P  shift, and go to state 64
 
 
-State 40
+State 42
 
    44 body: body statement .
 
     $default  reduce using rule 44 (body)
 
 
-State 41
+State 43
 
    48 statement: control .
 
     $default  reduce using rule 48 (statement)
 
 
-State 42
+State 44
 
    59 control: if2 .
 
     $default  reduce using rule 59 (control)
 
 
-State 43
+State 45
 
    61 if2: $@13 . if
 
-    IF  shift, and go to state 63
+    IF  shift, and go to state 65
 
-    if  go to state 64
-
-
-State 44
-
-   50 statement: print_call . ';'
-
-    ';'  shift, and go to state 65
-
-
-State 45
-
-   46 statement: expression . ';'
-   76 expression: expression . PLUS expression
-   77           | expression . MINUS expression
-   78           | expression . MTP expression
-   79           | expression . DVD expression
-   80           | expression . MOD expression
-   84 binary_expression: expression . LWR expression
-   85                  | expression . GTR expression
-   86                  | expression . LEQ expression
-   87                  | expression . GEQ expression
-   88                  | expression . NEQ expression
-   89                  | expression . EQ expression
-   91                  | expression . AND expression @18 expression OR expression
-
-    LWR    shift, and go to state 66
-    LEQ    shift, and go to state 67
-    GTR    shift, and go to state 68
-    GEQ    shift, and go to state 69
-    EQ     shift, and go to state 70
-    NEQ    shift, and go to state 71
-    PLUS   shift, and go to state 72
-    MINUS  shift, and go to state 73
-    MTP    shift, and go to state 74
-    DVD    shift, and go to state 75
-    MOD    shift, and go to state 76
-    AND    shift, and go to state 77
-    ';'    shift, and go to state 78
+    if  go to state 66
 
 
 State 46
 
-   81 expression: binary_expression .
+   50 statement: print_call . ';'
 
-    $default  reduce using rule 81 (expression)
+    ';'  shift, and go to state 67
 
 
 State 47
+
+   46 statement: expression . ';'
+   78 expression: expression . PLUS expression
+   79           | expression . MINUS expression
+   80           | expression . MTP expression
+   81           | expression . DVD expression
+   82           | expression . MOD expression
+   86 binary_expression: expression . LWR expression
+   87                  | expression . GTR expression
+   88                  | expression . LEQ expression
+   89                  | expression . GEQ expression
+   90                  | expression . NEQ expression
+   91                  | expression . EQ expression
+   93                  | expression . AND expression @18 expression OR expression
+
+    LWR    shift, and go to state 68
+    LEQ    shift, and go to state 69
+    GTR    shift, and go to state 70
+    GEQ    shift, and go to state 71
+    EQ     shift, and go to state 72
+    NEQ    shift, and go to state 73
+    PLUS   shift, and go to state 74
+    MINUS  shift, and go to state 75
+    MTP    shift, and go to state 76
+    DVD    shift, and go to state 77
+    MOD    shift, and go to state 78
+    AND    shift, and go to state 79
+    ';'    shift, and go to state 80
+
+
+State 48
+
+   83 expression: binary_expression .
+
+    $default  reduce using rule 83 (expression)
+
+
+State 49
 
     8 struct_decl: STRUC $@1 ID struct_body . STRUCEND
     9 struct_body: struct_body . var_decl
@@ -806,13 +786,13 @@ State 47
     FLOAT     shift, and go to state 5
     STRING    shift, and go to state 6
     BOOL      shift, and go to state 7
-    STRUCEND  shift, and go to state 79
+    STRUCEND  shift, and go to state 81
 
-    var_decl  go to state 80
-    var_type  go to state 38
+    var_decl  go to state 82
+    var_type  go to state 40
 
 
-State 48
+State 50
 
    12 class_decl: CLAS $@2 ID class_body . CLASEND
    13 class_body: class_body . acces_modifier var_decl
@@ -824,57 +804,57 @@ State 48
     FLOAT      shift, and go to state 5
     STRING     shift, and go to state 6
     BOOL       shift, and go to state 7
-    CLASEND    shift, and go to state 81
-    PUBLIC     shift, and go to state 82
-    PRIVATE    shift, and go to state 83
-    PROTECTED  shift, and go to state 84
+    CLASEND    shift, and go to state 83
+    PUBLIC     shift, and go to state 84
+    PRIVATE    shift, and go to state 85
+    PROTECTED  shift, and go to state 86
 
-    acces_modifier  go to state 85
-    var_decl        go to state 86
-    fct_decl        go to state 87
+    acces_modifier  go to state 87
+    var_decl        go to state 88
+    fct_decl        go to state 89
     var_type        go to state 15
 
 
-State 49
+State 51
 
-   75 expression: ID .
+   77 expression: ID .
 
-    $default  reduce using rule 75 (expression)
+    $default  reduce using rule 77 (expression)
 
 
-State 50
+State 52
 
    23 variable_list: ID ASGN expression .
-   76 expression: expression . PLUS expression
-   77           | expression . MINUS expression
-   78           | expression . MTP expression
-   79           | expression . DVD expression
-   80           | expression . MOD expression
-   84 binary_expression: expression . LWR expression
-   85                  | expression . GTR expression
-   86                  | expression . LEQ expression
-   87                  | expression . GEQ expression
-   88                  | expression . NEQ expression
-   89                  | expression . EQ expression
-   91                  | expression . AND expression @18 expression OR expression
+   78 expression: expression . PLUS expression
+   79           | expression . MINUS expression
+   80           | expression . MTP expression
+   81           | expression . DVD expression
+   82           | expression . MOD expression
+   86 binary_expression: expression . LWR expression
+   87                  | expression . GTR expression
+   88                  | expression . LEQ expression
+   89                  | expression . GEQ expression
+   90                  | expression . NEQ expression
+   91                  | expression . EQ expression
+   93                  | expression . AND expression @18 expression OR expression
 
-    LWR    shift, and go to state 66
-    LEQ    shift, and go to state 67
-    GTR    shift, and go to state 68
-    GEQ    shift, and go to state 69
-    EQ     shift, and go to state 70
-    NEQ    shift, and go to state 71
-    PLUS   shift, and go to state 72
-    MINUS  shift, and go to state 73
-    MTP    shift, and go to state 74
-    DVD    shift, and go to state 75
-    MOD    shift, and go to state 76
-    AND    shift, and go to state 77
+    LWR    shift, and go to state 68
+    LEQ    shift, and go to state 69
+    GTR    shift, and go to state 70
+    GEQ    shift, and go to state 71
+    EQ     shift, and go to state 72
+    NEQ    shift, and go to state 73
+    PLUS   shift, and go to state 74
+    MINUS  shift, and go to state 75
+    MTP    shift, and go to state 76
+    DVD    shift, and go to state 77
+    MOD    shift, and go to state 78
+    AND    shift, and go to state 79
 
     $default  reduce using rule 23 (variable_list)
 
 
-State 51
+State 53
 
    29 fct_decl: var_type ID '(' $@3 . param_list ')' @4 FBEGIN $@5 body FEND
 
@@ -883,124 +863,130 @@ State 51
     STRING  shift, and go to state 6
     BOOL    shift, and go to state 7
 
-    param_list  go to state 88
-    param       go to state 89
-    var_type    go to state 90
-
-
-State 52
-
-   33 fct_decl: var_type ID '(' @6 . ')' $@7 FBEGIN $@8 body FEND
-
-    ')'  shift, and go to state 91
-
-
-State 53
-
-   22 variable_list: variable_list ',' ID .
-   25              | variable_list ',' ID . ASGN expression
-
-    ASGN  shift, and go to state 92
-
-    $default  reduce using rule 22 (variable_list)
+    param_list  go to state 90
+    param       go to state 91
+    var_type    go to state 92
 
 
 State 54
 
-   47 statement: ID ASGN . expression ';'
+   33 fct_decl: var_type ID '(' @6 . ')' $@7 FBEGIN $@8 body FEND
 
-    ID      shift, and go to state 49
-    CALL    shift, and go to state 33
-    STRVAL  shift, and go to state 34
-    INTVAL  shift, and go to state 35
-    '('     shift, and go to state 36
-
-    expression         go to state 93
-    binary_expression  go to state 46
+    ')'  shift, and go to state 93
 
 
 State 55
 
-   58 control: WHILE $@12 . '(' binary_expression ')' body ENDWHILE
+   22 variable_list: variable_list ',' ID .
+   25              | variable_list ',' ID . ASGN expression
 
-    '('  shift, and go to state 94
+    ASGN  shift, and go to state 94
+
+    $default  reduce using rule 22 (variable_list)
 
 
 State 56
 
-   72 print_call: PRINT '(' . expression ')'
+   47 statement: ID ASGN . expression ';'
 
-    ID      shift, and go to state 49
-    CALL    shift, and go to state 33
-    STRVAL  shift, and go to state 34
-    INTVAL  shift, and go to state 35
-    '('     shift, and go to state 36
+    ID        shift, and go to state 51
+    CALL      shift, and go to state 33
+    STRVAL    shift, and go to state 34
+    INTVAL    shift, and go to state 35
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
 
     expression         go to state 95
-    binary_expression  go to state 46
+    binary_expression  go to state 48
 
 
 State 57
 
-   51 statement: EVAL_FCT '(' . expression ')' ';'
+   58 control: WHILE $@12 . '(' binary_expression ')' body ENDWHILE
 
-    ID      shift, and go to state 49
-    CALL    shift, and go to state 33
-    STRVAL  shift, and go to state 34
-    INTVAL  shift, and go to state 35
-    '('     shift, and go to state 36
-
-    expression         go to state 96
-    binary_expression  go to state 46
+    '('  shift, and go to state 96
 
 
 State 58
 
-   53 fct_call: ID . '(' $@11 param_called_list ')'
-   54         | ID . '(' ')'
+   72 print_call: PRINT '(' . expression ')'
 
-    '('  shift, and go to state 97
+    ID        shift, and go to state 51
+    CALL      shift, and go to state 33
+    STRVAL    shift, and go to state 34
+    INTVAL    shift, and go to state 35
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
+
+    expression         go to state 97
+    binary_expression  go to state 48
 
 
 State 59
 
-   83 expression: CALL fct_call .
+   51 statement: EVAL_FCT '(' . expression ')' ';'
 
-    $default  reduce using rule 83 (expression)
+    ID        shift, and go to state 51
+    CALL      shift, and go to state 33
+    STRVAL    shift, and go to state 34
+    INTVAL    shift, and go to state 35
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
+
+    expression         go to state 98
+    binary_expression  go to state 48
 
 
 State 60
 
-   76 expression: expression . PLUS expression
-   77           | expression . MINUS expression
-   78           | expression . MTP expression
-   79           | expression . DVD expression
-   80           | expression . MOD expression
-   82           | '(' expression . ')'
-   84 binary_expression: expression . LWR expression
-   85                  | expression . GTR expression
-   86                  | expression . LEQ expression
-   87                  | expression . GEQ expression
-   88                  | expression . NEQ expression
-   89                  | expression . EQ expression
-   91                  | expression . AND expression @18 expression OR expression
+   53 fct_call: ID . '(' @11 param_called_list ')'
+   54         | ID . '(' ')'
 
-    LWR    shift, and go to state 66
-    LEQ    shift, and go to state 67
-    GTR    shift, and go to state 68
-    GEQ    shift, and go to state 69
-    EQ     shift, and go to state 70
-    NEQ    shift, and go to state 71
-    PLUS   shift, and go to state 72
-    MINUS  shift, and go to state 73
-    MTP    shift, and go to state 74
-    DVD    shift, and go to state 75
-    MOD    shift, and go to state 76
-    AND    shift, and go to state 77
-    ')'    shift, and go to state 98
+    '('  shift, and go to state 99
 
 
 State 61
+
+   85 expression: CALL fct_call .
+
+    $default  reduce using rule 85 (expression)
+
+
+State 62
+
+   78 expression: expression . PLUS expression
+   79           | expression . MINUS expression
+   80           | expression . MTP expression
+   81           | expression . DVD expression
+   82           | expression . MOD expression
+   84           | '(' expression . ')'
+   86 binary_expression: expression . LWR expression
+   87                  | expression . GTR expression
+   88                  | expression . LEQ expression
+   89                  | expression . GEQ expression
+   90                  | expression . NEQ expression
+   91                  | expression . EQ expression
+   93                  | expression . AND expression @18 expression OR expression
+
+    LWR    shift, and go to state 68
+    LEQ    shift, and go to state 69
+    GTR    shift, and go to state 70
+    GEQ    shift, and go to state 71
+    EQ     shift, and go to state 72
+    NEQ    shift, and go to state 73
+    PLUS   shift, and go to state 74
+    MINUS  shift, and go to state 75
+    MTP    shift, and go to state 76
+    DVD    shift, and go to state 77
+    MOD    shift, and go to state 78
+    AND    shift, and go to state 79
+    ')'    shift, and go to state 100
+
+
+State 63
 
    23 variable_list: ID . ASGN expression
    24              | ID .
@@ -1010,254 +996,278 @@ State 61
     $default  reduce using rule 24 (variable_list)
 
 
-State 62
+State 64
 
    43 main_body: BEGIN_P $@9 body $@10 END_P .
 
     $default  reduce using rule 43 (main_body)
 
 
-State 63
+State 65
 
    62 if: IF . '(' binary_expression ')' THEN body ENDIF
    64   | IF . '(' binary_expression ')' THEN body ELSE $@14 body ENDIF
    66   | IF . '(' binary_expression ')' THEN body $@15 eif ENDIF
 
-    '('  shift, and go to state 99
+    '('  shift, and go to state 101
 
 
-State 64
+State 66
 
    61 if2: $@13 if .
 
     $default  reduce using rule 61 (if2)
 
 
-State 65
+State 67
 
    50 statement: print_call ';' .
 
     $default  reduce using rule 50 (statement)
 
 
-State 66
-
-   84 binary_expression: expression LWR . expression
-
-    ID      shift, and go to state 49
-    CALL    shift, and go to state 33
-    STRVAL  shift, and go to state 34
-    INTVAL  shift, and go to state 35
-    '('     shift, and go to state 36
-
-    expression         go to state 100
-    binary_expression  go to state 46
-
-
-State 67
-
-   86 binary_expression: expression LEQ . expression
-
-    ID      shift, and go to state 49
-    CALL    shift, and go to state 33
-    STRVAL  shift, and go to state 34
-    INTVAL  shift, and go to state 35
-    '('     shift, and go to state 36
-
-    expression         go to state 101
-    binary_expression  go to state 46
-
-
 State 68
 
-   85 binary_expression: expression GTR . expression
+   86 binary_expression: expression LWR . expression
 
-    ID      shift, and go to state 49
-    CALL    shift, and go to state 33
-    STRVAL  shift, and go to state 34
-    INTVAL  shift, and go to state 35
-    '('     shift, and go to state 36
+    ID        shift, and go to state 51
+    CALL      shift, and go to state 33
+    STRVAL    shift, and go to state 34
+    INTVAL    shift, and go to state 35
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
 
     expression         go to state 102
-    binary_expression  go to state 46
+    binary_expression  go to state 48
 
 
 State 69
 
-   87 binary_expression: expression GEQ . expression
+   88 binary_expression: expression LEQ . expression
 
-    ID      shift, and go to state 49
-    CALL    shift, and go to state 33
-    STRVAL  shift, and go to state 34
-    INTVAL  shift, and go to state 35
-    '('     shift, and go to state 36
+    ID        shift, and go to state 51
+    CALL      shift, and go to state 33
+    STRVAL    shift, and go to state 34
+    INTVAL    shift, and go to state 35
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
 
     expression         go to state 103
-    binary_expression  go to state 46
+    binary_expression  go to state 48
 
 
 State 70
 
-   89 binary_expression: expression EQ . expression
+   87 binary_expression: expression GTR . expression
 
-    ID      shift, and go to state 49
-    CALL    shift, and go to state 33
-    STRVAL  shift, and go to state 34
-    INTVAL  shift, and go to state 35
-    '('     shift, and go to state 36
+    ID        shift, and go to state 51
+    CALL      shift, and go to state 33
+    STRVAL    shift, and go to state 34
+    INTVAL    shift, and go to state 35
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
 
     expression         go to state 104
-    binary_expression  go to state 46
+    binary_expression  go to state 48
 
 
 State 71
 
-   88 binary_expression: expression NEQ . expression
+   89 binary_expression: expression GEQ . expression
 
-    ID      shift, and go to state 49
-    CALL    shift, and go to state 33
-    STRVAL  shift, and go to state 34
-    INTVAL  shift, and go to state 35
-    '('     shift, and go to state 36
+    ID        shift, and go to state 51
+    CALL      shift, and go to state 33
+    STRVAL    shift, and go to state 34
+    INTVAL    shift, and go to state 35
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
 
     expression         go to state 105
-    binary_expression  go to state 46
+    binary_expression  go to state 48
 
 
 State 72
 
-   76 expression: expression PLUS . expression
+   91 binary_expression: expression EQ . expression
 
-    ID      shift, and go to state 49
-    CALL    shift, and go to state 33
-    STRVAL  shift, and go to state 34
-    INTVAL  shift, and go to state 35
-    '('     shift, and go to state 36
+    ID        shift, and go to state 51
+    CALL      shift, and go to state 33
+    STRVAL    shift, and go to state 34
+    INTVAL    shift, and go to state 35
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
 
     expression         go to state 106
-    binary_expression  go to state 46
+    binary_expression  go to state 48
 
 
 State 73
 
-   77 expression: expression MINUS . expression
+   90 binary_expression: expression NEQ . expression
 
-    ID      shift, and go to state 49
-    CALL    shift, and go to state 33
-    STRVAL  shift, and go to state 34
-    INTVAL  shift, and go to state 35
-    '('     shift, and go to state 36
+    ID        shift, and go to state 51
+    CALL      shift, and go to state 33
+    STRVAL    shift, and go to state 34
+    INTVAL    shift, and go to state 35
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
 
     expression         go to state 107
-    binary_expression  go to state 46
+    binary_expression  go to state 48
 
 
 State 74
 
-   78 expression: expression MTP . expression
+   78 expression: expression PLUS . expression
 
-    ID      shift, and go to state 49
-    CALL    shift, and go to state 33
-    STRVAL  shift, and go to state 34
-    INTVAL  shift, and go to state 35
-    '('     shift, and go to state 36
+    ID        shift, and go to state 51
+    CALL      shift, and go to state 33
+    STRVAL    shift, and go to state 34
+    INTVAL    shift, and go to state 35
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
 
     expression         go to state 108
-    binary_expression  go to state 46
+    binary_expression  go to state 48
 
 
 State 75
 
-   79 expression: expression DVD . expression
+   79 expression: expression MINUS . expression
 
-    ID      shift, and go to state 49
-    CALL    shift, and go to state 33
-    STRVAL  shift, and go to state 34
-    INTVAL  shift, and go to state 35
-    '('     shift, and go to state 36
+    ID        shift, and go to state 51
+    CALL      shift, and go to state 33
+    STRVAL    shift, and go to state 34
+    INTVAL    shift, and go to state 35
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
 
     expression         go to state 109
-    binary_expression  go to state 46
+    binary_expression  go to state 48
 
 
 State 76
 
-   80 expression: expression MOD . expression
+   80 expression: expression MTP . expression
 
-    ID      shift, and go to state 49
-    CALL    shift, and go to state 33
-    STRVAL  shift, and go to state 34
-    INTVAL  shift, and go to state 35
-    '('     shift, and go to state 36
+    ID        shift, and go to state 51
+    CALL      shift, and go to state 33
+    STRVAL    shift, and go to state 34
+    INTVAL    shift, and go to state 35
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
 
     expression         go to state 110
-    binary_expression  go to state 46
+    binary_expression  go to state 48
 
 
 State 77
 
-   91 binary_expression: expression AND . expression @18 expression OR expression
+   81 expression: expression DVD . expression
 
-    ID      shift, and go to state 49
-    CALL    shift, and go to state 33
-    STRVAL  shift, and go to state 34
-    INTVAL  shift, and go to state 35
-    '('     shift, and go to state 36
+    ID        shift, and go to state 51
+    CALL      shift, and go to state 33
+    STRVAL    shift, and go to state 34
+    INTVAL    shift, and go to state 35
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
 
     expression         go to state 111
-    binary_expression  go to state 46
+    binary_expression  go to state 48
 
 
 State 78
+
+   82 expression: expression MOD . expression
+
+    ID        shift, and go to state 51
+    CALL      shift, and go to state 33
+    STRVAL    shift, and go to state 34
+    INTVAL    shift, and go to state 35
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
+
+    expression         go to state 112
+    binary_expression  go to state 48
+
+
+State 79
+
+   93 binary_expression: expression AND . expression @18 expression OR expression
+
+    ID        shift, and go to state 51
+    CALL      shift, and go to state 33
+    STRVAL    shift, and go to state 34
+    INTVAL    shift, and go to state 35
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
+
+    expression         go to state 113
+    binary_expression  go to state 48
+
+
+State 80
 
    46 statement: expression ';' .
 
     $default  reduce using rule 46 (statement)
 
 
-State 79
+State 81
 
     8 struct_decl: STRUC $@1 ID struct_body STRUCEND .
 
     $default  reduce using rule 8 (struct_decl)
 
 
-State 80
+State 82
 
     9 struct_body: struct_body var_decl .
 
     $default  reduce using rule 9 (struct_body)
 
 
-State 81
+State 83
 
    12 class_decl: CLAS $@2 ID class_body CLASEND .
 
     $default  reduce using rule 12 (class_decl)
 
 
-State 82
+State 84
 
    18 acces_modifier: PUBLIC .
 
     $default  reduce using rule 18 (acces_modifier)
 
 
-State 83
+State 85
 
    19 acces_modifier: PRIVATE .
 
     $default  reduce using rule 19 (acces_modifier)
 
 
-State 84
+State 86
 
    20 acces_modifier: PROTECTED .
 
     $default  reduce using rule 20 (acces_modifier)
 
 
-State 85
+State 87
 
    13 class_body: class_body acces_modifier . var_decl
    14           | class_body acces_modifier . fct_decl
@@ -1267,515 +1277,521 @@ State 85
     STRING  shift, and go to state 6
     BOOL    shift, and go to state 7
 
-    var_decl  go to state 112
-    fct_decl  go to state 113
+    var_decl  go to state 114
+    fct_decl  go to state 115
     var_type  go to state 15
 
 
-State 86
+State 88
 
    15 class_body: class_body var_decl .
 
     $default  reduce using rule 15 (class_body)
 
 
-State 87
+State 89
 
    16 class_body: class_body fct_decl .
 
     $default  reduce using rule 16 (class_body)
 
 
-State 88
+State 90
 
    29 fct_decl: var_type ID '(' $@3 param_list . ')' @4 FBEGIN $@5 body FEND
    34 param_list: param_list . ',' param
 
-    ','  shift, and go to state 114
-    ')'  shift, and go to state 115
+    ','  shift, and go to state 116
+    ')'  shift, and go to state 117
 
 
-State 89
+State 91
 
    35 param_list: param .
 
     $default  reduce using rule 35 (param_list)
 
 
-State 90
+State 92
 
    36 param: var_type . ID
 
-    ID  shift, and go to state 116
+    ID  shift, and go to state 118
 
 
-State 91
+State 93
 
    33 fct_decl: var_type ID '(' @6 ')' . $@7 FBEGIN $@8 body FEND
 
     $default  reduce using rule 31 ($@7)
 
-    $@7  go to state 117
-
-
-State 92
-
-   25 variable_list: variable_list ',' ID ASGN . expression
-
-    ID      shift, and go to state 49
-    CALL    shift, and go to state 33
-    STRVAL  shift, and go to state 34
-    INTVAL  shift, and go to state 35
-    '('     shift, and go to state 36
-
-    expression         go to state 118
-    binary_expression  go to state 46
-
-
-State 93
-
-   47 statement: ID ASGN expression . ';'
-   76 expression: expression . PLUS expression
-   77           | expression . MINUS expression
-   78           | expression . MTP expression
-   79           | expression . DVD expression
-   80           | expression . MOD expression
-   84 binary_expression: expression . LWR expression
-   85                  | expression . GTR expression
-   86                  | expression . LEQ expression
-   87                  | expression . GEQ expression
-   88                  | expression . NEQ expression
-   89                  | expression . EQ expression
-   91                  | expression . AND expression @18 expression OR expression
-
-    LWR    shift, and go to state 66
-    LEQ    shift, and go to state 67
-    GTR    shift, and go to state 68
-    GEQ    shift, and go to state 69
-    EQ     shift, and go to state 70
-    NEQ    shift, and go to state 71
-    PLUS   shift, and go to state 72
-    MINUS  shift, and go to state 73
-    MTP    shift, and go to state 74
-    DVD    shift, and go to state 75
-    MOD    shift, and go to state 76
-    AND    shift, and go to state 77
-    ';'    shift, and go to state 119
+    $@7  go to state 119
 
 
 State 94
 
-   58 control: WHILE $@12 '(' . binary_expression ')' body ENDWHILE
+   25 variable_list: variable_list ',' ID ASGN . expression
 
-    ID      shift, and go to state 49
-    CALL    shift, and go to state 33
-    STRVAL  shift, and go to state 34
-    INTVAL  shift, and go to state 35
-    '('     shift, and go to state 36
+    ID        shift, and go to state 51
+    CALL      shift, and go to state 33
+    STRVAL    shift, and go to state 34
+    INTVAL    shift, and go to state 35
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
 
     expression         go to state 120
-    binary_expression  go to state 121
+    binary_expression  go to state 48
 
 
 State 95
 
-   72 print_call: PRINT '(' expression . ')'
-   76 expression: expression . PLUS expression
-   77           | expression . MINUS expression
-   78           | expression . MTP expression
-   79           | expression . DVD expression
-   80           | expression . MOD expression
-   84 binary_expression: expression . LWR expression
-   85                  | expression . GTR expression
-   86                  | expression . LEQ expression
-   87                  | expression . GEQ expression
-   88                  | expression . NEQ expression
-   89                  | expression . EQ expression
-   91                  | expression . AND expression @18 expression OR expression
+   47 statement: ID ASGN expression . ';'
+   78 expression: expression . PLUS expression
+   79           | expression . MINUS expression
+   80           | expression . MTP expression
+   81           | expression . DVD expression
+   82           | expression . MOD expression
+   86 binary_expression: expression . LWR expression
+   87                  | expression . GTR expression
+   88                  | expression . LEQ expression
+   89                  | expression . GEQ expression
+   90                  | expression . NEQ expression
+   91                  | expression . EQ expression
+   93                  | expression . AND expression @18 expression OR expression
 
-    LWR    shift, and go to state 66
-    LEQ    shift, and go to state 67
-    GTR    shift, and go to state 68
-    GEQ    shift, and go to state 69
-    EQ     shift, and go to state 70
-    NEQ    shift, and go to state 71
-    PLUS   shift, and go to state 72
-    MINUS  shift, and go to state 73
-    MTP    shift, and go to state 74
-    DVD    shift, and go to state 75
-    MOD    shift, and go to state 76
-    AND    shift, and go to state 77
-    ')'    shift, and go to state 122
+    LWR    shift, and go to state 68
+    LEQ    shift, and go to state 69
+    GTR    shift, and go to state 70
+    GEQ    shift, and go to state 71
+    EQ     shift, and go to state 72
+    NEQ    shift, and go to state 73
+    PLUS   shift, and go to state 74
+    MINUS  shift, and go to state 75
+    MTP    shift, and go to state 76
+    DVD    shift, and go to state 77
+    MOD    shift, and go to state 78
+    AND    shift, and go to state 79
+    ';'    shift, and go to state 121
 
 
 State 96
 
-   51 statement: EVAL_FCT '(' expression . ')' ';'
-   76 expression: expression . PLUS expression
-   77           | expression . MINUS expression
-   78           | expression . MTP expression
-   79           | expression . DVD expression
-   80           | expression . MOD expression
-   84 binary_expression: expression . LWR expression
-   85                  | expression . GTR expression
-   86                  | expression . LEQ expression
-   87                  | expression . GEQ expression
-   88                  | expression . NEQ expression
-   89                  | expression . EQ expression
-   91                  | expression . AND expression @18 expression OR expression
+   58 control: WHILE $@12 '(' . binary_expression ')' body ENDWHILE
 
-    LWR    shift, and go to state 66
-    LEQ    shift, and go to state 67
-    GTR    shift, and go to state 68
-    GEQ    shift, and go to state 69
-    EQ     shift, and go to state 70
-    NEQ    shift, and go to state 71
-    PLUS   shift, and go to state 72
-    MINUS  shift, and go to state 73
-    MTP    shift, and go to state 74
-    DVD    shift, and go to state 75
-    MOD    shift, and go to state 76
-    AND    shift, and go to state 77
-    ')'    shift, and go to state 123
+    ID        shift, and go to state 51
+    CALL      shift, and go to state 33
+    STRVAL    shift, and go to state 34
+    INTVAL    shift, and go to state 35
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
+
+    expression         go to state 122
+    binary_expression  go to state 123
 
 
 State 97
 
-   53 fct_call: ID '(' . $@11 param_called_list ')'
-   54         | ID '(' . ')'
+   72 print_call: PRINT '(' expression . ')'
+   78 expression: expression . PLUS expression
+   79           | expression . MINUS expression
+   80           | expression . MTP expression
+   81           | expression . DVD expression
+   82           | expression . MOD expression
+   86 binary_expression: expression . LWR expression
+   87                  | expression . GTR expression
+   88                  | expression . LEQ expression
+   89                  | expression . GEQ expression
+   90                  | expression . NEQ expression
+   91                  | expression . EQ expression
+   93                  | expression . AND expression @18 expression OR expression
 
-    ')'  shift, and go to state 124
-
-    $default  reduce using rule 52 ($@11)
-
-    $@11  go to state 125
+    LWR    shift, and go to state 68
+    LEQ    shift, and go to state 69
+    GTR    shift, and go to state 70
+    GEQ    shift, and go to state 71
+    EQ     shift, and go to state 72
+    NEQ    shift, and go to state 73
+    PLUS   shift, and go to state 74
+    MINUS  shift, and go to state 75
+    MTP    shift, and go to state 76
+    DVD    shift, and go to state 77
+    MOD    shift, and go to state 78
+    AND    shift, and go to state 79
+    ')'    shift, and go to state 124
 
 
 State 98
 
-   82 expression: '(' expression ')' .
+   51 statement: EVAL_FCT '(' expression . ')' ';'
+   78 expression: expression . PLUS expression
+   79           | expression . MINUS expression
+   80           | expression . MTP expression
+   81           | expression . DVD expression
+   82           | expression . MOD expression
+   86 binary_expression: expression . LWR expression
+   87                  | expression . GTR expression
+   88                  | expression . LEQ expression
+   89                  | expression . GEQ expression
+   90                  | expression . NEQ expression
+   91                  | expression . EQ expression
+   93                  | expression . AND expression @18 expression OR expression
 
-    $default  reduce using rule 82 (expression)
+    LWR    shift, and go to state 68
+    LEQ    shift, and go to state 69
+    GTR    shift, and go to state 70
+    GEQ    shift, and go to state 71
+    EQ     shift, and go to state 72
+    NEQ    shift, and go to state 73
+    PLUS   shift, and go to state 74
+    MINUS  shift, and go to state 75
+    MTP    shift, and go to state 76
+    DVD    shift, and go to state 77
+    MOD    shift, and go to state 78
+    AND    shift, and go to state 79
+    ')'    shift, and go to state 125
 
 
 State 99
+
+   53 fct_call: ID '(' . @11 param_called_list ')'
+   54         | ID '(' . ')'
+
+    ')'  shift, and go to state 126
+
+    $default  reduce using rule 52 (@11)
+
+    @11  go to state 127
+
+
+State 100
+
+   84 expression: '(' expression ')' .
+
+    $default  reduce using rule 84 (expression)
+
+
+State 101
 
    62 if: IF '(' . binary_expression ')' THEN body ENDIF
    64   | IF '(' . binary_expression ')' THEN body ELSE $@14 body ENDIF
    66   | IF '(' . binary_expression ')' THEN body $@15 eif ENDIF
 
-    ID      shift, and go to state 49
-    CALL    shift, and go to state 33
-    STRVAL  shift, and go to state 34
-    INTVAL  shift, and go to state 35
-    '('     shift, and go to state 36
+    ID        shift, and go to state 51
+    CALL      shift, and go to state 33
+    STRVAL    shift, and go to state 34
+    INTVAL    shift, and go to state 35
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
 
-    expression         go to state 120
-    binary_expression  go to state 126
-
-
-State 100
-
-   76 expression: expression . PLUS expression
-   77           | expression . MINUS expression
-   78           | expression . MTP expression
-   79           | expression . DVD expression
-   80           | expression . MOD expression
-   84 binary_expression: expression . LWR expression
-   84                  | expression LWR expression .
-   85                  | expression . GTR expression
-   86                  | expression . LEQ expression
-   87                  | expression . GEQ expression
-   88                  | expression . NEQ expression
-   89                  | expression . EQ expression
-   91                  | expression . AND expression @18 expression OR expression
-
-    PLUS   shift, and go to state 72
-    MINUS  shift, and go to state 73
-    MTP    shift, and go to state 74
-    DVD    shift, and go to state 75
-    MOD    shift, and go to state 76
-
-    $default  reduce using rule 84 (binary_expression)
-
-
-State 101
-
-   76 expression: expression . PLUS expression
-   77           | expression . MINUS expression
-   78           | expression . MTP expression
-   79           | expression . DVD expression
-   80           | expression . MOD expression
-   84 binary_expression: expression . LWR expression
-   85                  | expression . GTR expression
-   86                  | expression . LEQ expression
-   86                  | expression LEQ expression .
-   87                  | expression . GEQ expression
-   88                  | expression . NEQ expression
-   89                  | expression . EQ expression
-   91                  | expression . AND expression @18 expression OR expression
-
-    PLUS   shift, and go to state 72
-    MINUS  shift, and go to state 73
-    MTP    shift, and go to state 74
-    DVD    shift, and go to state 75
-    MOD    shift, and go to state 76
-
-    $default  reduce using rule 86 (binary_expression)
+    expression         go to state 122
+    binary_expression  go to state 128
 
 
 State 102
 
-   76 expression: expression . PLUS expression
-   77           | expression . MINUS expression
-   78           | expression . MTP expression
-   79           | expression . DVD expression
-   80           | expression . MOD expression
-   84 binary_expression: expression . LWR expression
-   85                  | expression . GTR expression
-   85                  | expression GTR expression .
-   86                  | expression . LEQ expression
-   87                  | expression . GEQ expression
-   88                  | expression . NEQ expression
-   89                  | expression . EQ expression
-   91                  | expression . AND expression @18 expression OR expression
+   78 expression: expression . PLUS expression
+   79           | expression . MINUS expression
+   80           | expression . MTP expression
+   81           | expression . DVD expression
+   82           | expression . MOD expression
+   86 binary_expression: expression . LWR expression
+   86                  | expression LWR expression .
+   87                  | expression . GTR expression
+   88                  | expression . LEQ expression
+   89                  | expression . GEQ expression
+   90                  | expression . NEQ expression
+   91                  | expression . EQ expression
+   93                  | expression . AND expression @18 expression OR expression
 
-    PLUS   shift, and go to state 72
-    MINUS  shift, and go to state 73
-    MTP    shift, and go to state 74
-    DVD    shift, and go to state 75
-    MOD    shift, and go to state 76
+    PLUS   shift, and go to state 74
+    MINUS  shift, and go to state 75
+    MTP    shift, and go to state 76
+    DVD    shift, and go to state 77
+    MOD    shift, and go to state 78
 
-    $default  reduce using rule 85 (binary_expression)
+    $default  reduce using rule 86 (binary_expression)
 
 
 State 103
 
-   76 expression: expression . PLUS expression
-   77           | expression . MINUS expression
-   78           | expression . MTP expression
-   79           | expression . DVD expression
-   80           | expression . MOD expression
-   84 binary_expression: expression . LWR expression
-   85                  | expression . GTR expression
-   86                  | expression . LEQ expression
-   87                  | expression . GEQ expression
-   87                  | expression GEQ expression .
-   88                  | expression . NEQ expression
-   89                  | expression . EQ expression
-   91                  | expression . AND expression @18 expression OR expression
+   78 expression: expression . PLUS expression
+   79           | expression . MINUS expression
+   80           | expression . MTP expression
+   81           | expression . DVD expression
+   82           | expression . MOD expression
+   86 binary_expression: expression . LWR expression
+   87                  | expression . GTR expression
+   88                  | expression . LEQ expression
+   88                  | expression LEQ expression .
+   89                  | expression . GEQ expression
+   90                  | expression . NEQ expression
+   91                  | expression . EQ expression
+   93                  | expression . AND expression @18 expression OR expression
 
-    PLUS   shift, and go to state 72
-    MINUS  shift, and go to state 73
-    MTP    shift, and go to state 74
-    DVD    shift, and go to state 75
-    MOD    shift, and go to state 76
-
-    $default  reduce using rule 87 (binary_expression)
-
-
-State 104
-
-   76 expression: expression . PLUS expression
-   77           | expression . MINUS expression
-   78           | expression . MTP expression
-   79           | expression . DVD expression
-   80           | expression . MOD expression
-   84 binary_expression: expression . LWR expression
-   85                  | expression . GTR expression
-   86                  | expression . LEQ expression
-   87                  | expression . GEQ expression
-   88                  | expression . NEQ expression
-   89                  | expression . EQ expression
-   89                  | expression EQ expression .
-   91                  | expression . AND expression @18 expression OR expression
-
-    PLUS   shift, and go to state 72
-    MINUS  shift, and go to state 73
-    MTP    shift, and go to state 74
-    DVD    shift, and go to state 75
-    MOD    shift, and go to state 76
-
-    $default  reduce using rule 89 (binary_expression)
-
-
-State 105
-
-   76 expression: expression . PLUS expression
-   77           | expression . MINUS expression
-   78           | expression . MTP expression
-   79           | expression . DVD expression
-   80           | expression . MOD expression
-   84 binary_expression: expression . LWR expression
-   85                  | expression . GTR expression
-   86                  | expression . LEQ expression
-   87                  | expression . GEQ expression
-   88                  | expression . NEQ expression
-   88                  | expression NEQ expression .
-   89                  | expression . EQ expression
-   91                  | expression . AND expression @18 expression OR expression
-
-    PLUS   shift, and go to state 72
-    MINUS  shift, and go to state 73
-    MTP    shift, and go to state 74
-    DVD    shift, and go to state 75
-    MOD    shift, and go to state 76
+    PLUS   shift, and go to state 74
+    MINUS  shift, and go to state 75
+    MTP    shift, and go to state 76
+    DVD    shift, and go to state 77
+    MOD    shift, and go to state 78
 
     $default  reduce using rule 88 (binary_expression)
 
 
+State 104
+
+   78 expression: expression . PLUS expression
+   79           | expression . MINUS expression
+   80           | expression . MTP expression
+   81           | expression . DVD expression
+   82           | expression . MOD expression
+   86 binary_expression: expression . LWR expression
+   87                  | expression . GTR expression
+   87                  | expression GTR expression .
+   88                  | expression . LEQ expression
+   89                  | expression . GEQ expression
+   90                  | expression . NEQ expression
+   91                  | expression . EQ expression
+   93                  | expression . AND expression @18 expression OR expression
+
+    PLUS   shift, and go to state 74
+    MINUS  shift, and go to state 75
+    MTP    shift, and go to state 76
+    DVD    shift, and go to state 77
+    MOD    shift, and go to state 78
+
+    $default  reduce using rule 87 (binary_expression)
+
+
+State 105
+
+   78 expression: expression . PLUS expression
+   79           | expression . MINUS expression
+   80           | expression . MTP expression
+   81           | expression . DVD expression
+   82           | expression . MOD expression
+   86 binary_expression: expression . LWR expression
+   87                  | expression . GTR expression
+   88                  | expression . LEQ expression
+   89                  | expression . GEQ expression
+   89                  | expression GEQ expression .
+   90                  | expression . NEQ expression
+   91                  | expression . EQ expression
+   93                  | expression . AND expression @18 expression OR expression
+
+    PLUS   shift, and go to state 74
+    MINUS  shift, and go to state 75
+    MTP    shift, and go to state 76
+    DVD    shift, and go to state 77
+    MOD    shift, and go to state 78
+
+    $default  reduce using rule 89 (binary_expression)
+
+
 State 106
 
-   76 expression: expression . PLUS expression
-   76           | expression PLUS expression .
-   77           | expression . MINUS expression
-   78           | expression . MTP expression
-   79           | expression . DVD expression
-   80           | expression . MOD expression
-   84 binary_expression: expression . LWR expression
-   85                  | expression . GTR expression
-   86                  | expression . LEQ expression
-   87                  | expression . GEQ expression
-   88                  | expression . NEQ expression
-   89                  | expression . EQ expression
-   91                  | expression . AND expression @18 expression OR expression
+   78 expression: expression . PLUS expression
+   79           | expression . MINUS expression
+   80           | expression . MTP expression
+   81           | expression . DVD expression
+   82           | expression . MOD expression
+   86 binary_expression: expression . LWR expression
+   87                  | expression . GTR expression
+   88                  | expression . LEQ expression
+   89                  | expression . GEQ expression
+   90                  | expression . NEQ expression
+   91                  | expression . EQ expression
+   91                  | expression EQ expression .
+   93                  | expression . AND expression @18 expression OR expression
 
-    MTP  shift, and go to state 74
-    DVD  shift, and go to state 75
-    MOD  shift, and go to state 76
+    PLUS   shift, and go to state 74
+    MINUS  shift, and go to state 75
+    MTP    shift, and go to state 76
+    DVD    shift, and go to state 77
+    MOD    shift, and go to state 78
 
-    $default  reduce using rule 76 (expression)
+    $default  reduce using rule 91 (binary_expression)
 
 
 State 107
 
-   76 expression: expression . PLUS expression
-   77           | expression . MINUS expression
-   77           | expression MINUS expression .
-   78           | expression . MTP expression
-   79           | expression . DVD expression
-   80           | expression . MOD expression
-   84 binary_expression: expression . LWR expression
-   85                  | expression . GTR expression
-   86                  | expression . LEQ expression
-   87                  | expression . GEQ expression
-   88                  | expression . NEQ expression
-   89                  | expression . EQ expression
-   91                  | expression . AND expression @18 expression OR expression
+   78 expression: expression . PLUS expression
+   79           | expression . MINUS expression
+   80           | expression . MTP expression
+   81           | expression . DVD expression
+   82           | expression . MOD expression
+   86 binary_expression: expression . LWR expression
+   87                  | expression . GTR expression
+   88                  | expression . LEQ expression
+   89                  | expression . GEQ expression
+   90                  | expression . NEQ expression
+   90                  | expression NEQ expression .
+   91                  | expression . EQ expression
+   93                  | expression . AND expression @18 expression OR expression
 
-    MTP  shift, and go to state 74
-    DVD  shift, and go to state 75
-    MOD  shift, and go to state 76
+    PLUS   shift, and go to state 74
+    MINUS  shift, and go to state 75
+    MTP    shift, and go to state 76
+    DVD    shift, and go to state 77
+    MOD    shift, and go to state 78
 
-    $default  reduce using rule 77 (expression)
+    $default  reduce using rule 90 (binary_expression)
 
 
 State 108
 
-   76 expression: expression . PLUS expression
-   77           | expression . MINUS expression
-   78           | expression . MTP expression
-   78           | expression MTP expression .
-   79           | expression . DVD expression
-   80           | expression . MOD expression
-   84 binary_expression: expression . LWR expression
-   85                  | expression . GTR expression
-   86                  | expression . LEQ expression
-   87                  | expression . GEQ expression
-   88                  | expression . NEQ expression
-   89                  | expression . EQ expression
-   91                  | expression . AND expression @18 expression OR expression
+   78 expression: expression . PLUS expression
+   78           | expression PLUS expression .
+   79           | expression . MINUS expression
+   80           | expression . MTP expression
+   81           | expression . DVD expression
+   82           | expression . MOD expression
+   86 binary_expression: expression . LWR expression
+   87                  | expression . GTR expression
+   88                  | expression . LEQ expression
+   89                  | expression . GEQ expression
+   90                  | expression . NEQ expression
+   91                  | expression . EQ expression
+   93                  | expression . AND expression @18 expression OR expression
+
+    MTP  shift, and go to state 76
+    DVD  shift, and go to state 77
+    MOD  shift, and go to state 78
 
     $default  reduce using rule 78 (expression)
 
 
 State 109
 
-   76 expression: expression . PLUS expression
-   77           | expression . MINUS expression
-   78           | expression . MTP expression
-   79           | expression . DVD expression
-   79           | expression DVD expression .
-   80           | expression . MOD expression
-   84 binary_expression: expression . LWR expression
-   85                  | expression . GTR expression
-   86                  | expression . LEQ expression
-   87                  | expression . GEQ expression
-   88                  | expression . NEQ expression
-   89                  | expression . EQ expression
-   91                  | expression . AND expression @18 expression OR expression
+   78 expression: expression . PLUS expression
+   79           | expression . MINUS expression
+   79           | expression MINUS expression .
+   80           | expression . MTP expression
+   81           | expression . DVD expression
+   82           | expression . MOD expression
+   86 binary_expression: expression . LWR expression
+   87                  | expression . GTR expression
+   88                  | expression . LEQ expression
+   89                  | expression . GEQ expression
+   90                  | expression . NEQ expression
+   91                  | expression . EQ expression
+   93                  | expression . AND expression @18 expression OR expression
+
+    MTP  shift, and go to state 76
+    DVD  shift, and go to state 77
+    MOD  shift, and go to state 78
 
     $default  reduce using rule 79 (expression)
 
 
 State 110
 
-   76 expression: expression . PLUS expression
-   77           | expression . MINUS expression
-   78           | expression . MTP expression
-   79           | expression . DVD expression
-   80           | expression . MOD expression
-   80           | expression MOD expression .
-   84 binary_expression: expression . LWR expression
-   85                  | expression . GTR expression
-   86                  | expression . LEQ expression
-   87                  | expression . GEQ expression
-   88                  | expression . NEQ expression
-   89                  | expression . EQ expression
-   91                  | expression . AND expression @18 expression OR expression
+   78 expression: expression . PLUS expression
+   79           | expression . MINUS expression
+   80           | expression . MTP expression
+   80           | expression MTP expression .
+   81           | expression . DVD expression
+   82           | expression . MOD expression
+   86 binary_expression: expression . LWR expression
+   87                  | expression . GTR expression
+   88                  | expression . LEQ expression
+   89                  | expression . GEQ expression
+   90                  | expression . NEQ expression
+   91                  | expression . EQ expression
+   93                  | expression . AND expression @18 expression OR expression
 
     $default  reduce using rule 80 (expression)
 
 
 State 111
 
-   76 expression: expression . PLUS expression
-   77           | expression . MINUS expression
-   78           | expression . MTP expression
-   79           | expression . DVD expression
-   80           | expression . MOD expression
-   84 binary_expression: expression . LWR expression
-   85                  | expression . GTR expression
-   86                  | expression . LEQ expression
-   87                  | expression . GEQ expression
-   88                  | expression . NEQ expression
-   89                  | expression . EQ expression
-   91                  | expression . AND expression @18 expression OR expression
-   91                  | expression AND expression . @18 expression OR expression
+   78 expression: expression . PLUS expression
+   79           | expression . MINUS expression
+   80           | expression . MTP expression
+   81           | expression . DVD expression
+   81           | expression DVD expression .
+   82           | expression . MOD expression
+   86 binary_expression: expression . LWR expression
+   87                  | expression . GTR expression
+   88                  | expression . LEQ expression
+   89                  | expression . GEQ expression
+   90                  | expression . NEQ expression
+   91                  | expression . EQ expression
+   93                  | expression . AND expression @18 expression OR expression
 
-    LWR    shift, and go to state 66
-    LEQ    shift, and go to state 67
-    GTR    shift, and go to state 68
-    GEQ    shift, and go to state 69
-    EQ     shift, and go to state 70
-    NEQ    shift, and go to state 71
-    PLUS   shift, and go to state 72
-    MINUS  shift, and go to state 73
-    MTP    shift, and go to state 74
-    DVD    shift, and go to state 75
-    MOD    shift, and go to state 76
-    AND    shift, and go to state 77
-
-    $default  reduce using rule 90 (@18)
-
-    @18  go to state 127
+    $default  reduce using rule 81 (expression)
 
 
 State 112
+
+   78 expression: expression . PLUS expression
+   79           | expression . MINUS expression
+   80           | expression . MTP expression
+   81           | expression . DVD expression
+   82           | expression . MOD expression
+   82           | expression MOD expression .
+   86 binary_expression: expression . LWR expression
+   87                  | expression . GTR expression
+   88                  | expression . LEQ expression
+   89                  | expression . GEQ expression
+   90                  | expression . NEQ expression
+   91                  | expression . EQ expression
+   93                  | expression . AND expression @18 expression OR expression
+
+    $default  reduce using rule 82 (expression)
+
+
+State 113
+
+   78 expression: expression . PLUS expression
+   79           | expression . MINUS expression
+   80           | expression . MTP expression
+   81           | expression . DVD expression
+   82           | expression . MOD expression
+   86 binary_expression: expression . LWR expression
+   87                  | expression . GTR expression
+   88                  | expression . LEQ expression
+   89                  | expression . GEQ expression
+   90                  | expression . NEQ expression
+   91                  | expression . EQ expression
+   93                  | expression . AND expression @18 expression OR expression
+   93                  | expression AND expression . @18 expression OR expression
+
+    LWR    shift, and go to state 68
+    LEQ    shift, and go to state 69
+    GTR    shift, and go to state 70
+    GEQ    shift, and go to state 71
+    EQ     shift, and go to state 72
+    NEQ    shift, and go to state 73
+    PLUS   shift, and go to state 74
+    MINUS  shift, and go to state 75
+    MTP    shift, and go to state 76
+    DVD    shift, and go to state 77
+    MOD    shift, and go to state 78
+    AND    shift, and go to state 79
+
+    $default  reduce using rule 92 (@18)
+
+    @18  go to state 129
+
+
+State 114
 
    13 class_body: class_body acces_modifier var_decl .
 
     $default  reduce using rule 13 (class_body)
 
 
-State 113
+State 115
 
    14 class_body: class_body acces_modifier fct_decl .
 
     $default  reduce using rule 14 (class_body)
 
 
-State 114
+State 116
 
    34 param_list: param_list ',' . param
 
@@ -1784,312 +1800,316 @@ State 114
     STRING  shift, and go to state 6
     BOOL    shift, and go to state 7
 
-    param     go to state 128
-    var_type  go to state 90
+    param     go to state 130
+    var_type  go to state 92
 
 
-State 115
+State 117
 
    29 fct_decl: var_type ID '(' $@3 param_list ')' . @4 FBEGIN $@5 body FEND
 
     $default  reduce using rule 27 (@4)
 
-    @4  go to state 129
+    @4  go to state 131
 
 
-State 116
+State 118
 
    36 param: var_type ID .
 
     $default  reduce using rule 36 (param)
 
 
-State 117
+State 119
 
    33 fct_decl: var_type ID '(' @6 ')' $@7 . FBEGIN $@8 body FEND
 
-    FBEGIN  shift, and go to state 130
+    FBEGIN  shift, and go to state 132
 
 
-State 118
+State 120
 
    25 variable_list: variable_list ',' ID ASGN expression .
-   76 expression: expression . PLUS expression
-   77           | expression . MINUS expression
-   78           | expression . MTP expression
-   79           | expression . DVD expression
-   80           | expression . MOD expression
-   84 binary_expression: expression . LWR expression
-   85                  | expression . GTR expression
-   86                  | expression . LEQ expression
-   87                  | expression . GEQ expression
-   88                  | expression . NEQ expression
-   89                  | expression . EQ expression
-   91                  | expression . AND expression @18 expression OR expression
+   78 expression: expression . PLUS expression
+   79           | expression . MINUS expression
+   80           | expression . MTP expression
+   81           | expression . DVD expression
+   82           | expression . MOD expression
+   86 binary_expression: expression . LWR expression
+   87                  | expression . GTR expression
+   88                  | expression . LEQ expression
+   89                  | expression . GEQ expression
+   90                  | expression . NEQ expression
+   91                  | expression . EQ expression
+   93                  | expression . AND expression @18 expression OR expression
 
-    LWR    shift, and go to state 66
-    LEQ    shift, and go to state 67
-    GTR    shift, and go to state 68
-    GEQ    shift, and go to state 69
-    EQ     shift, and go to state 70
-    NEQ    shift, and go to state 71
-    PLUS   shift, and go to state 72
-    MINUS  shift, and go to state 73
-    MTP    shift, and go to state 74
-    DVD    shift, and go to state 75
-    MOD    shift, and go to state 76
-    AND    shift, and go to state 77
+    LWR    shift, and go to state 68
+    LEQ    shift, and go to state 69
+    GTR    shift, and go to state 70
+    GEQ    shift, and go to state 71
+    EQ     shift, and go to state 72
+    NEQ    shift, and go to state 73
+    PLUS   shift, and go to state 74
+    MINUS  shift, and go to state 75
+    MTP    shift, and go to state 76
+    DVD    shift, and go to state 77
+    MOD    shift, and go to state 78
+    AND    shift, and go to state 79
 
     $default  reduce using rule 25 (variable_list)
 
 
-State 119
+State 121
 
    47 statement: ID ASGN expression ';' .
 
     $default  reduce using rule 47 (statement)
 
 
-State 120
+State 122
 
-   76 expression: expression . PLUS expression
-   77           | expression . MINUS expression
-   78           | expression . MTP expression
-   79           | expression . DVD expression
-   80           | expression . MOD expression
-   84 binary_expression: expression . LWR expression
-   85                  | expression . GTR expression
-   86                  | expression . LEQ expression
-   87                  | expression . GEQ expression
-   88                  | expression . NEQ expression
-   89                  | expression . EQ expression
-   91                  | expression . AND expression @18 expression OR expression
+   78 expression: expression . PLUS expression
+   79           | expression . MINUS expression
+   80           | expression . MTP expression
+   81           | expression . DVD expression
+   82           | expression . MOD expression
+   86 binary_expression: expression . LWR expression
+   87                  | expression . GTR expression
+   88                  | expression . LEQ expression
+   89                  | expression . GEQ expression
+   90                  | expression . NEQ expression
+   91                  | expression . EQ expression
+   93                  | expression . AND expression @18 expression OR expression
 
-    LWR    shift, and go to state 66
-    LEQ    shift, and go to state 67
-    GTR    shift, and go to state 68
-    GEQ    shift, and go to state 69
-    EQ     shift, and go to state 70
-    NEQ    shift, and go to state 71
-    PLUS   shift, and go to state 72
-    MINUS  shift, and go to state 73
-    MTP    shift, and go to state 74
-    DVD    shift, and go to state 75
-    MOD    shift, and go to state 76
-    AND    shift, and go to state 77
+    LWR    shift, and go to state 68
+    LEQ    shift, and go to state 69
+    GTR    shift, and go to state 70
+    GEQ    shift, and go to state 71
+    EQ     shift, and go to state 72
+    NEQ    shift, and go to state 73
+    PLUS   shift, and go to state 74
+    MINUS  shift, and go to state 75
+    MTP    shift, and go to state 76
+    DVD    shift, and go to state 77
+    MOD    shift, and go to state 78
+    AND    shift, and go to state 79
 
 
-State 121
+State 123
 
    58 control: WHILE $@12 '(' binary_expression . ')' body ENDWHILE
-   81 expression: binary_expression .
+   83 expression: binary_expression .
 
-    ')'  shift, and go to state 131
+    ')'  shift, and go to state 133
 
-    $default  reduce using rule 81 (expression)
+    $default  reduce using rule 83 (expression)
 
 
-State 122
+State 124
 
    72 print_call: PRINT '(' expression ')' .
 
     $default  reduce using rule 72 (print_call)
 
 
-State 123
+State 125
 
    51 statement: EVAL_FCT '(' expression ')' . ';'
 
-    ';'  shift, and go to state 132
+    ';'  shift, and go to state 134
 
 
-State 124
+State 126
 
    54 fct_call: ID '(' ')' .
 
     $default  reduce using rule 54 (fct_call)
 
 
-State 125
+State 127
 
-   53 fct_call: ID '(' $@11 . param_called_list ')'
+   53 fct_call: ID '(' @11 . param_called_list ')'
 
-    ID      shift, and go to state 49
-    CALL    shift, and go to state 33
-    STRVAL  shift, and go to state 34
-    INTVAL  shift, and go to state 35
-    '('     shift, and go to state 36
+    ID        shift, and go to state 51
+    CALL      shift, and go to state 33
+    STRVAL    shift, and go to state 34
+    INTVAL    shift, and go to state 35
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
 
-    param_called_list  go to state 133
-    expression         go to state 134
-    binary_expression  go to state 46
+    param_called_list  go to state 135
+    expression         go to state 136
+    binary_expression  go to state 48
 
 
-State 126
+State 128
 
    62 if: IF '(' binary_expression . ')' THEN body ENDIF
    64   | IF '(' binary_expression . ')' THEN body ELSE $@14 body ENDIF
    66   | IF '(' binary_expression . ')' THEN body $@15 eif ENDIF
-   81 expression: binary_expression .
+   83 expression: binary_expression .
 
-    ')'  shift, and go to state 135
+    ')'  shift, and go to state 137
 
-    $default  reduce using rule 81 (expression)
-
-
-State 127
-
-   91 binary_expression: expression AND expression @18 . expression OR expression
-
-    ID      shift, and go to state 49
-    CALL    shift, and go to state 33
-    STRVAL  shift, and go to state 34
-    INTVAL  shift, and go to state 35
-    '('     shift, and go to state 36
-
-    expression         go to state 136
-    binary_expression  go to state 46
+    $default  reduce using rule 83 (expression)
 
 
-State 128
+State 129
+
+   93 binary_expression: expression AND expression @18 . expression OR expression
+
+    ID        shift, and go to state 51
+    CALL      shift, and go to state 33
+    STRVAL    shift, and go to state 34
+    INTVAL    shift, and go to state 35
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
+
+    expression         go to state 138
+    binary_expression  go to state 48
+
+
+State 130
 
    34 param_list: param_list ',' param .
 
     $default  reduce using rule 34 (param_list)
 
 
-State 129
+State 131
 
    29 fct_decl: var_type ID '(' $@3 param_list ')' @4 . FBEGIN $@5 body FEND
 
-    FBEGIN  shift, and go to state 137
+    FBEGIN  shift, and go to state 139
 
 
-State 130
+State 132
 
    33 fct_decl: var_type ID '(' @6 ')' $@7 FBEGIN . $@8 body FEND
 
     $default  reduce using rule 32 ($@8)
 
-    $@8  go to state 138
+    $@8  go to state 140
 
 
-State 131
+State 133
 
    58 control: WHILE $@12 '(' binary_expression ')' . body ENDWHILE
 
     $default  reduce using rule 45 (body)
 
-    body  go to state 139
+    body  go to state 141
 
 
-State 132
+State 134
 
    51 statement: EVAL_FCT '(' expression ')' ';' .
 
     $default  reduce using rule 51 (statement)
 
 
-State 133
+State 135
 
-   53 fct_call: ID '(' $@11 param_called_list . ')'
+   53 fct_call: ID '(' @11 param_called_list . ')'
    55 param_called_list: param_called_list . ',' expression
 
-    ','  shift, and go to state 140
-    ')'  shift, and go to state 141
+    ','  shift, and go to state 142
+    ')'  shift, and go to state 143
 
 
-State 134
+State 136
 
    56 param_called_list: expression .
-   76 expression: expression . PLUS expression
-   77           | expression . MINUS expression
-   78           | expression . MTP expression
-   79           | expression . DVD expression
-   80           | expression . MOD expression
-   84 binary_expression: expression . LWR expression
-   85                  | expression . GTR expression
-   86                  | expression . LEQ expression
-   87                  | expression . GEQ expression
-   88                  | expression . NEQ expression
-   89                  | expression . EQ expression
-   91                  | expression . AND expression @18 expression OR expression
+   78 expression: expression . PLUS expression
+   79           | expression . MINUS expression
+   80           | expression . MTP expression
+   81           | expression . DVD expression
+   82           | expression . MOD expression
+   86 binary_expression: expression . LWR expression
+   87                  | expression . GTR expression
+   88                  | expression . LEQ expression
+   89                  | expression . GEQ expression
+   90                  | expression . NEQ expression
+   91                  | expression . EQ expression
+   93                  | expression . AND expression @18 expression OR expression
 
-    LWR    shift, and go to state 66
-    LEQ    shift, and go to state 67
-    GTR    shift, and go to state 68
-    GEQ    shift, and go to state 69
-    EQ     shift, and go to state 70
-    NEQ    shift, and go to state 71
-    PLUS   shift, and go to state 72
-    MINUS  shift, and go to state 73
-    MTP    shift, and go to state 74
-    DVD    shift, and go to state 75
-    MOD    shift, and go to state 76
-    AND    shift, and go to state 77
+    LWR    shift, and go to state 68
+    LEQ    shift, and go to state 69
+    GTR    shift, and go to state 70
+    GEQ    shift, and go to state 71
+    EQ     shift, and go to state 72
+    NEQ    shift, and go to state 73
+    PLUS   shift, and go to state 74
+    MINUS  shift, and go to state 75
+    MTP    shift, and go to state 76
+    DVD    shift, and go to state 77
+    MOD    shift, and go to state 78
+    AND    shift, and go to state 79
 
     $default  reduce using rule 56 (param_called_list)
 
 
-State 135
+State 137
 
    62 if: IF '(' binary_expression ')' . THEN body ENDIF
    64   | IF '(' binary_expression ')' . THEN body ELSE $@14 body ENDIF
    66   | IF '(' binary_expression ')' . THEN body $@15 eif ENDIF
 
-    THEN  shift, and go to state 142
+    THEN  shift, and go to state 144
 
 
-State 136
+State 138
 
-   76 expression: expression . PLUS expression
-   77           | expression . MINUS expression
-   78           | expression . MTP expression
-   79           | expression . DVD expression
-   80           | expression . MOD expression
-   84 binary_expression: expression . LWR expression
-   85                  | expression . GTR expression
-   86                  | expression . LEQ expression
-   87                  | expression . GEQ expression
-   88                  | expression . NEQ expression
-   89                  | expression . EQ expression
-   91                  | expression . AND expression @18 expression OR expression
-   91                  | expression AND expression @18 expression . OR expression
+   78 expression: expression . PLUS expression
+   79           | expression . MINUS expression
+   80           | expression . MTP expression
+   81           | expression . DVD expression
+   82           | expression . MOD expression
+   86 binary_expression: expression . LWR expression
+   87                  | expression . GTR expression
+   88                  | expression . LEQ expression
+   89                  | expression . GEQ expression
+   90                  | expression . NEQ expression
+   91                  | expression . EQ expression
+   93                  | expression . AND expression @18 expression OR expression
+   93                  | expression AND expression @18 expression . OR expression
 
-    LWR    shift, and go to state 66
-    LEQ    shift, and go to state 67
-    GTR    shift, and go to state 68
-    GEQ    shift, and go to state 69
-    EQ     shift, and go to state 70
-    NEQ    shift, and go to state 71
-    PLUS   shift, and go to state 72
-    MINUS  shift, and go to state 73
-    MTP    shift, and go to state 74
-    DVD    shift, and go to state 75
-    MOD    shift, and go to state 76
-    AND    shift, and go to state 77
-    OR     shift, and go to state 143
+    LWR    shift, and go to state 68
+    LEQ    shift, and go to state 69
+    GTR    shift, and go to state 70
+    GEQ    shift, and go to state 71
+    EQ     shift, and go to state 72
+    NEQ    shift, and go to state 73
+    PLUS   shift, and go to state 74
+    MINUS  shift, and go to state 75
+    MTP    shift, and go to state 76
+    DVD    shift, and go to state 77
+    MOD    shift, and go to state 78
+    AND    shift, and go to state 79
+    OR     shift, and go to state 145
 
 
-State 137
+State 139
 
    29 fct_decl: var_type ID '(' $@3 param_list ')' @4 FBEGIN . $@5 body FEND
 
     $default  reduce using rule 28 ($@5)
 
-    $@5  go to state 144
+    $@5  go to state 146
 
 
-State 138
+State 140
 
    33 fct_decl: var_type ID '(' @6 ')' $@7 FBEGIN $@8 . body FEND
 
     $default  reduce using rule 45 (body)
 
-    body  go to state 145
+    body  go to state 147
 
 
-State 139
+State 141
 
    44 body: body . statement
    58 control: WHILE $@12 '(' binary_expression ')' body . ENDWHILE
@@ -2100,49 +2120,53 @@ State 139
     BOOL      shift, and go to state 7
     ID        shift, and go to state 29
     WHILE     shift, and go to state 30
-    ENDWHILE  shift, and go to state 146
+    ENDWHILE  shift, and go to state 148
     PRINT     shift, and go to state 31
     EVAL_FCT  shift, and go to state 32
     CALL      shift, and go to state 33
     STRVAL    shift, and go to state 34
     INTVAL    shift, and go to state 35
-    '('       shift, and go to state 36
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
 
     $default  reduce using rule 60 ($@13)
 
-    var_decl           go to state 37
-    var_type           go to state 38
-    statement          go to state 40
-    control            go to state 41
-    if2                go to state 42
-    $@13               go to state 43
-    print_call         go to state 44
-    expression         go to state 45
-    binary_expression  go to state 46
+    var_decl           go to state 39
+    var_type           go to state 40
+    statement          go to state 42
+    control            go to state 43
+    if2                go to state 44
+    $@13               go to state 45
+    print_call         go to state 46
+    expression         go to state 47
+    binary_expression  go to state 48
 
 
-State 140
+State 142
 
    55 param_called_list: param_called_list ',' . expression
 
-    ID      shift, and go to state 49
-    CALL    shift, and go to state 33
-    STRVAL  shift, and go to state 34
-    INTVAL  shift, and go to state 35
-    '('     shift, and go to state 36
+    ID        shift, and go to state 51
+    CALL      shift, and go to state 33
+    STRVAL    shift, and go to state 34
+    INTVAL    shift, and go to state 35
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
 
-    expression         go to state 147
-    binary_expression  go to state 46
+    expression         go to state 149
+    binary_expression  go to state 48
 
 
-State 141
+State 143
 
-   53 fct_call: ID '(' $@11 param_called_list ')' .
+   53 fct_call: ID '(' @11 param_called_list ')' .
 
     $default  reduce using rule 53 (fct_call)
 
 
-State 142
+State 144
 
    62 if: IF '(' binary_expression ')' THEN . body ENDIF
    64   | IF '(' binary_expression ')' THEN . body ELSE $@14 body ENDIF
@@ -2150,33 +2174,35 @@ State 142
 
     $default  reduce using rule 45 (body)
 
-    body  go to state 148
+    body  go to state 150
 
 
-State 143
+State 145
 
-   91 binary_expression: expression AND expression @18 expression OR . expression
+   93 binary_expression: expression AND expression @18 expression OR . expression
 
-    ID      shift, and go to state 49
-    CALL    shift, and go to state 33
-    STRVAL  shift, and go to state 34
-    INTVAL  shift, and go to state 35
-    '('     shift, and go to state 36
+    ID        shift, and go to state 51
+    CALL      shift, and go to state 33
+    STRVAL    shift, and go to state 34
+    INTVAL    shift, and go to state 35
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
 
-    expression         go to state 149
-    binary_expression  go to state 46
+    expression         go to state 151
+    binary_expression  go to state 48
 
 
-State 144
+State 146
 
    29 fct_decl: var_type ID '(' $@3 param_list ')' @4 FBEGIN $@5 . body FEND
 
     $default  reduce using rule 45 (body)
 
-    body  go to state 150
+    body  go to state 152
 
 
-State 145
+State 147
 
    33 fct_decl: var_type ID '(' @6 ')' $@7 FBEGIN $@8 body . FEND
    44 body: body . statement
@@ -2187,67 +2213,69 @@ State 145
     BOOL      shift, and go to state 7
     ID        shift, and go to state 29
     WHILE     shift, and go to state 30
-    FEND      shift, and go to state 151
+    FEND      shift, and go to state 153
     PRINT     shift, and go to state 31
     EVAL_FCT  shift, and go to state 32
     CALL      shift, and go to state 33
     STRVAL    shift, and go to state 34
     INTVAL    shift, and go to state 35
-    '('       shift, and go to state 36
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
 
     $default  reduce using rule 60 ($@13)
 
-    var_decl           go to state 37
-    var_type           go to state 38
-    statement          go to state 40
-    control            go to state 41
-    if2                go to state 42
-    $@13               go to state 43
-    print_call         go to state 44
-    expression         go to state 45
-    binary_expression  go to state 46
+    var_decl           go to state 39
+    var_type           go to state 40
+    statement          go to state 42
+    control            go to state 43
+    if2                go to state 44
+    $@13               go to state 45
+    print_call         go to state 46
+    expression         go to state 47
+    binary_expression  go to state 48
 
 
-State 146
+State 148
 
    58 control: WHILE $@12 '(' binary_expression ')' body ENDWHILE .
 
     $default  reduce using rule 58 (control)
 
 
-State 147
+State 149
 
    55 param_called_list: param_called_list ',' expression .
-   76 expression: expression . PLUS expression
-   77           | expression . MINUS expression
-   78           | expression . MTP expression
-   79           | expression . DVD expression
-   80           | expression . MOD expression
-   84 binary_expression: expression . LWR expression
-   85                  | expression . GTR expression
-   86                  | expression . LEQ expression
-   87                  | expression . GEQ expression
-   88                  | expression . NEQ expression
-   89                  | expression . EQ expression
-   91                  | expression . AND expression @18 expression OR expression
+   78 expression: expression . PLUS expression
+   79           | expression . MINUS expression
+   80           | expression . MTP expression
+   81           | expression . DVD expression
+   82           | expression . MOD expression
+   86 binary_expression: expression . LWR expression
+   87                  | expression . GTR expression
+   88                  | expression . LEQ expression
+   89                  | expression . GEQ expression
+   90                  | expression . NEQ expression
+   91                  | expression . EQ expression
+   93                  | expression . AND expression @18 expression OR expression
 
-    LWR    shift, and go to state 66
-    LEQ    shift, and go to state 67
-    GTR    shift, and go to state 68
-    GEQ    shift, and go to state 69
-    EQ     shift, and go to state 70
-    NEQ    shift, and go to state 71
-    PLUS   shift, and go to state 72
-    MINUS  shift, and go to state 73
-    MTP    shift, and go to state 74
-    DVD    shift, and go to state 75
-    MOD    shift, and go to state 76
-    AND    shift, and go to state 77
+    LWR    shift, and go to state 68
+    LEQ    shift, and go to state 69
+    GTR    shift, and go to state 70
+    GEQ    shift, and go to state 71
+    EQ     shift, and go to state 72
+    NEQ    shift, and go to state 73
+    PLUS   shift, and go to state 74
+    MINUS  shift, and go to state 75
+    MTP    shift, and go to state 76
+    DVD    shift, and go to state 77
+    MOD    shift, and go to state 78
+    AND    shift, and go to state 79
 
     $default  reduce using rule 55 (param_called_list)
 
 
-State 148
+State 150
 
    44 body: body . statement
    62 if: IF '(' binary_expression ')' THEN body . ENDIF
@@ -2259,63 +2287,65 @@ State 148
     STRING    shift, and go to state 6
     BOOL      shift, and go to state 7
     ID        shift, and go to state 29
-    ENDIF     shift, and go to state 152
-    ELSE      shift, and go to state 153
+    ENDIF     shift, and go to state 154
+    ELSE      shift, and go to state 155
     WHILE     shift, and go to state 30
     PRINT     shift, and go to state 31
     EVAL_FCT  shift, and go to state 32
     CALL      shift, and go to state 33
     STRVAL    shift, and go to state 34
     INTVAL    shift, and go to state 35
-    '('       shift, and go to state 36
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
 
     ELSE_IF   reduce using rule 65 ($@15)
     $default  reduce using rule 60 ($@13)
 
-    var_decl           go to state 37
-    var_type           go to state 38
-    statement          go to state 40
-    control            go to state 41
-    if2                go to state 42
-    $@13               go to state 43
-    $@15               go to state 154
-    print_call         go to state 44
-    expression         go to state 45
-    binary_expression  go to state 46
+    var_decl           go to state 39
+    var_type           go to state 40
+    statement          go to state 42
+    control            go to state 43
+    if2                go to state 44
+    $@13               go to state 45
+    $@15               go to state 156
+    print_call         go to state 46
+    expression         go to state 47
+    binary_expression  go to state 48
 
 
-State 149
+State 151
 
-   76 expression: expression . PLUS expression
-   77           | expression . MINUS expression
-   78           | expression . MTP expression
-   79           | expression . DVD expression
-   80           | expression . MOD expression
-   84 binary_expression: expression . LWR expression
-   85                  | expression . GTR expression
-   86                  | expression . LEQ expression
-   87                  | expression . GEQ expression
-   88                  | expression . NEQ expression
-   89                  | expression . EQ expression
-   91                  | expression . AND expression @18 expression OR expression
-   91                  | expression AND expression @18 expression OR expression .
+   78 expression: expression . PLUS expression
+   79           | expression . MINUS expression
+   80           | expression . MTP expression
+   81           | expression . DVD expression
+   82           | expression . MOD expression
+   86 binary_expression: expression . LWR expression
+   87                  | expression . GTR expression
+   88                  | expression . LEQ expression
+   89                  | expression . GEQ expression
+   90                  | expression . NEQ expression
+   91                  | expression . EQ expression
+   93                  | expression . AND expression @18 expression OR expression
+   93                  | expression AND expression @18 expression OR expression .
 
-    LWR    shift, and go to state 66
-    LEQ    shift, and go to state 67
-    GTR    shift, and go to state 68
-    GEQ    shift, and go to state 69
-    EQ     shift, and go to state 70
-    NEQ    shift, and go to state 71
-    PLUS   shift, and go to state 72
-    MINUS  shift, and go to state 73
-    MTP    shift, and go to state 74
-    DVD    shift, and go to state 75
-    MOD    shift, and go to state 76
+    LWR    shift, and go to state 68
+    LEQ    shift, and go to state 69
+    GTR    shift, and go to state 70
+    GEQ    shift, and go to state 71
+    EQ     shift, and go to state 72
+    NEQ    shift, and go to state 73
+    PLUS   shift, and go to state 74
+    MINUS  shift, and go to state 75
+    MTP    shift, and go to state 76
+    DVD    shift, and go to state 77
+    MOD    shift, and go to state 78
 
-    $default  reduce using rule 91 (binary_expression)
+    $default  reduce using rule 93 (binary_expression)
 
 
-State 150
+State 152
 
    29 fct_decl: var_type ID '(' $@3 param_list ')' @4 FBEGIN $@5 body . FEND
    44 body: body . statement
@@ -2326,92 +2356,94 @@ State 150
     BOOL      shift, and go to state 7
     ID        shift, and go to state 29
     WHILE     shift, and go to state 30
-    FEND      shift, and go to state 155
+    FEND      shift, and go to state 157
     PRINT     shift, and go to state 31
     EVAL_FCT  shift, and go to state 32
     CALL      shift, and go to state 33
     STRVAL    shift, and go to state 34
     INTVAL    shift, and go to state 35
-    '('       shift, and go to state 36
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
 
     $default  reduce using rule 60 ($@13)
 
-    var_decl           go to state 37
-    var_type           go to state 38
-    statement          go to state 40
-    control            go to state 41
-    if2                go to state 42
-    $@13               go to state 43
-    print_call         go to state 44
-    expression         go to state 45
-    binary_expression  go to state 46
+    var_decl           go to state 39
+    var_type           go to state 40
+    statement          go to state 42
+    control            go to state 43
+    if2                go to state 44
+    $@13               go to state 45
+    print_call         go to state 46
+    expression         go to state 47
+    binary_expression  go to state 48
 
 
-State 151
+State 153
 
    33 fct_decl: var_type ID '(' @6 ')' $@7 FBEGIN $@8 body FEND .
 
     $default  reduce using rule 33 (fct_decl)
 
 
-State 152
+State 154
 
    62 if: IF '(' binary_expression ')' THEN body ENDIF .
 
     $default  reduce using rule 62 (if)
 
 
-State 153
+State 155
 
    64 if: IF '(' binary_expression ')' THEN body ELSE . $@14 body ENDIF
 
     $default  reduce using rule 63 ($@14)
 
-    $@14  go to state 156
+    $@14  go to state 158
 
 
-State 154
+State 156
 
    66 if: IF '(' binary_expression ')' THEN body $@15 . eif ENDIF
 
-    ELSE_IF  shift, and go to state 157
+    ELSE_IF  shift, and go to state 159
 
-    eif  go to state 158
+    eif  go to state 160
 
 
-State 155
+State 157
 
    29 fct_decl: var_type ID '(' $@3 param_list ')' @4 FBEGIN $@5 body FEND .
 
     $default  reduce using rule 29 (fct_decl)
 
 
-State 156
+State 158
 
    64 if: IF '(' binary_expression ')' THEN body ELSE $@14 . body ENDIF
 
     $default  reduce using rule 45 (body)
 
-    body  go to state 159
+    body  go to state 161
 
 
-State 157
+State 159
 
    67 eif: ELSE_IF . '(' binary_expression ')' THEN body
    69    | ELSE_IF . '(' binary_expression ')' THEN body ELSE $@16 body
    71    | ELSE_IF . '(' binary_expression ')' THEN body $@17 eif
 
-    '('  shift, and go to state 160
+    '('  shift, and go to state 162
 
 
-State 158
+State 160
 
    66 if: IF '(' binary_expression ')' THEN body $@15 eif . ENDIF
 
-    ENDIF  shift, and go to state 161
+    ENDIF  shift, and go to state 163
 
 
-State 159
+State 161
 
    44 body: body . statement
    64 if: IF '(' binary_expression ')' THEN body ELSE $@14 body . ENDIF
@@ -2421,80 +2453,84 @@ State 159
     STRING    shift, and go to state 6
     BOOL      shift, and go to state 7
     ID        shift, and go to state 29
-    ENDIF     shift, and go to state 162
+    ENDIF     shift, and go to state 164
     WHILE     shift, and go to state 30
     PRINT     shift, and go to state 31
     EVAL_FCT  shift, and go to state 32
     CALL      shift, and go to state 33
     STRVAL    shift, and go to state 34
     INTVAL    shift, and go to state 35
-    '('       shift, and go to state 36
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
 
     $default  reduce using rule 60 ($@13)
 
-    var_decl           go to state 37
-    var_type           go to state 38
-    statement          go to state 40
-    control            go to state 41
-    if2                go to state 42
-    $@13               go to state 43
-    print_call         go to state 44
-    expression         go to state 45
-    binary_expression  go to state 46
+    var_decl           go to state 39
+    var_type           go to state 40
+    statement          go to state 42
+    control            go to state 43
+    if2                go to state 44
+    $@13               go to state 45
+    print_call         go to state 46
+    expression         go to state 47
+    binary_expression  go to state 48
 
 
-State 160
+State 162
 
    67 eif: ELSE_IF '(' . binary_expression ')' THEN body
    69    | ELSE_IF '(' . binary_expression ')' THEN body ELSE $@16 body
    71    | ELSE_IF '(' . binary_expression ')' THEN body $@17 eif
 
-    ID      shift, and go to state 49
-    CALL    shift, and go to state 33
-    STRVAL  shift, and go to state 34
-    INTVAL  shift, and go to state 35
-    '('     shift, and go to state 36
+    ID        shift, and go to state 51
+    CALL      shift, and go to state 33
+    STRVAL    shift, and go to state 34
+    INTVAL    shift, and go to state 35
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
 
-    expression         go to state 120
-    binary_expression  go to state 163
+    expression         go to state 122
+    binary_expression  go to state 165
 
 
-State 161
+State 163
 
    66 if: IF '(' binary_expression ')' THEN body $@15 eif ENDIF .
 
     $default  reduce using rule 66 (if)
 
 
-State 162
+State 164
 
    64 if: IF '(' binary_expression ')' THEN body ELSE $@14 body ENDIF .
 
     $default  reduce using rule 64 (if)
 
 
-State 163
+State 165
 
    67 eif: ELSE_IF '(' binary_expression . ')' THEN body
    69    | ELSE_IF '(' binary_expression . ')' THEN body ELSE $@16 body
    71    | ELSE_IF '(' binary_expression . ')' THEN body $@17 eif
-   81 expression: binary_expression .
+   83 expression: binary_expression .
 
-    ')'  shift, and go to state 164
+    ')'  shift, and go to state 166
 
-    $default  reduce using rule 81 (expression)
+    $default  reduce using rule 83 (expression)
 
 
-State 164
+State 166
 
    67 eif: ELSE_IF '(' binary_expression ')' . THEN body
    69    | ELSE_IF '(' binary_expression ')' . THEN body ELSE $@16 body
    71    | ELSE_IF '(' binary_expression ')' . THEN body $@17 eif
 
-    THEN  shift, and go to state 165
+    THEN  shift, and go to state 167
 
 
-State 165
+State 167
 
    67 eif: ELSE_IF '(' binary_expression ')' THEN . body
    69    | ELSE_IF '(' binary_expression ')' THEN . body ELSE $@16 body
@@ -2502,10 +2538,10 @@ State 165
 
     $default  reduce using rule 45 (body)
 
-    body  go to state 166
+    body  go to state 168
 
 
-State 166
+State 168
 
    44 body: body . statement
    67 eif: ELSE_IF '(' binary_expression ')' THEN body .
@@ -2517,66 +2553,68 @@ State 166
     STRING    shift, and go to state 6
     BOOL      shift, and go to state 7
     ID        shift, and go to state 29
-    ELSE      shift, and go to state 167
+    ELSE      shift, and go to state 169
     WHILE     shift, and go to state 30
     PRINT     shift, and go to state 31
     EVAL_FCT  shift, and go to state 32
     CALL      shift, and go to state 33
     STRVAL    shift, and go to state 34
     INTVAL    shift, and go to state 35
-    '('       shift, and go to state 36
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
 
     ELSE_IF   reduce using rule 70 ($@17)
     ENDIF     reduce using rule 67 (eif)
     $default  reduce using rule 60 ($@13)
 
-    var_decl           go to state 37
-    var_type           go to state 38
-    statement          go to state 40
-    control            go to state 41
-    if2                go to state 42
-    $@13               go to state 43
-    $@17               go to state 168
-    print_call         go to state 44
-    expression         go to state 45
-    binary_expression  go to state 46
+    var_decl           go to state 39
+    var_type           go to state 40
+    statement          go to state 42
+    control            go to state 43
+    if2                go to state 44
+    $@13               go to state 45
+    $@17               go to state 170
+    print_call         go to state 46
+    expression         go to state 47
+    binary_expression  go to state 48
 
 
-State 167
+State 169
 
    69 eif: ELSE_IF '(' binary_expression ')' THEN body ELSE . $@16 body
 
     $default  reduce using rule 68 ($@16)
 
-    $@16  go to state 169
+    $@16  go to state 171
 
 
-State 168
+State 170
 
    71 eif: ELSE_IF '(' binary_expression ')' THEN body $@17 . eif
 
-    ELSE_IF  shift, and go to state 157
+    ELSE_IF  shift, and go to state 159
 
-    eif  go to state 170
+    eif  go to state 172
 
 
-State 169
+State 171
 
    69 eif: ELSE_IF '(' binary_expression ')' THEN body ELSE $@16 . body
 
     $default  reduce using rule 45 (body)
 
-    body  go to state 171
+    body  go to state 173
 
 
-State 170
+State 172
 
    71 eif: ELSE_IF '(' binary_expression ')' THEN body $@17 eif .
 
     $default  reduce using rule 71 (eif)
 
 
-State 171
+State 173
 
    44 body: body . statement
    69 eif: ELSE_IF '(' binary_expression ')' THEN body ELSE $@16 body .
@@ -2592,17 +2630,19 @@ State 171
     CALL      shift, and go to state 33
     STRVAL    shift, and go to state 34
     INTVAL    shift, and go to state 35
-    '('       shift, and go to state 36
+    BOOLVAL   shift, and go to state 36
+    FLOATVAL  shift, and go to state 37
+    '('       shift, and go to state 38
 
     ENDIF     reduce using rule 69 (eif)
     $default  reduce using rule 60 ($@13)
 
-    var_decl           go to state 37
-    var_type           go to state 38
-    statement          go to state 40
-    control            go to state 41
-    if2                go to state 42
-    $@13               go to state 43
-    print_call         go to state 44
-    expression         go to state 45
-    binary_expression  go to state 46
+    var_decl           go to state 39
+    var_type           go to state 40
+    statement          go to state 42
+    control            go to state 43
+    if2                go to state 44
+    $@13               go to state 45
+    print_call         go to state 46
+    expression         go to state 47
+    binary_expression  go to state 48

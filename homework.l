@@ -49,11 +49,12 @@
 "%" {return MOD;}
 "||" {return OR;}
 "&&" {return AND;}
-[0-9]+ {yylval.intval=atoi(yytext); return INTVAL;}
-
+-?(([1-9][0-9]*)|0) {yylval.intval=atoi(yytext); return INTVAL;}
+-?(([1-9][0-9]*)|0)\.([0-9])* {printf(yytext);yylval.floatval=atof(yytext); return FLOATVAL;}
+'.*' {strcpy(yylval.strval,strdup(yytext)); return STRVAL;}
 "true"|"false" {if(strcmp(yytext,"true")==0)yylval.boolval=1; else yylval.boolval=0; return BOOLVAL;}
 [_a-zA-Z][_a-zA-Z0-9]* {strcpy(yylval.var.name,strdup(yytext)); return ID;}
-'[_a-zA-Z][_a-zA-Z0-9]*' {strcpy(yylval.strval,strdup(yytext)); return STRVAL;}
+
 [ \t] ;
 \n {yylineno++;}
 . {return yytext[0];}
